@@ -2,7 +2,7 @@ import { Button, ButtonGroup, Flex, Heading, Icon, IconButton, Menu, MenuButton,
 import Link from 'next/link'
 import React from 'react'
 
-export default function Header({ currentRoute }: {currentRoute: string}) {
+export default function Header({ currentRoute }: {currentRoute?: string}) {
 
   return (
     <Flex p="16px" bgColor="#2E77AE" justify="space-between" align="center">
