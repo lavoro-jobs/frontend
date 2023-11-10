@@ -91,7 +91,7 @@ export default function LoginForm() {
 		>
 			<Heading fontSize="32px">Login</Heading>
 			<Flex gap="8px" paddingBottom="16px">
-				<Text fontSize="lg">Don't have an account?</Text>
+				<Text fontSize="lg">Dont have an account?</Text>
 				<Link href="/signup">
 					<Text fontSize="lg" as="b" color="#FF8E2B">
 						Sign Up

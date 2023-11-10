@@ -33,7 +33,7 @@ export default function SignUp() {
         <InfoBox>
           <div>
             <Heading fontSize={{base: "2xl", sm: "3xl", md: "4xl", lg: "5xl"}}>
-              We're looking for job recruiters and applicants.
+              We are looking for job recruiters and applicants.
             </Heading>
             <Text fontSize={{base: "sm", md: "md", lg: "lg"}} paddingTop="16px" paddingBottom="16px">Create an account and something something.</Text>
             <Flex>
