@@ -4,7 +4,7 @@ import React from 'react'
 
 export default function Footer() {
   return (
-    <Box p="16px" bgColor="#2E77AE" textAlign="center">
+    <Box p="16px" bgColor="#0071c6" textAlign="center">
       <Link href='/'>
         <Heading fontSize="3xl" color="#0D2137">LAVORO</Heading>
       </Link>

@@ -9,7 +9,7 @@ export default function InfoBox({ children }: {children: ReactNode}) {
         w="50%"
         direction="column" 
         justifyContent="space-between"
-        bg="#2E77AE" 
+        bg="#0071c6" 
         color="white"
     >
         <Heading>Lavoro</Heading>
