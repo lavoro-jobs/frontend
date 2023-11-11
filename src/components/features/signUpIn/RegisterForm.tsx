@@ -1,229 +1,157 @@
-import { Button, chakra, Flex, FormControl, FormLabel, Heading, Input, InputGroup, InputRightElement, Select, Text } from '@chakra-ui/react'
-import Link from 'next/link'
-import React, { ChangeEvent, useState } from 'react'
+import {
+    Button,
+    chakra,
+    Flex,
+    FormControl,
+    FormErrorMessage,
+    FormLabel,
+    Heading,
+    Input,
+    InputGroup,
+    InputRightElement,
+    Select,
+    Text,
+} from "@chakra-ui/react"
+import Link from "next/link"
+import React, { useState } from "react"
+
+interface FormState {
+    role: "applicant" | "recruiter"
+    companyName: string
+    email: string
+    password: string
+}
+
+interface PostData {
+    role: "applicant" | "recruiter"
+    companyName?: string
+    email: string
+    password: string
+}
 
 export default function RegisterForm() {
-    const [role, setRole] = useState<string>("applicant");
-    const [firstName, setFirstName] = useState<string>("");
-    const [lastName, setLastName] = useState<string>("");
-    const [companyName, setCompanyName] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [emailError, setEmailError] = useState<boolean>(false);
-    const [passwordError, setPasswordError] = useState<boolean>(false);
-    const [firstNameError, setFirstNameError] = useState<boolean>(false);
-    const [lastNameError, setLastNameError] = useState<boolean>(false);
-    const [companyNameError, setCompanyNameError] = useState<boolean>(false);
+    const [formData, setFormData] = useState<FormState>({
+        role: "applicant",
+        email: "",
+        password: "",
+        companyName: "",
+    })
+    const [showPassword, setShowPassword] = useState<boolean>(false)
 
-    const handleRoleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        setRole(e.target.value);
-    }
-    const handleShowPassword = () => {
-        setShowPassword(!showPassword);
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const newFormData = { ...formData, [e.target.id]: e.target.value }
+        if (e.target.name === "role") {
+            newFormData.companyName = ""
+        }
+        setFormData(newFormData)
     }
 
-    const handleFirstName = (e: ChangeEvent<HTMLInputElement>) => {
-        setFirstName(e.target.value);
-        setFirstNameError(false);
-    }
-    const handleLastName = (e: ChangeEvent<HTMLInputElement>) => {
-        setLastName(e.target.value);
-        setLastNameError(false);
-    }
-    const handleCompanyName = (e: ChangeEvent<HTMLInputElement>) => {
-        setCompanyName(e.target.value);
-        setCompanyNameError(false);
-    }
-    const handleEmail = (e: ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-    }
-    const handlePassword = (e: ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value);
+    const isCompanyNameInvalid = (text: string) => {
+        const textRegex = /^[a-z ,.'-]+$/i
+        return !textRegex.test(text)
     }
 
-    const validateEmail = () => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (emailRegex.test(email)){
-        setEmailError(false);
-        } else {
-        setEmailError(true);
-        }
-        return;
-    }
-    const validatePassword = () => {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-        if (passwordRegex.test(password)){
-        setPasswordError(false);
-        } else {
-        setPasswordError(true);
-        }
-        return;
-    }
-    const validateFirstName = () => {
-        const firstNameRegex = /^[a-z ,.'-]+$/i;
-        if (firstNameRegex.test(firstName)){
-        setFirstNameError(false);
-        } else {
-        setFirstNameError(true);
-        }
-        return;
-    }
-    const validateLastName = () => {
-        const lastNameRegex = /^[a-z ,.'-]+$/i;
-        if (lastNameRegex.test(lastName)){
-        setLastNameError(false);
-        } else {
-        setLastNameError(true);
-        }
-        return;
-    }
-    const validateCompanyName = () => {
-        const companyNameRegex = /^[a-z ,.'-]+$/i;
-        if (companyNameRegex.test(companyName)){
-        setCompanyNameError(false);
-        } else {
-        setCompanyNameError(true);
-        }
-        return;
+    const isEmailInvalid = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        return !emailRegex.test(email)
     }
 
-    const handleSubmit = () => {
-        validateFirstName();
-        validateLastName();
-        if (role === "recruiter")
-        validateCompanyName();
-        validateEmail();
-        validatePassword();
+    const isPasswordInvalid = (password: string) => {
+        return password.length < 8
+    }
 
-        if (firstNameError || lastNameError || emailError || passwordError){
-        return
-        } else if (role === "recruiter" && companyNameError) {
-        return
+    const handleSubmit = async () => {
+        const payload: PostData = {
+            role: formData.role,
+            email: formData.email,
+            password: formData.password,
+            companyName: formData.companyName ? formData.companyName : undefined,
         }
 
-        const data = {
-        role,
-        firstName,
-        lastName,
-        companyName: role === 'recruiter' ? companyName : '',
-        email,
-        password
-        };
-
-        fetch('http://localhost:8000/api/v1/auth/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data),
+        const response = await fetch("http://localhost:8000/api/v1/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams(payload as any),
         })
-        .then((res) => console.log(res))
-        .then((data) => console.log(data))
-        .then((err) => console.log(err))
     }
 
     return (
-        <Flex 
-            w={{base: '100%', md: "50%"}}
+        <Flex
+            w={{ base: "100%", md: "50%" }}
             p="32px"
-            direction="column" 
+            direction="column"
             justifyContent="center"
             alignItems="center"
             bg="white"
             color="#0D2137"
-        > 
+        >
             <Heading fontSize="32px">Create an account</Heading>
             <Flex gap="8px" paddingBottom="16px">
-            <Text fontSize="lg">Have an account?</Text>
-            <Link href="/signin">
-                <Text fontSize="lg" as="b" color="#FF8E2B">Sign In</Text>
-            </Link>
+                <Text fontSize="lg">Have an account?</Text>
+                <Link href="/signin">
+                    <Text fontSize="lg" as="b" color="#FF8E2B">
+                        Sign In
+                    </Text>
+                </Link>
             </Flex>
 
-            <Flex direction="column" gap="16px" w={{base: "250px", md: "300px"}}>
-            <Select
-                bgColor="#2E77AE"
-                value={role}
-                onChange={handleRoleChange}
-                color="white"
-            >
-                <chakra.option color="black" id="applicant" value="applicant">Applicant</chakra.option>
-                <chakra.option color="black" id="recruiter" value="recruiter">Recruiter</chakra.option>
-            </Select>
+            <Flex direction="column" gap="16px" w={{ base: "250px", md: "300px" }}>
+                <Select bgColor="#2E77AE" id="role" value={formData.role} onChange={handleFormChange} color="white">
+                    <chakra.option color="black" id="applicant" value="applicant">
+                        Applicant
+                    </chakra.option>
+                    <chakra.option color="black" id="recruiter" value="recruiter">
+                        Recruiter
+                    </chakra.option>
+                </Select>
 
-            <FormControl>
-                <FormLabel htmlFor="firstName">First name</FormLabel>
-                {firstNameError && (
-                <Text color="red" maxW={{base: "250px", lg: "300px"}}>First name required.</Text>
+                {formData.role === "recruiter" && (
+                    <FormControl isInvalid={isCompanyNameInvalid(formData.companyName)}>
+                        <FormLabel htmlFor="companyName">Company name</FormLabel>
+                        <Input id="companyName" type="text" value={formData.companyName} onChange={handleFormChange} />
+                        <FormErrorMessage>Company name is required.</FormErrorMessage>
+                    </FormControl>
                 )}
-                <Input 
-                id="firstName" 
-                type='text' 
-                value={firstName} 
-                onChange={handleFirstName} 
-                />
-            </FormControl>
-            <FormControl>
-                <FormLabel htmlFor="lastName">Last name</FormLabel>
-                {lastNameError && (
-                <Text color="red" maxW={{base: "250px", lg: "300px"}}>Last name required.</Text>
-                )}
-                <Input id="lastName" type='text' value={lastName} onChange={handleLastName}/>
-            </FormControl>
 
-            {role === "recruiter" && (
-                <FormControl>
-                <FormLabel htmlFor="companyName">Company name</FormLabel>
-                {companyNameError && (
-                    <Text color="red" maxW={{base: "250px", lg: "300px"}}>Company name required.</Text>
-                )}
-                <Input id="companyName" type='text' value={companyName} onChange={handleCompanyName}/>
+                <FormControl isInvalid={isEmailInvalid(formData.email)}>
+                    <FormLabel htmlFor="email">Email address</FormLabel>
+                    <Input id="email" type="email" value={formData.email} onChange={handleFormChange} />
+                    <FormErrorMessage>Email is invalid.</FormErrorMessage>
                 </FormControl>
-            )}
 
-            <FormControl>
-                <FormLabel htmlFor="email">Email address</FormLabel>
-                {emailError && (
-                <Text color="red" maxW={{base: "250px", lg: "300px"}}>Invalid email address.</Text>
-                )}
-                <Input id="email" type='email' value={email} onChange={handleEmail}/>
-            </FormControl>
+                <FormControl isInvalid={isPasswordInvalid(formData.password)}>
+                    <FormLabel htmlFor="password">Password</FormLabel>
 
-            <FormControl>
-                <FormLabel htmlFor="password">Password</FormLabel>
-                {passwordError && (
-                <Text color="red" maxW={{base: "250px", lg: "300px"}}>Invalid password. Password must have at least 8 characters, one uppercase letter, one lowercase letter, and one number.</Text>
-                )}
-                <InputGroup>
-                <Input id="password" onChange={handlePassword} type={showPassword ? 'text' : 'password'} />
-                <InputRightElement width='4.5rem'>
-                    <Button 
-                    bgColor="#2E77AE" 
-                    color="white" 
-                    _hover={{bg: "#2E77AE"}} 
-                    h='1.5rem' 
-                    size='sm' 
-                    onClick={handleShowPassword}
-                    value={password}
-                    >
-                    {showPassword ? 'Hide' : 'Show'}
-                    </Button>
-                </InputRightElement>
-                </InputGroup>
-            </FormControl>
+                    <InputGroup>
+                        <Input id="password" onChange={handleFormChange} type={showPassword ? "text" : "password"} />
+                        <InputRightElement width="4.5rem">
+                            <Button
+                                bgColor="#2E77AE"
+                                color="white"
+                                _hover={{ bg: "#2E77AE" }}
+                                h="1.5rem"
+                                size="sm"
+                                onClick={() => setShowPassword(!showPassword)}
+                                value={formData.password}
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </Button>
+                        </InputRightElement>
+                    </InputGroup>
+                    <FormErrorMessage>Invalid password. Password must have at least 8 characters</FormErrorMessage>
+                </FormControl>
 
-            <Button 
-                bgColor="#2E77AE" 
-                color="white" 
-                _hover={{bgColor: "#6ba5d1", color: "#0D2137"}}
-                onClick={handleSubmit}
-            >
-                Submit
-            </Button>
-
+                <Button
+                    bgColor="#2E77AE"
+                    color="white"
+                    _hover={{ bgColor: "#6ba5d1", color: "#0D2137" }}
+                    onClick={handleSubmit}
+                >
+                    Submit
+                </Button>
             </Flex>
-
         </Flex>
     )
 }
