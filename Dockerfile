@@ -1,19 +1,12 @@
-# Build Stage
-FROM node:20-alpine AS BUILD_IMAGE
+FROM node:20-alpine AS base
+
+FROM base AS deps
 WORKDIR /app
-COPY ./lavoro-frontend/package*.json ./
+COPY ./lavoro-frontend/package.json /app/package.json
+COPY ./lavoro-frontend/package-lock.json /app/package-lock.json
 RUN npm install
-COPY ./lavoro-frontend .
-RUN npm run build
 
-
-# Production Stage
-FROM node:20-alpine AS PRODUCTION_STAGE
+FROM base AS dev
 WORKDIR /app
-COPY --from=BUILD_IMAGE /app/package*.json ./
-COPY --from=BUILD_IMAGE /app/node_modules ./node_modules
-COPY --from=BUILD_IMAGE /app/.next ./.next 
-COPY --from=BUILD_IMAGE /app/public ./public 
-ENV NODE_ENV=production
-EXPOSE 3000
-CMD ["npx", "next", "start"]
+COPY --from=deps /app/node_modules ./lavoro-frontend/node_modules
+COPY ./lavoro-frontend .
