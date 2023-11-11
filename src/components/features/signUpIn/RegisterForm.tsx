@@ -63,12 +63,12 @@ export default function RegisterForm() {
 		const response = await fetch("http://localhost:8000/api/v1/auth/register", {
 			method: "POST",
 			headers: {
-				"Accept": "application/json",
+				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
 			},
 			body: new URLSearchParams(payload as any),
 		});
-		if (response.ok){
+		if (response.ok) {
 			push("/confirm");
 		}
 	};
