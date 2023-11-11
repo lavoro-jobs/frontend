@@ -1,5 +1,3 @@
-import React from "react";
-
 import {
 	Box,
 	Button,
@@ -13,53 +11,81 @@ import {
 	NumberInputField,
 	NumberInputStepper,
 	Progress,
-	Radio,
-	RadioGroup,
 	Select,
 	Text,
 	VStack,
 	useSteps,
 } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
+
+interface FormState {
+	status: "highSchool" | "inUni" | "finishedUni";
+	degree: "associate" | "bachelors" | "masters" | "doctoral";
+	uniName: string;
+	uniYear: number;
+	age: number;
+	gender: "male" | "female";
+}
+
+interface PostData {
+	status: "highSchool" | "inUni" | "finishedUni";
+	degree: "associate" | "bachelors" | "masters" | "doctoral";
+	uniName: string;
+	uniYear: number;
+	age: number;
+	gender: "male" | "female";
+}
 
 export default function ProfileSetup() {
-	const [status, setStatus] = useState("highSchool");
-	const [degree, setDegree] = useState("associate");
-	const [uniName, setUniName] = useState("");
-	const [uniYear, setUniYear] = useState(3);
-	const [age, setAge] = useState(25);
-	const [gender, setGender] = useState("male");
+	const [formData, setFormData] = useState<FormState>({
+		status: "highSchool",
+		degree: "associate",
+		uniName: "",
+		uniYear: 3,
+		age: 25,
+		gender: "male",
+	});
 
-	const handleDegreeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-		setDegree(e.target.value);
+	const handleFormChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
+		const newFormData = { ...formData, [e.target.id]: e.target.value };
+		setFormData(newFormData);
 	};
-	const handleUniNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setUniName(e.target.value);
-	};
+
 	const handleUniYearChange = (
 		valueAsString: string,
 		valueAsNumber: number
 	) => {
-		setUniYear(valueAsNumber);
+		setFormData((formData) => ({
+			...formData,
+			uniYear: valueAsNumber,
+		}));
 	};
 	const handleAgeChange = (valueAsString: string, valueAsNumber: number) => {
-		setAge(valueAsNumber);
-	};
-	const handleGenderChange = (e: ChangeEvent<HTMLSelectElement>) => {
-		setGender(e.target.value);
+		setFormData((formData) => ({
+			...formData,
+			age: valueAsNumber,
+		}));
 	};
 
-	const handleSubmit = () => {
-		const data = {
-			status,
-			degree,
-			uniName,
-			uniYear,
-			age,
-			gender,
+	const handleSubmit = async () => {
+		const payload: PostData = {
+			status: formData.status,
+			degree: formData.degree,
+			uniName: formData.uniName,
+			uniYear: formData.uniYear,
+			age: formData.age,
+			gender: formData.gender,
 		};
 
-		console.log(data);
+		const response = await fetch("", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(payload),
+		});
 	};
 
 	const steps = [
@@ -70,17 +96,12 @@ export default function ProfileSetup() {
 		{ title: "Knowledge" },
 		{ title: "Preferences" },
 	];
-	const handleNext = () => {
-		goToNext();
-	};
-	const handlePrevious = () => {
-		goToPrevious();
-	};
 	const { activeStep, goToNext, goToPrevious } = useSteps({
 		index: 0,
 		count: steps.length,
 	});
 	const progressPercent = (activeStep / (steps.length - 1)) * 100;
+
 	return (
 		<Flex
 			minH="100vh"
@@ -108,149 +129,106 @@ export default function ProfileSetup() {
 
 				{activeStep === 0 && (
 					<>
-						<Text
-							fontSize="lg"
-							paddingTop="32px"
-							textAlign="center"
-						>
+						<Text fontSize="lg" paddingTop="32px" textAlign="center">
 							STATUS
 						</Text>
-						<RadioGroup
+						<Select
 							paddingTop="16px"
-							value={status}
-							onChange={setStatus}
+							id="status"
+							value={formData.status}
+							onChange={handleFormChange}
 						>
-							<VStack gap="16px" color="#0D2137">
-								<Radio value="highSchool">
-									Currently in High School
-								</Radio>
-								<Radio value="inUni">
-									Currently in University
-								</Radio>
-								<Radio value="finishedUni">
-									Finished University
-								</Radio>
-							</VStack>
+							<option value="highSchool">Currently in High School</option>
+							<option value="inUni">Currently in University</option>
+							<option value="finishedUni">Finished University</option>
+						</Select>
+						{formData.status === "inUni" && (
+							<>
+								<Divider paddingTop="16px" />
+								<Text fontSize="lg" paddingTop="16px" textAlign="center">
+									UNIVERSITY NAME
+								</Text>
+								<Input
+									id="uniName"
+									value={formData.uniName}
+									onChange={handleFormChange}
+								/>
 
-							{status === "inUni" && (
-								<>
-									<Divider paddingTop="16px" />
-									<Text
-										fontSize="lg"
-										paddingTop="16px"
-										textAlign="center"
-									>
-										UNIVERSITY NAME
-									</Text>
-									<Input
-										value={uniName}
-										onChange={handleUniNameChange}
-									/>
+								<Text fontSize="lg" paddingTop="16px" textAlign="center">
+									CURRENT YEAR
+								</Text>
+								<NumberInput
+									id="uniYear"
+									value={formData.uniYear}
+									onChange={handleUniYearChange}
+									min={1}
+									max={5}
+								>
+									<NumberInputField />
+									<NumberInputStepper>
+										<NumberIncrementStepper>+</NumberIncrementStepper>
+										<NumberDecrementStepper>-</NumberDecrementStepper>
+									</NumberInputStepper>
+								</NumberInput>
+							</>
+						)}
 
-									<Text
-										fontSize="lg"
-										paddingTop="16px"
-										textAlign="center"
-									>
-										CURRENT YEAR
-									</Text>
-									<NumberInput
-										value={uniYear}
-										onChange={handleUniYearChange}
-										min={1}
-										max={5}
-									>
-										<NumberInputField />
-										<NumberInputStepper>
-											<NumberIncrementStepper>
-												+
-											</NumberIncrementStepper>
-											<NumberDecrementStepper>
-												-
-											</NumberDecrementStepper>
-										</NumberInputStepper>
-									</NumberInput>
-								</>
-							)}
+						{formData.status === "finishedUni" && (
+							<>
+								<Divider paddingTop="16px" />
+								<Text fontSize="lg" paddingTop="16px" textAlign="center">
+									UNIVERSITY NAME
+								</Text>
+								<Input
+									id="uniName"
+									value={formData.uniName}
+									onChange={handleFormChange}
+								/>
 
-							{status === "finishedUni" && (
-								<>
-									<Divider paddingTop="16px" />
-									<Text
-										fontSize="lg"
-										paddingTop="16px"
-										textAlign="center"
-									>
-										UNIVERSITY NAME
-									</Text>
-									<Input
-										value={uniName}
-										onChange={handleUniNameChange}
-									/>
-
-									<Text
-										fontSize="lg"
-										paddingTop="16px"
-										textAlign="center"
-									>
-										DEGREE
-									</Text>
-									<Select
-										value={degree}
-										onChange={handleDegreeChange}
-									>
-										<option value="associate">
-											Associate degree
-										</option>
-										<option value="bachelors">
-											Bachelors degree
-										</option>
-										<option value="masters">
-											Masters degree
-										</option>
-										<option value="doctoral">
-											Doctoral degree
-										</option>
-									</Select>
-								</>
-							)}
-						</RadioGroup>
+								<Text fontSize="lg" paddingTop="16px" textAlign="center">
+									DEGREE
+								</Text>
+								<Select
+									value={formData.degree}
+									onChange={handleFormChange}
+									id="degree"
+								>
+									<option value="associate">Associate degree</option>
+									<option value="bachelors">Bachelors degree</option>
+									<option value="masters">Masters degree</option>
+									<option value="doctoral">Doctoral degree</option>
+								</Select>
+							</>
+						)}
 					</>
 				)}
 				{activeStep === 1 && (
 					<>
-						<Text
-							fontSize="lg"
-							paddingTop="32px"
-							textAlign="center"
-						>
+						<Text fontSize="lg" paddingTop="32px" textAlign="center">
 							AGE
 						</Text>
 						<NumberInput
-							value={age}
+							id="age"
+							value={formData.age}
 							onChange={handleAgeChange}
 							min={16}
 							max={99}
 						>
 							<NumberInputField />
 							<NumberInputStepper>
-								<NumberIncrementStepper>
-									+
-								</NumberIncrementStepper>
-								<NumberDecrementStepper>
-									-
-								</NumberDecrementStepper>
+								<NumberIncrementStepper>+</NumberIncrementStepper>
+								<NumberDecrementStepper>-</NumberDecrementStepper>
 							</NumberInputStepper>
 						</NumberInput>
 
-						<Text
-							fontSize="lg"
-							paddingTop="16px"
-							textAlign="center"
-						>
+						<Text fontSize="lg" paddingTop="16px" textAlign="center">
 							GENDER
 						</Text>
-						<Select value={gender} onChange={handleGenderChange}>
+						<Select
+							id="gender"
+							value={formData.gender}
+							onChange={handleFormChange}
+						>
 							<option value="male">Male</option>
 							<option value="female">Female</option>
 						</Select>
@@ -282,7 +260,7 @@ export default function ProfileSetup() {
 							bg="#2E77AE"
 							_hover={{ color: "#0D2137", bg: "#6ba5d1" }}
 							marginRight="8px"
-							onClick={handlePrevious}
+							onClick={() => goToPrevious()}
 						>
 							Back
 						</Button>
@@ -292,7 +270,7 @@ export default function ProfileSetup() {
 							color="white"
 							bg="#2E77AE"
 							_hover={{ color: "#0D2137", bg: "#6ba5d1" }}
-							onClick={handleNext}
+							onClick={() => goToNext()}
 						>
 							Next
 						</Button>

@@ -2,6 +2,7 @@ import {
 	Button,
 	Flex,
 	FormControl,
+	FormErrorMessage,
 	FormLabel,
 	Heading,
 	Input,
@@ -10,73 +11,55 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
+
+interface FormState {
+	email: string;
+	password: string;
+}
+
+interface PostData {
+	username: string;
+	password: string;
+}
 
 export default function LoginForm() {
-	const [email, setEmail] = useState<string>("");
-	const [password, setPassword] = useState<string>("");
+	const [formData, setFormData] = useState<FormState>({
+		email: "",
+		password: "",
+	});
 	const [showPassword, setShowPassword] = useState<boolean>(false);
-	const [emailError, setEmailError] = useState<boolean>(false);
-	const [passwordError, setPasswordError] = useState<boolean>(false);
 
-	const handleShowPassword = () => {
-		setShowPassword(!showPassword);
-	};
-	const handleEmail = (e: ChangeEvent<HTMLInputElement>) => {
-		setEmail(e.target.value);
-	};
-	const handlePassword = (e: ChangeEvent<HTMLInputElement>) => {
-		setPassword(e.target.value);
+	const handleFormChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
+		const newFormData = { ...formData, [e.target.id]: e.target.value };
+		setFormData(newFormData);
 	};
 
-	const validateEmail = () => {
+	const isEmailInvalid = (email: string) => {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (emailRegex.test(email)) {
-			setEmailError(false);
-		} else {
-			setEmailError(true);
-		}
-		return;
-	};
-	const validatePassword = () => {
-		const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-		if (passwordRegex.test(password)) {
-			setPasswordError(false);
-		} else {
-			setPasswordError(true);
-		}
-		return;
+		return !emailRegex.test(email);
 	};
 
-	const handleSubmit = () => {
-		validateEmail();
-		validatePassword();
+	const isPasswordInvalid = (password: string) => {
+		return password.length < 8;
+	};
 
-		if (emailError || passwordError) {
-			return;
-		}
-
-		const data = {
-			email,
-			password,
+	const handleSubmit = async () => {
+		const payload: PostData = {
+			username: formData.email,
+			password: formData.password,
 		};
 
-		fetch("http://localhost:8000/api/v1/auth/login", {
+		const response = await fetch(" http://localhost:8000/api/v1/auth/login", {
 			method: "POST",
 			headers: {
-				"Content-Type": "application/json",
+				"Content-Type": "application/x-www-form-urlencoded",
 			},
-			body: JSON.stringify(data),
-		})
-			.then((res) => {
-				if (res.ok) {
-					window.location.href = "/home";
-				} else {
-					console.log(res);
-				}
-			})
-			.then((data) => console.log(data))
-			.then((err) => console.log(err));
+			body:  new URLSearchParams(payload as any),
+		});
+
 	};
 
 	return (
@@ -104,34 +87,23 @@ export default function LoginForm() {
 				gap="16px"
 				w={{ base: "300px", sm: "400px", md: "300px", lg: "400px" }}
 			>
-				<FormControl>
+				<FormControl isInvalid={isEmailInvalid(formData.email)}>
 					<FormLabel htmlFor="email">Email address</FormLabel>
-					{emailError && (
-						<Text color="red" maxW={{ base: "250px", lg: "300px" }}>
-							Invalid email address.
-						</Text>
-					)}
 					<Input
 						id="email"
 						type="email"
-						value={email}
-						onChange={handleEmail}
+						value={formData.email}
+						onChange={handleFormChange}
 					/>
+					<FormErrorMessage>Email is invalid.</FormErrorMessage>
 				</FormControl>
 
-				<FormControl>
+				<FormControl isInvalid={isPasswordInvalid(formData.password)}>
 					<FormLabel htmlFor="password">Password</FormLabel>
-					{passwordError && (
-						<Text color="red" maxW={{ base: "250px", lg: "300px" }}>
-							Invalid password. Password must have at least 8
-							characters, one uppercase letter, one lowercase
-							letter, and one number.
-						</Text>
-					)}
 					<InputGroup>
 						<Input
 							id="password"
-							onChange={handlePassword}
+							onChange={handleFormChange}
 							type={showPassword ? "text" : "password"}
 						/>
 						<InputRightElement width="4.5rem">
@@ -141,13 +113,16 @@ export default function LoginForm() {
 								_hover={{ bg: "#2E77AE" }}
 								h="1.5rem"
 								size="sm"
-								onClick={handleShowPassword}
-								value={password}
+								onClick={() => setShowPassword(!showPassword)}
+								value={formData.password}
 							>
 								{showPassword ? "Hide" : "Show"}
 							</Button>
 						</InputRightElement>
 					</InputGroup>
+					<FormErrorMessage>
+						Invalid password. Password must have at least 8 characters.
+					</FormErrorMessage>
 				</FormControl>
 
 				<Button
