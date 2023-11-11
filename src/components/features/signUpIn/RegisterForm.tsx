@@ -143,7 +143,7 @@ export default function RegisterForm() {
 
             <Flex direction="column" gap="16px" w={{base: "250px", md: "300px"}}>
             <Select
-                bgColor="#2E77AE"
+                bgColor="#0071c6"
                 value={role}
                 onChange={handleRoleChange}
                 color="white"
@@ -199,9 +199,9 @@ export default function RegisterForm() {
                 <Input id="password" onChange={handlePassword} type={showPassword ? 'text' : 'password'} />
                 <InputRightElement width='4.5rem'>
                     <Button 
-                    bgColor="#2E77AE" 
+                    bgColor="#0071c6" 
                     color="white" 
-                    _hover={{bg: "#2E77AE"}} 
+                    _hover={{bg: "#0071c6"}} 
                     h='1.5rem' 
                     size='sm' 
                     onClick={handleShowPassword}
@@ -214,7 +214,7 @@ export default function RegisterForm() {
             </FormControl>
 
             <Button 
-                bgColor="#2E77AE" 
+                bgColor="#0071c6" 
                 color="white" 
                 _hover={{bgColor: "#6ba5d1", color: "#0D2137"}}
                 onClick={handleSubmit}
