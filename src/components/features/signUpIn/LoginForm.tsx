@@ -1,4 +1,4 @@
-import signUp from "@/helpers/signUp"
+import signIn from "@/helpers/signIn"
 import {
   Button,
   chakra,
@@ -18,56 +18,40 @@ import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 
 interface FormState {
-  role: "applicant" | "company"
-  companyName?: string
   email: string
   password: string
 }
 
 interface PostData {
-  role: "applicant" | "company"
-  companyName?: string
-  email: string
+  username: string
   password: string
 }
 
-export default function RegisterForm() {
+export default function LoginForm() {
   const router = useRouter()
   const [formData, setFormData] = useState<FormState>({
-    role: "applicant",
     email: "",
     password: "",
-    companyName: "",
   })
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [error, setError] = useState<string>("")
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value }
-    if (e.target.name === "role") {
-      newFormData.companyName = ""
-    }
     setFormData(newFormData)
-  }
-
-  const isEmailInvalid = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return !emailRegex.test(email)
-  }
-
-  const isPasswordInvalid = (password: string) => {
-    return password.length < 8
   }
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
-    const postData: PostData = { ...formData }
-    const response = await signUp(postData)
+    const postData: PostData = {
+      username: formData.email,
+      password: formData.password,
+    }
+    const response = await signIn(postData)
     if (response.ok) {
-      router.push(`/verification-email-sent?email=${formData.email}`)
+      router.push("/profile")
     } else {
-      const { detail } = await response.json()
-      setError(detail)
+      setError("There was an error logging in. Please try again.")
     }
   }
 
@@ -81,44 +65,32 @@ export default function RegisterForm() {
       bg="white"
       color="#0D2137"
     >
-      <Heading fontSize="32px">Create an account</Heading>
+      <Heading fontSize="32px">Sign in</Heading>
       <Flex gap="8px" paddingBottom="16px">
-        <Text fontSize="lg">Have an account?</Text>
-        <Link href="/signin">
+        <Text fontSize="lg">Don't have an account?</Text>
+        <Link href="/signup">
           <Text fontSize="lg" as="b" color="#FF8E2B">
-            Sign In
+            Sign up
           </Text>
         </Link>
       </Flex>
 
-      <Flex
-        direction="column"
-        gap="16px"
-        w={{ base: "250px", md: "300px" }}
-        as="form"
-        action={signUp}
-        onSubmit={handleSubmit}
-      >
-        <Select bgColor="#2E77AE" id="role" value={formData.role} onChange={handleFormChange} color="white">
-          <chakra.option color="black" id="applicant" value="applicant">
-            Applicant
-          </chakra.option>
-          <chakra.option color="black" id="company" value="company">
-            Company
-          </chakra.option>
-        </Select>
-
-        <FormControl isInvalid={isEmailInvalid(formData.email)}>
+      <Flex direction="column" gap="16px" w={{ base: "250px", md: "300px" }} as="form" onSubmit={handleSubmit}>
+        <FormControl>
           <FormLabel htmlFor="email">Email address</FormLabel>
           <Input id="email" type="email" value={formData.email} onChange={handleFormChange} />
-          <FormErrorMessage>Email is invalid.</FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={isPasswordInvalid(formData.password)}>
+        <FormControl>
           <FormLabel htmlFor="password">Password</FormLabel>
 
           <InputGroup>
-            <Input id="password" onChange={handleFormChange} type={showPassword ? "text" : "password"} />
+            <Input
+              id="password"
+              onChange={handleFormChange}
+              type={showPassword ? "text" : "password"}
+              form="login-form"
+            />
             <InputRightElement width="4.5rem">
               <Button
                 bgColor="#2E77AE"
@@ -133,10 +105,9 @@ export default function RegisterForm() {
               </Button>
             </InputRightElement>
           </InputGroup>
-          <FormErrorMessage>Invalid password. Password must have at least 8 characters</FormErrorMessage>
         </FormControl>
 
-        <Text color="red">{error}</Text>
+        <Text color="red.500">{error}</Text>
         <Button bgColor="#2E77AE" color="white" _hover={{ bgColor: "#6ba5d1", color: "#0D2137" }} type="submit">
           Submit
         </Button>
