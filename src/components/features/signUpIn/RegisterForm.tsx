@@ -18,28 +18,38 @@ import React, { useState } from "react"
 
 interface FormState {
   role: "applicant" | "recruiter"
+  companyName: string
   email: string
   password: string
 }
 
 interface PostData {
   role: "applicant" | "recruiter"
+  companyName?: string
   email: string
   password: string
 }
 
 export default function RegisterForm() {
-  const { push } = useRouter()
   const [formData, setFormData] = useState<FormState>({
     role: "applicant",
     email: "",
     password: "",
+    companyName: "",
   })
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value }
+    if (e.target.name === "role") {
+      newFormData.companyName = ""
+    }
     setFormData(newFormData)
+  }
+
+  const isCompanyNameInvalid = (text: string) => {
+    const textRegex = /^[a-z ,.'-]+$/i
+    return !textRegex.test(text)
   }
 
   const isEmailInvalid = (email: string) => {
@@ -56,19 +66,16 @@ export default function RegisterForm() {
       role: formData.role,
       email: formData.email,
       password: formData.password,
+      companyName: formData.companyName ? formData.companyName : undefined,
     }
 
     const response = await fetch("http://localhost:8000/api/v1/auth/register", {
       method: "POST",
       headers: {
-        Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams(payload as any),
     })
-    if (response.ok) {
-      push("/confirm")
-    }
   }
 
   return (
@@ -100,6 +107,14 @@ export default function RegisterForm() {
             Recruiter
           </chakra.option>
         </Select>
+
+        {formData.role === "recruiter" && (
+          <FormControl isInvalid={isCompanyNameInvalid(formData.companyName)}>
+            <FormLabel htmlFor="companyName">Company name</FormLabel>
+            <Input id="companyName" type="text" value={formData.companyName} onChange={handleFormChange} />
+            <FormErrorMessage>Company name is required.</FormErrorMessage>
+          </FormControl>
+        )}
 
         <FormControl isInvalid={isEmailInvalid(formData.email)}>
           <FormLabel htmlFor="email">Email address</FormLabel>

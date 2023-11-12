@@ -1,25 +1,19 @@
-import { Box, Flex, Heading, Text } from "@chakra-ui/react"
-import Link from "next/link"
-import React from "react"
+import { Box, Flex, Heading, Text } from '@chakra-ui/react'
+import Link from 'next/link'
+import React from 'react'
 
 export default function Footer() {
   return (
-    <Box p="16px" bgColor="#2E77AE" textAlign="center">
-      <Link href="/">
-        <Heading fontSize="3xl" color="#0D2137">
-          LAVORO
-        </Heading>
+    <Box p="16px" bgColor="#0071c6" textAlign="center">
+      <Link href='/'>
+        <Heading fontSize="3xl" color="#0D2137">LAVORO</Heading>
       </Link>
       <Flex gap="16px" justify="center">
-        <Link href="/jobposts">
-          <Text fontSize="lg" color="#0D2137">
-            Job posts
-          </Text>
+        <Link href='/job-posts'>
+          <Text fontSize="lg" color="#0D2137">Job posts</Text>
         </Link>
-        <Link href="/aboutus">
-          <Text fontSize="lg" color="#0D2137">
-            About us
-          </Text>
+        <Link href='/about-us'>
+          <Text fontSize="lg" color="#0D2137">About us</Text>
         </Link>
       </Flex>
       {/*replace with facebook, instagram, youtube, twitter... icons*/}
