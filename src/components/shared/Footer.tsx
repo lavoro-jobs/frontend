@@ -9,10 +9,10 @@ export default function Footer() {
         <Heading fontSize="3xl" color="#0D2137">LAVORO</Heading>
       </Link>
       <Flex gap="16px" justify="center">
-        <Link href='/jobposts'>
+        <Link href='/job-posts'>
           <Text fontSize="lg" color="#0D2137">Job posts</Text>
         </Link>
-        <Link href='/aboutus'>
+        <Link href='/about-us'>
           <Text fontSize="lg" color="#0D2137">About us</Text>
         </Link>
       </Flex>
