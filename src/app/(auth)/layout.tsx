@@ -1,7 +1,6 @@
 "use client"
 
 import InfoBox from "@/components/features/signUpIn/InfoBox"
-import Footer from "@/components/shared/Footer"
 import Header from "@/components/shared/Header"
 import { Avatar, AvatarGroup, Flex, Heading, Stack, Text } from "@chakra-ui/react"
 
@@ -58,7 +57,6 @@ export default function AuthLayout({ children }: any) {
 
         {children}
       </Flex>
-      <Footer />
     </>
   )
 }

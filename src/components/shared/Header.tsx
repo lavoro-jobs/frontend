@@ -14,11 +14,11 @@ export default function Header({ currentRoute }: {currentRoute?: string}) {
             <Link href='/'>
               <Text fontSize="lg" as={currentRoute === "/home" ? "b" : "p"} color="#fff">Home</Text>
             </Link>
-            <Link href='/jobposts'>
-              <Text fontSize="lg" as={currentRoute === "/jobposts" ? "b" : "p"} color="#fff">Job posts</Text>
+            <Link href='/job-posts'>
+              <Text fontSize="lg" as={currentRoute === "/job-posts" ? "b" : "p"} color="#fff">Job posts</Text>
             </Link>
-            <Link href='/aboutus'>
-              <Text fontSize="lg" as={currentRoute === "/aboutus" ? "b" : "p"} color="#fff">About us</Text>
+            <Link href='/about-us'>
+              <Text fontSize="lg" as={currentRoute === "/about-us" ? "b" : "p"} color="#fff">About us</Text>
             </Link>
           </Flex>
           <ButtonGroup>
@@ -34,8 +34,8 @@ export default function Header({ currentRoute }: {currentRoute?: string}) {
             />
             <MenuList>
               <MenuItem as='a' href='/'>Home</MenuItem>
-              <MenuItem as='a' href='/jobposts'>Job posts</MenuItem>
-              <MenuItem as='a' href='/aboutus'>About us</MenuItem>
+              <MenuItem as='a' href='/job-posts'>Job posts</MenuItem>
+              <MenuItem as='a' href='/about-us'>About us</MenuItem>
               <MenuDivider />
               <MenuItem as='a' href='/signin'>Sign in</MenuItem>
               <MenuItem as='a' href='/signup'>Sign up</MenuItem>
