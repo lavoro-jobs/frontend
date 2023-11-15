@@ -1,22 +1,27 @@
-'use client'
+"use client"
 
-import Header from '@/components/shared/Header'
-import Footer from '@/components/shared/Footer'
-import {Button} from "@chakra-ui/react";
-import React from "react";
-import Image from 'next/image'
-
+import Header from "@/components/shared/Header"
+import Footer from "@/components/shared/Footer"
+import { Button } from "@chakra-ui/react"
+import React from "react"
+import Image from "next/image"
 
 export default function Home() {
   return (
     <>
-    <Header />
+      <Header />
       <div className="homepage-banner-wrapper">
         <div className="homepage-banner-container">
-          <Image alt="banner" src="/assets/images/banner.jpg" width="1000" height="1000"/>
+          <Image alt="banner" src="/assets/images/banner.jpg" width="1000" height="1000" />
           <div className="homepage-banner-box">
-            <h1>Match your<br/><span>future</span></h1>
-            <Button as='a' href='/signup' bgColor="#FF8E2B" _hover={{bgColor: "#fdb16e"}} color="#0D2137" h="32px">Sign up</Button>
+            <h1>
+              Match your
+              <br />
+              <span>future</span>
+            </h1>
+            <Button as="a" href="/signup" bgColor="#FF8E2B" _hover={{ bgColor: "#fdb16e" }} color="#0D2137" h="32px">
+              Sign up
+            </Button>
           </div>
         </div>
       </div>
@@ -44,14 +49,24 @@ export default function Home() {
       <div className="homepage-matching-wrapper">
         <div className="homepage-matching-container">
           <div className="homepage-matching-box">
-            <h1>How<br/><span>it works</span></h1>
-            <p>See how our ML algorithm<br/>shapes your future</p>
-            <Button as='a' href='/signup' bgColor="#FF8E2B" _hover={{bgColor: "#fdb16e"}} color="#0D2137" h="32px">Discover</Button>
+            <h1>
+              How
+              <br />
+              <span>it works</span>
+            </h1>
+            <p>
+              See how our ML algorithm
+              <br />
+              shapes your future
+            </p>
+            <Button as="a" href="/signup" bgColor="#FF8E2B" _hover={{ bgColor: "#fdb16e" }} color="#0D2137" h="32px">
+              Discover
+            </Button>
           </div>
-          <Image alt="matching" src="/assets/images/matching.jpg" width="1000" height="1000"/>
+          <Image alt="matching" src="/assets/images/matching.jpg" width="1000" height="1000" />
         </div>
       </div>
-    <Footer />
+      <Footer />
     </>
   )
 }

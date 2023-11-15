@@ -1,3 +1,4 @@
+import signUp from "@/helpers/signUp"
 import {
   Button,
   chakra,
@@ -17,20 +18,21 @@ import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 
 interface FormState {
-  role: "applicant" | "recruiter"
-  companyName: string
+  role: "applicant" | "company"
+  companyName?: string
   email: string
   password: string
 }
 
 interface PostData {
-  role: "applicant" | "recruiter"
+  role: "applicant" | "company"
   companyName?: string
   email: string
   password: string
 }
 
 export default function RegisterForm() {
+  const router = useRouter()
   const [formData, setFormData] = useState<FormState>({
     role: "applicant",
     email: "",
@@ -38,6 +40,7 @@ export default function RegisterForm() {
     companyName: "",
   })
   const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [error, setError] = useState<string>("")
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value }
@@ -45,11 +48,6 @@ export default function RegisterForm() {
       newFormData.companyName = ""
     }
     setFormData(newFormData)
-  }
-
-  const isCompanyNameInvalid = (text: string) => {
-    const textRegex = /^[a-z ,.'-]+$/i
-    return !textRegex.test(text)
   }
 
   const isEmailInvalid = (email: string) => {
@@ -61,21 +59,16 @@ export default function RegisterForm() {
     return password.length < 8
   }
 
-  const handleSubmit = async () => {
-    const payload: PostData = {
-      role: formData.role,
-      email: formData.email,
-      password: formData.password,
-      companyName: formData.companyName ? formData.companyName : undefined,
+  const handleSubmit = async (e: any) => {
+    e.preventDefault()
+    const postData: PostData = { ...formData }
+    const response = await signUp(postData)
+    if (response.ok) {
+      router.push(`/verification-email-sent?email=${formData.email}`)
+    } else {
+      const { detail } = await response.json()
+      setError(detail)
     }
-
-    const response = await fetch("http://localhost:8000/api/v1/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams(payload as any),
-    })
   }
 
   return (
@@ -98,23 +91,22 @@ export default function RegisterForm() {
         </Link>
       </Flex>
 
-      <Flex direction="column" gap="16px" w={{ base: "250px", md: "300px" }}>
+      <Flex
+        direction="column"
+        gap="16px"
+        w={{ base: "250px", md: "300px" }}
+        as="form"
+        action={signUp}
+        onSubmit={handleSubmit}
+      >
         <Select bgColor="#2E77AE" id="role" value={formData.role} onChange={handleFormChange} color="white">
           <chakra.option color="black" id="applicant" value="applicant">
             Applicant
           </chakra.option>
-          <chakra.option color="black" id="recruiter" value="recruiter">
-            Recruiter
+          <chakra.option color="black" id="company" value="company">
+            Company
           </chakra.option>
         </Select>
-
-        {formData.role === "recruiter" && (
-          <FormControl isInvalid={isCompanyNameInvalid(formData.companyName)}>
-            <FormLabel htmlFor="companyName">Company name</FormLabel>
-            <Input id="companyName" type="text" value={formData.companyName} onChange={handleFormChange} />
-            <FormErrorMessage>Company name is required.</FormErrorMessage>
-          </FormControl>
-        )}
 
         <FormControl isInvalid={isEmailInvalid(formData.email)}>
           <FormLabel htmlFor="email">Email address</FormLabel>
@@ -144,12 +136,8 @@ export default function RegisterForm() {
           <FormErrorMessage>Invalid password. Password must have at least 8 characters</FormErrorMessage>
         </FormControl>
 
-        <Button
-          bgColor="#2E77AE"
-          color="white"
-          _hover={{ bgColor: "#6ba5d1", color: "#0D2137" }}
-          onClick={handleSubmit}
-        >
+        <Text color="red">{error}</Text>
+        <Button bgColor="#2E77AE" color="white" _hover={{ bgColor: "#6ba5d1", color: "#0D2137" }} type="submit">
           Submit
         </Button>
       </Flex>

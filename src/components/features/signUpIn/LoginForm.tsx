@@ -1,5 +1,7 @@
+import signIn from "@/helpers/signIn"
 import {
   Button,
+  chakra,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -8,10 +10,12 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Select,
   Text,
 } from "@chakra-ui/react"
 import Link from "next/link"
-import { useState } from "react"
+import { useRouter } from "next/navigation"
+import React, { useState } from "react"
 
 interface FormState {
   email: string
@@ -24,39 +28,31 @@ interface PostData {
 }
 
 export default function LoginForm() {
+  const router = useRouter()
   const [formData, setFormData] = useState<FormState>({
     email: "",
     password: "",
   })
   const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [error, setError] = useState<string>("")
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value }
     setFormData(newFormData)
   }
 
-  const isEmailInvalid = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return !emailRegex.test(email)
-  }
-
-  const isPasswordInvalid = (password: string) => {
-    return password.length < 8
-  }
-
-  const handleSubmit = async () => {
-    const payload: PostData = {
+  const handleSubmit = async (e: any) => {
+    e.preventDefault()
+    const postData: PostData = {
       username: formData.email,
       password: formData.password,
     }
-
-    const response = await fetch(" http://localhost:8000/api/v1/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams(payload as any),
-    })
+    const response = await signIn(postData)
+    if (response.ok) {
+      router.push("/profile")
+    } else {
+      setError("There was an error logging in. Please try again.")
+    }
   }
 
   return (
@@ -69,27 +65,32 @@ export default function LoginForm() {
       bg="white"
       color="#0D2137"
     >
-      <Heading fontSize="32px">Login</Heading>
+      <Heading fontSize="32px">Sign in</Heading>
       <Flex gap="8px" paddingBottom="16px">
-        <Text fontSize="lg">Dont have an account?</Text>
+        <Text fontSize="lg">Don't have an account?</Text>
         <Link href="/signup">
           <Text fontSize="lg" as="b" color="#FF8E2B">
-            Sign Up
+            Sign up
           </Text>
         </Link>
       </Flex>
 
-      <Flex direction="column" gap="16px" w={{ base: "300px", sm: "400px", md: "300px", lg: "400px" }}>
-        <FormControl isInvalid={isEmailInvalid(formData.email)}>
+      <Flex direction="column" gap="16px" w={{ base: "250px", md: "300px" }} as="form" onSubmit={handleSubmit}>
+        <FormControl>
           <FormLabel htmlFor="email">Email address</FormLabel>
           <Input id="email" type="email" value={formData.email} onChange={handleFormChange} />
-          <FormErrorMessage>Email is invalid.</FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={isPasswordInvalid(formData.password)}>
+        <FormControl>
           <FormLabel htmlFor="password">Password</FormLabel>
+
           <InputGroup>
-            <Input id="password" onChange={handleFormChange} type={showPassword ? "text" : "password"} />
+            <Input
+              id="password"
+              onChange={handleFormChange}
+              type={showPassword ? "text" : "password"}
+              form="login-form"
+            />
             <InputRightElement width="4.5rem">
               <Button
                 bgColor="#2E77AE"
@@ -104,15 +105,10 @@ export default function LoginForm() {
               </Button>
             </InputRightElement>
           </InputGroup>
-          <FormErrorMessage>Invalid password. Password must have at least 8 characters.</FormErrorMessage>
         </FormControl>
 
-        <Button
-          bgColor="#2E77AE"
-          color="white"
-          _hover={{ bgColor: "#6ba5d1", color: "#0D2137" }}
-          onClick={handleSubmit}
-        >
+        <Text color="red.500">{error}</Text>
+        <Button bgColor="#2E77AE" color="white" _hover={{ bgColor: "#6ba5d1", color: "#0D2137" }} type="submit">
           Submit
         </Button>
       </Flex>
