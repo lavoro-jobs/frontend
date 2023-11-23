@@ -2,6 +2,6 @@
 
 import LoginForm from "@/components/features/signUpIn/LoginForm"
 
-export default function SignUp() {
+export default function SignIn() {
   return <LoginForm />
 }
