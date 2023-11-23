@@ -2,29 +2,18 @@
 
 import Header from "@/components/shared/Header"
 import Footer from "@/components/shared/Footer"
-import { usePathname, useRouter } from "next/navigation"
-import { useEffect } from "react"
-
-import getUserProfile from "@/helpers/getUserProfile"
+import { usePathname } from "next/navigation"
+import useProtectedRoute from "@/hooks/useProtectedRoute"
+import { Role } from "@/types/Auth"
+import { Spinner } from "@chakra-ui/react"
 
 export default function Profile() {
-  const router = useRouter()
-
-  useEffect(() => {
-    const getCurrentUser = async () => {
-      const response = await getUserProfile()
-      if (response.ok) {
-      } else {
-        router.push("/signin")
-      }
-    }
-    getCurrentUser()
-  }, [])
+  const { auth, loading } = useProtectedRoute([Role.APPLICANT])
 
   return (
     <>
       <Header currentRoute={usePathname()} />
-
+      {loading && <Spinner />}
       <Footer />
     </>
   )
