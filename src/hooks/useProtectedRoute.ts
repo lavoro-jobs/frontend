@@ -1,23 +1,23 @@
 import { Role } from "@/types/Auth"
 import useAuth from "@/hooks/useAuth"
 import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 const useProtectedRoute = (allowedRoles: Role[]) => {
   const { auth, loading } = useAuth()
   const router = useRouter()
 
-  if (loading) {
-    return { auth, loading }
-  }
+  useEffect(() => {
+    if (!loading) {
+      if (!auth) {
+        router.push("/signin")
+      }
 
-  if (!auth) {
-    router.push("/signin")
-  } else {
-    const hasAccess = allowedRoles.includes(auth.role)
-    if (!hasAccess) {
-      router.push(`/${auth.role}`)
+      if (auth && !allowedRoles.includes(auth.role)) {
+        router.push(`/${auth.role}`)
+      }
     }
-  }
+  }, [auth, loading])
 
   return { auth, loading }
 }

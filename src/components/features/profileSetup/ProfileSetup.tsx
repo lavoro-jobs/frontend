@@ -1,3 +1,4 @@
+import createApplicantProfile from "@/helpers/createApplicantProfile"
 import {
   Box,
   Button,
@@ -74,13 +75,11 @@ export default function ProfileSetup() {
       gender: formData.gender,
     }
 
-    const response = await fetch("", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
+    try {
+      const response = await createApplicantProfile(payload)
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   const steps = [

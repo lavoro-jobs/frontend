@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState, ReactNode, useCallback } from "react"
 import getCurrentUser from "@/helpers/getCurrentUser"
 import Auth from "@/types/Auth"
+import { Spinner } from "@chakra-ui/react"
 
 interface AuthContextType {
   auth: Auth | null
@@ -25,8 +26,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const fetchAuth = useCallback(async () => {
     setLoading(true)
     try {
-      const response = await getCurrentUser()
-      const user: Auth = await response.json()
+      const { data } = await getCurrentUser()
+      const user: Auth = data
       setAuth(user)
     } catch (err) {
       setAuth(null)
@@ -38,7 +39,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     fetchAuth()
   }, [])
 
-  return <AuthContext.Provider value={{ auth, loading, updateAuth: fetchAuth }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ auth, loading, updateAuth: fetchAuth }}>
+      {loading && <Spinner />}
+      {!loading && children}
+    </AuthContext.Provider>
+  )
 }
 
 export default AuthContext

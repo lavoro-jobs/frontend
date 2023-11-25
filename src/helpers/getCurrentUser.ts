@@ -1,9 +1,7 @@
-const getUserProfile = async () => {
-  const response = await fetch("http://localhost:8000/api/v1/auth/account/current", {
-    method: "GET",
-    credentials: "include",
-  })
+import axiosInstance from "."
 
+const getUserProfile = async () => {
+  const response = await axiosInstance.get("/auth/account/current")
   return response
 }
 

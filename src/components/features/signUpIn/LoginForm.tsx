@@ -30,10 +30,6 @@ interface PostData {
 
 export default function LoginForm() {
   const router = useRouter()
-  const { auth, updateAuth } = useAuth()
-  if (auth) {
-    router.push("/profile")
-  }
 
   const [formData, setFormData] = useState<FormState>({
     email: "",
@@ -53,11 +49,10 @@ export default function LoginForm() {
       username: formData.email,
       password: formData.password,
     }
-    const response = await signIn(postData)
-    await updateAuth()
-    if (response.ok) {
+    try {
+      const response = await signIn(postData)
       return router.push("/profile")
-    } else {
+    } catch (err) {
       setError("There was an error logging in. Please try again.")
     }
   }

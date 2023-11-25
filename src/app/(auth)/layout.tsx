@@ -2,7 +2,10 @@
 
 import InfoBox from "@/components/features/signUpIn/InfoBox"
 import Header from "@/components/shared/Header"
+import useAuth from "@/hooks/useAuth"
 import { Avatar, AvatarGroup, Flex, Heading, Stack, Text } from "@chakra-ui/react"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 export default function AuthLayout({ children }: any) {
   const avatars = [
@@ -27,6 +30,15 @@ export default function AuthLayout({ children }: any) {
       url: "https://ntvb.tmsimg.com/assets/assets/182420_v9_bc.jpg",
     },
   ]
+
+  const router = useRouter()
+  const { auth } = useAuth()
+
+  useEffect(() => {
+    if (auth) {
+      router.push("/profile")
+    }
+  }, [auth])
 
   return (
     <>
