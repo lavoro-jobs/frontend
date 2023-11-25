@@ -1,7 +1,7 @@
+import axiosInstance from "."
+
 const confirmEmail = async (verificationToken: string) => {
-  const response = await fetch(`http://localhost:8000/api/v1/auth/register/confirm/${verificationToken}`, {
-    method: "POST",
-  })
+  const response = await axiosInstance.post(`/auth/register/confirm/${verificationToken}`)
   return response
 }
 

@@ -13,6 +13,7 @@
     "@chakra-ui/react": "^2.8.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "axios": "^1.6.2",
     "framer-motion": "^10.16.4",
     "google-map-react": "^2.2.1",
     "multiselect-react-dropdown": "^2.0.25",

@@ -1,11 +1,10 @@
+import axiosInstance from "."
+
 const signIn = async (formData: any) => {
-  const response = await fetch("http://localhost:8000/api/v1/auth/login", {
-    method: "POST",
-    credentials: "include",
+  const response = await axiosInstance.post("/auth/login", new URLSearchParams(formData), {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: new URLSearchParams(formData),
   })
 
   return response

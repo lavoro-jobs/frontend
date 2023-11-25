@@ -14,6 +14,7 @@ import React, {useEffect, useState} from "react"
 import FormState from "@/interfaces/form-state.interface"
 import GoogleMapReact from 'google-map-react';
 import MapClickEvent from "@/interfaces/map-click-event";
+import createApplicantProfile from "@/helpers/createApplicantProfile";
 
 interface FormOptions {
   positions?: [{id: number, position_name: string}]
@@ -23,7 +24,7 @@ interface FormOptions {
   work_types?: [{id: number, work_type: string}]
 }
 
-export default function ProfileSetup() {
+export default function ApplicantProfileSetup() {
   const [formData, setFormData] = useState<FormState>({
     first_name: '',
     last_name: '',
@@ -48,6 +49,8 @@ export default function ProfileSetup() {
   const [formOptions, setFormOptions] = useState<FormOptions>({});
 
   const [marker, setMarker] = useState({lat: 0, lng: 0});
+
+  const [skills, setSkills] = useState<{id: number, skill_name: string}[]>([]);
   
   const getAllCatalogs = async ()=> {
     fetch("http://localhost:8000/api/v1/config/get_all_catalogs")
@@ -72,13 +75,14 @@ export default function ProfileSetup() {
   }
 
   const handleSkills = (selectedList: [{id: number, skill_name: string}], selectedItem: {id: number, skill_name: string}) => {
-    const positionIdArray = selectedList.map(item => item.id);
-    const newFormData = { ...formData, skill_id_list: positionIdArray }
+    const skillIdArray = selectedList.map(item => item.id);
+    const newFormData = { ...formData, skill_id_list: skillIdArray }
+    setSkills(selectedList)
     setFormData(newFormData)
   };
 
   const handleMapClick = ({ x, y, lat, lng, event }: MapClickEvent) => {
-    setMarker({ lat, lng });
+    setMarker({lat, lng})
     const newFormData = { ...formData, home_location: {
       longitude: lng,
       latitude: lat
@@ -89,6 +93,7 @@ export default function ProfileSetup() {
   const handleSubmit = async () => {
     const payload = formData;
 
+    createApplicantProfile(formData)
     const response = await fetch("http://localhost:8000/api/v1/applicant/create_applicant_profile", {
       method: "POST",
       credentials: "include",
@@ -115,8 +120,8 @@ export default function ProfileSetup() {
       <Heading marginBottom="32px" maxW="512px" textAlign="center" color="#0D2137">
         Welcome! Answer questions to get your job matches.
       </Heading>
-      <Box border="solid" borderRadius="16px" borderColor="#E0EAF5" p="64px" bg="white">
-        <Progress value={progressPercent} w="512px" height="4px" />
+      <Box maxW="800px" minW="650px" border="solid" borderRadius="16px" borderColor="#E0EAF5" p="64px" bg="white">
+        <Progress value={progressPercent} w="100%" height="4px" />
         {activeStep === 0 && (
           <>
             <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
@@ -215,7 +220,8 @@ export default function ProfileSetup() {
 
             <MultiSelect
               id="skills"
-              options={formOptions.skills} 
+              options={formOptions.skills}
+              selectedValues={skills}
               displayValue="skill_name" 
               placeholder="Select"
               onSelect={handleSkills}

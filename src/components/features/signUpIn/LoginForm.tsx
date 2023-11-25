@@ -1,4 +1,5 @@
 import signIn from "@/helpers/signIn"
+import useAuth from "@/hooks/useAuth"
 import {
   Button,
   chakra,
@@ -29,6 +30,7 @@ interface PostData {
 
 export default function LoginForm() {
   const router = useRouter()
+
   const [formData, setFormData] = useState<FormState>({
     email: "",
     password: "",
@@ -47,10 +49,10 @@ export default function LoginForm() {
       username: formData.email,
       password: formData.password,
     }
-    const response = await signIn(postData)
-    if (response.ok) {
-      router.push("/profile")
-    } else {
+    try {
+      const response = await signIn(postData)
+      return router.push("/profile")
+    } catch (err) {
       setError("There was an error logging in. Please try again.")
     }
   }
