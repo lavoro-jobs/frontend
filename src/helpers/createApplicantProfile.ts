@@ -1,14 +1,19 @@
-import axiosInstance from "."
+import axiosInstance from ".";
 
 const createApplicantProfile = async (formData: any) => {
-  const response = await axiosInstance.post("/applicant/profile", {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams(formData),
-  })
+  try {
+    const response = await axiosInstance.post("/applicant/create_applicant_profile", JSON.stringify(formData), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true
+    });
 
-  return response
-}
+    return response;
+  } catch (error) {
+    console.error('Error creating applicant profile:', error);
+    throw error;
+  }
+};
 
-export default createApplicantProfile
+export default createApplicantProfile;

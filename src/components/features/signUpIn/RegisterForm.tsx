@@ -60,16 +60,21 @@ export default function RegisterForm() {
   }
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault()
-    const postData: PostData = { ...formData }
-    const response = await signUp(postData)
-    if (response.ok) {
-      router.push(`/verification-email-sent?email=${formData.email}`)
-    } else {
-      const { detail } = await response.json()
-      setError(detail)
+    e.preventDefault();
+    const postData: PostData = { ...formData };
+    try {
+      const response = await signUp(postData);
+
+      if (response.status === 200) {
+        router.push(`/verification-email-sent?email=${formData.email}`);
+      } else {
+        const { detail } = response.data;
+        setError(detail);
+      }
+    } catch (error) {
+      console.error('Error:', error);
     }
-  }
+  };
 
   return (
     <Flex

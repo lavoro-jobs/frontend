@@ -1,0 +1,15 @@
+.inputs-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .input-box {
+        &.w-50 {
+            width: 48%;
+        }
+    }
+}
+
+.multiselect-container {
+    padding-top: 16px;
+}
