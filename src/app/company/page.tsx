@@ -5,7 +5,7 @@ import Footer from "@/components/shared/Footer"
 import { usePathname } from "next/navigation"
 import useProtectedRoute from "@/hooks/useProtectedRoute"
 import { Role } from "@/types/Auth"
-import { Spinner } from "@chakra-ui/react"
+import {Flex, Spinner} from "@chakra-ui/react"
 
 export default function Company() {
   const { loading } = useProtectedRoute([Role.RECRUITER])
@@ -13,7 +13,7 @@ export default function Company() {
   return (
     <>
       <Header currentRoute={usePathname()} />
-      {loading && <Spinner />}
+        {loading && <Flex height="100vh" align="center" justifyContent="center"><Spinner size='xl' /></Flex>}
       <Footer />
     </>
   )
