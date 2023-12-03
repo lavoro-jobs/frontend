@@ -2,13 +2,14 @@ import {
   Box,
   Button,
   Flex,
-  Heading,
+  Heading, IconButton,
   Input,
   Progress,
   Select,
   Text,
   useSteps,
 } from "@chakra-ui/react"
+import { FiXCircle } from "react-icons/fi";
 import MultiSelect from "multiselect-react-dropdown"
 import React, {useEffect, useState} from "react"
 import FormState from "@/interfaces/applicant/form-state.interface"
@@ -17,6 +18,7 @@ import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import createApplicantProfile from "@/helpers/createApplicantProfile";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
 import Experience from "@/interfaces/shared/experience";
+import {useRouter} from "next/navigation";
 
 interface FormOptions {
   positions?: [{id: number, position_name: string}]
@@ -27,6 +29,8 @@ interface FormOptions {
 }
 
 export default function ApplicantProfileSetup() {
+  const router = useRouter();
+
   const [formData, setFormData] = useState<FormState>({
     first_name: '',
     last_name: '',
@@ -84,6 +88,14 @@ export default function ApplicantProfileSetup() {
     setExperience(newInputs);
   };
 
+  const removeExperience = (index: number) => {
+    const updatedExperience = experience.filter((item, i) => index !== i);
+    setExperience(updatedExperience);
+
+    const newFormData = { ...formData, experiences: updatedExperience }
+    setFormData(newFormData)
+  };
+
   const handleExperience = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, index: number, property: string) => {
     const value = e.target.value;
 
@@ -112,7 +124,10 @@ export default function ApplicantProfileSetup() {
   };
 
   const handleSubmit = async () => {
-    createApplicantProfile(formData)
+    const response = await createApplicantProfile(formData);
+    if(response == 201) {
+      router.push("/dashboard");
+    }
   }
 
   const steps = [
@@ -247,9 +262,16 @@ export default function ApplicantProfileSetup() {
               Work experience
             </Text>
 
-            <div>
+            <Flex flexFlow={"column"} align={"center"}>
               {experience.map((input, index) => (
                   <div key={index} className="experience-wrapper">
+                    <IconButton
+                      variant="outline"
+                      aria-label="remove"
+                      className="remove-btn"
+                      onClick={() => removeExperience(index)}
+                      icon={<FiXCircle />}
+                    />
 
                     <Text fontSize="lg" paddingTop="16px" textAlign="center">
                       Company name
@@ -298,7 +320,7 @@ export default function ApplicantProfileSetup() {
                   </div>
               ))}
               <Button marginTop="32px" onClick={addInput}>Add company</Button>
-            </div>
+            </Flex>
           </>
         )}
         {activeStep === 3 && (

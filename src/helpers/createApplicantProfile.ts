@@ -9,7 +9,7 @@ const createApplicantProfile = async (formData: any) => {
       withCredentials: true
     });
 
-    return response;
+    return response.status;
   } catch (error) {
     console.error('Error creating applicant profile:', error);
     throw error;
