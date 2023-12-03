@@ -36,7 +36,7 @@ export default function AuthLayout({ children }: any) {
 
   useEffect(() => {
     if (auth) {
-      router.push("/profile")
+      router.push("/profile-setup")
     }
   }, [auth])
 

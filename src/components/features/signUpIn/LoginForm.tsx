@@ -1,17 +1,13 @@
 import signIn from "@/helpers/signIn"
-import useAuth from "@/hooks/useAuth"
 import {
   Button,
-  chakra,
   Flex,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   Heading,
   Input,
   InputGroup,
   InputRightElement,
-  Select,
   Text,
 } from "@chakra-ui/react"
 import Link from "next/link"
@@ -29,31 +25,31 @@ interface PostData {
 }
 
 export default function LoginForm() {
-  const router = useRouter()
+  const router = useRouter();
 
   const [formData, setFormData] = useState<FormState>({
     email: "",
     password: "",
-  })
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [error, setError] = useState<string>("")
+  });
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const newFormData = { ...formData, [e.target.id]: e.target.value }
-    setFormData(newFormData)
+    const newFormData = { ...formData, [e.target.id]: e.target.value };
+    setFormData(newFormData);
   }
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault()
+    e.preventDefault();
     const postData: PostData = {
       username: formData.email,
       password: formData.password,
-    }
+    };
     try {
-      const response = await signIn(postData)
-      return router.push("/profile")
+      const response = await signIn(postData);
+      return router.push("/profile-setup");
     } catch (err) {
-      setError("There was an error logging in. Please try again.")
+      setError("There was an error logging in. Please try again.");
     }
   }
 
