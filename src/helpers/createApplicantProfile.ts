@@ -2,7 +2,7 @@ import axiosInstance from ".";
 
 const createApplicantProfile = async (formData: any) => {
   try {
-    const response = await axiosInstance.post("/applicant/create_applicant_profile", JSON.stringify(formData), {
+    const response = await axiosInstance.post("/applicant/create-applicant-profile", JSON.stringify(formData), {
       headers: {
         "Content-Type": "application/json",
       },

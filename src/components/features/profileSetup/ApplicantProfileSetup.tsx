@@ -11,10 +11,12 @@ import {
 } from "@chakra-ui/react"
 import MultiSelect from "multiselect-react-dropdown"
 import React, {useEffect, useState} from "react"
-import FormState from "@/interfaces/form-state.interface"
+import FormState from "@/interfaces/applicant/form-state.interface"
 import GoogleMapReact from 'google-map-react';
-import MapClickEvent from "@/interfaces/map-click-event";
+import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import createApplicantProfile from "@/helpers/createApplicantProfile";
+import getAllCatalogs from "@/helpers/getAllCatalogs";
+import Experience from "@/interfaces/shared/experience";
 
 interface FormOptions {
   positions?: [{id: number, position_name: string}]
@@ -51,17 +53,13 @@ export default function ApplicantProfileSetup() {
   const [marker, setMarker] = useState({lat: 0, lng: 0});
 
   const [skills, setSkills] = useState<{id: number, skill_name: string}[]>([]);
-  
-  const getAllCatalogs = async ()=> {
-    fetch("http://localhost:8000/api/v1/config/get_all_catalogs")
-      .then((res) => res.json())
-      .then((json) => {
-        setFormOptions(json);
-      });
-  }
+
+  const [experience, setExperience] = useState<Experience[]>([]);
 
   useEffect(()=> {
-    getAllCatalogs()
+    getAllCatalogs().then( resp => {
+      setFormOptions(resp);
+    })
   }, [])
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -81,6 +79,29 @@ export default function ApplicantProfileSetup() {
     setFormData(newFormData)
   };
 
+  const addInput = () => {
+    const newInputs = [...experience, {}];
+    setExperience(newInputs);
+  };
+
+  const handleExperience = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, index: number, property: string) => {
+    const value = e.target.value;
+
+    const updatedExperience = [...experience];
+
+    if (updatedExperience[index]) {
+      updatedExperience[index] = {
+        ...updatedExperience[index],
+        [property]: (property === 'position_id' || property === 'years') ? parseInt(value, 10) : value,
+      };
+
+      setExperience(updatedExperience);
+
+      const newFormData = { ...formData, experiences: updatedExperience }
+      setFormData(newFormData)
+    }
+  }
+
   const handleMapClick = ({ x, y, lat, lng, event }: MapClickEvent) => {
     setMarker({lat, lng})
     const newFormData = { ...formData, home_location: {
@@ -91,22 +112,13 @@ export default function ApplicantProfileSetup() {
   };
 
   const handleSubmit = async () => {
-    const payload = formData;
-
     createApplicantProfile(formData)
-    const response = await fetch("http://localhost:8000/api/v1/applicant/create_applicant_profile", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
   }
 
   const steps = [
     { title: "Personal info" },
     { title: "Education & skills" },
+    { title: "Work experience" },
     { title: "Preferences" }
   ]
   const { activeStep, goToNext, goToPrevious } = useSteps({
@@ -230,6 +242,66 @@ export default function ApplicantProfileSetup() {
           </>
         )}
         {activeStep === 2 && (
+          <>
+            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
+              Work experience
+            </Text>
+
+            <div>
+              {experience.map((input, index) => (
+                  <div key={index} className="experience-wrapper">
+
+                    <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                      Company name
+                    </Text>
+                    <Input key={index}
+                           value={input.company_name}
+                           id="company_name"
+                           type="text"
+                           onChange={(e) => handleExperience(e, index, 'company_name')}
+                           placeholder="Company name"
+                    />
+
+                    <div className="inputs-wrapper">
+                      <div className="input-box w-50">
+                        <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                          Position
+                        </Text>
+
+                        <Select
+                          id="position_id"
+                          value={input.position_id}
+                          placeholder="Select"
+                          onChange={(e) => handleExperience(e, index, 'position_id')}
+                        >
+                          {formOptions && formOptions.positions?.map((item, innerIndex) => (
+                            <option value={item.id} key={innerIndex}>
+                              {item.position_name}
+                            </option>
+                          ))}
+                        </Select>
+                      </div>
+
+                      <div className="input-box w-50">
+                        <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                          Years
+                        </Text>
+                        <Input
+                          id="years"
+                          value={input.years}
+                          type="number"
+                          onChange={(e) => handleExperience(e, index, 'years')}
+                        />
+                      </div>
+                    </div>
+
+                  </div>
+              ))}
+              <Button marginTop="32px" onClick={addInput}>Add company</Button>
+            </div>
+          </>
+        )}
+        {activeStep === 3 && (
           <>
             <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
               Preferences

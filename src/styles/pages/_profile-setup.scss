@@ -1,0 +1,4 @@
+.experience-wrapper:not(:last-of-type) {
+  border-bottom: 1px solid var(--chakra-colors-gray-100);
+  padding-bottom: 32px;
+}
