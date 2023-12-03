@@ -1,17 +1,13 @@
 import signIn from "@/helpers/signIn"
-import useAuth from "@/hooks/useAuth"
 import {
   Button,
-  chakra,
   Flex,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   Heading,
   Input,
   InputGroup,
   InputRightElement,
-  Select,
   Text,
 } from "@chakra-ui/react"
 import Link from "next/link"
@@ -51,7 +47,7 @@ export default function LoginForm() {
     }
     try {
       const response = await signIn(postData)
-      return router.push("/profile")
+      return router.push("/profile-setup")
     } catch (err) {
       setError("There was an error logging in. Please try again.")
     }

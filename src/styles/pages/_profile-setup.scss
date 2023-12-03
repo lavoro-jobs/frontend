@@ -1,0 +1,17 @@
+.experience-wrapper {
+  width: 100%;
+  position: relative;
+  padding-top: 12px;
+
+  &:not(:last-of-type) {
+    border-bottom: 1px solid var(--chakra-colors-gray-100);
+    padding-bottom: 32px;
+  }
+
+  .remove-btn {
+    border-color: transparent;
+    position: absolute;
+    top: 8px;
+    right: 0;
+  }
+}
