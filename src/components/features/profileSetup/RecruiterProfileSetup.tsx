@@ -1,6 +1,8 @@
 import createCompanyProfile from "@/helpers/createCompanyProfile";
 import createInvite from "@/helpers/createInvite";
 import createRecruiterProfile from "@/helpers/createRecruiterProfile";
+import FormStateCompany from "@/interfaces/form-state-company.interface";
+import FormStateRecruiter from "@/interfaces/form-state-recruiter.interface";
 import {
 	Box,
 	Button,
@@ -18,17 +20,6 @@ import {
 	useSteps,
 } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
-
-interface FormStateRecruiter {
-	first_name: string;
-	last_name: string;
-}
-
-interface FormStateCompany {
-	name: string;
-	description: string;
-	logo: string;
-}
 
 export default function RecruiterProfileSetup() {
 	const [inputEmail, setInputEmail] = useState<string>("");
