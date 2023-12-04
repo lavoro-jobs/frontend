@@ -19,44 +19,38 @@ import React, { useState } from "react"
 
 interface FormState {
   role: "applicant" | "recruiter"
-  companyName?: string
   email: string
   password: string
 }
 
 interface PostData {
   role: "applicant" | "recruiter"
-  companyName?: string
   email: string
   password: string
 }
 
 export default function RegisterForm() {
-  const router = useRouter()
+  const router = useRouter();
   const [formData, setFormData] = useState<FormState>({
     role: "applicant",
     email: "",
     password: "",
-    companyName: "",
-  })
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [error, setError] = useState<string>("")
+  });
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const newFormData = { ...formData, [e.target.id]: e.target.value }
-    if (e.target.name === "role") {
-      newFormData.companyName = ""
-    }
-    setFormData(newFormData)
+    const newFormData = { ...formData, [e.target.id]: e.target.value };
+    setFormData(newFormData);
   }
 
   const isEmailInvalid = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return !emailRegex.test(email)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return !emailRegex.test(email);
   }
 
   const isPasswordInvalid = (password: string) => {
-    return password.length < 8
+    return password.length < 8;
   }
 
   const handleSubmit = async (e: any) => {
@@ -72,7 +66,7 @@ export default function RegisterForm() {
         setError(detail);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 

@@ -10,6 +10,18 @@
     }
 }
 
+.inputs-wrapper-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .input-box {
+      &.w-50 {
+          width: 96%;
+      }
+  }
+}
+
 .multiselect-container {
     padding-top: 16px;
 }
