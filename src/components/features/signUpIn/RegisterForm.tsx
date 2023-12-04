@@ -18,14 +18,14 @@ import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 
 interface FormState {
-  role: "applicant" | "company"
+  role: "applicant" | "recruiter"
   companyName?: string
   email: string
   password: string
 }
 
 interface PostData {
-  role: "applicant" | "company"
+  role: "applicant" | "recruiter"
   companyName?: string
   email: string
   password: string
@@ -108,8 +108,8 @@ export default function RegisterForm() {
           <chakra.option color="black" id="applicant" value="applicant">
             Applicant
           </chakra.option>
-          <chakra.option color="black" id="company" value="company">
-            Company
+          <chakra.option color="black" id="recruiter" value="recruiter">
+            Recruiter
           </chakra.option>
         </Select>
 
