@@ -1,8 +1,8 @@
 import createCompanyProfile from "@/helpers/createCompanyProfile";
 import createInvite from "@/helpers/createInvite";
 import createRecruiterProfile from "@/helpers/createRecruiterProfile";
-import FormStateCompany from "@/interfaces/form-state-company.interface";
-import FormStateRecruiter from "@/interfaces/form-state-recruiter.interface";
+import FormStateCompany from "@/interfaces/recruiter/form-state-company.interface";
+import FormStateRecruiter from "@/interfaces/recruiter/form-state-recruiter.interface";
 import {
 	Box,
 	Button,

@@ -46,8 +46,8 @@ export default function LoginForm() {
       password: formData.password,
     };
     try {
-      const response = await signIn(postData);
-      return router.push("/profile-setup");
+      const response = await signIn(postData)
+      return router.push("/profile-setup")
     } catch (err) {
       setError("There was an error logging in. Please try again.");
     }
