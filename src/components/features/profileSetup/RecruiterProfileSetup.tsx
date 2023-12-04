@@ -19,9 +19,12 @@ import {
 	Wrap,
 	useSteps,
 } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 
 export default function RecruiterProfileSetup() {
+  const router = useRouter();
+  
 	const [inputEmail, setInputEmail] = useState<string>("");
 	const [emails, setEmails] = useState<string[]>([]);
 
@@ -85,6 +88,7 @@ export default function RecruiterProfileSetup() {
           emails.map((email) => {
             createInvite(email);
           });
+          router.push("/dashboard");
         }
 			}
 		} catch (error) {}
