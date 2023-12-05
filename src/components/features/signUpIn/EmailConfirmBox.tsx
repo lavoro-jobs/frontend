@@ -1,42 +1,42 @@
-import confirmEmail from "@/helpers/confirmEmail"
-import { Flex, Text } from "@chakra-ui/react"
-import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import confirmEmail from "@/helpers/confirmEmail";
+import { Flex, Text } from "@chakra-ui/react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface ConfirmationStatus {
-  status: true | false | null
-  message: string
+  status: true | false | null;
+  message: string;
 }
 
 export default function EmailConfirmBox() {
-  const params = useParams()
-  const router = useRouter()
+  const params = useParams();
+  const router = useRouter();
   const [confirmationStatus, setConfirmationStatus] = useState<ConfirmationStatus>({
     status: null,
     message: "Verify your email address... Please wait...",
-  })
+  });
   useEffect(() => {
     const confirm = async () => {
       if (params.verificationToken) {
-        const response = await confirmEmail(params.verificationToken as string)
-        if (response.ok) {
+        const response = await confirmEmail(params.verificationToken as string);
+        if (response.status === 200) {
           setConfirmationStatus({
             status: true,
             message: "Your email address has been confirmed. You will be redirected to the sign in page in 5 seconds.",
-          })
+          });
           setTimeout(() => {
-            router.push("/signin")
-          }, 5000)
+            router.push("/signin");
+          }, 5000);
         } else {
           setConfirmationStatus({
             status: false,
             message: "Your email address has NOT been confirmed. This link may have expired.",
-          })
+          });
         }
       }
-    }
-    confirm()
-  }, [])
+    };
+    confirm();
+  }, []);
 
   return (
     <Flex
@@ -52,5 +52,5 @@ export default function EmailConfirmBox() {
         <Text fontSize="3xl">{confirmationStatus.message}</Text>
       </Flex>
     </Flex>
-  )
+  );
 }

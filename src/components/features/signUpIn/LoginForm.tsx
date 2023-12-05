@@ -1,4 +1,4 @@
-import signIn from "@/helpers/signIn"
+import signIn from "@/helpers/signIn";
 import {
   Button,
   Flex,
@@ -9,49 +9,49 @@ import {
   InputGroup,
   InputRightElement,
   Text,
-} from "@chakra-ui/react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import React, { useState } from "react"
+} from "@chakra-ui/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 interface FormState {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 interface PostData {
-  username: string
-  password: string
+  username: string;
+  password: string;
 }
 
 export default function LoginForm() {
-  const router = useRouter()
+  const router = useRouter();
 
   const [formData, setFormData] = useState<FormState>({
     email: "",
     password: "",
-  })
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [error, setError] = useState<string>("")
+  });
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const newFormData = { ...formData, [e.target.id]: e.target.value }
-    setFormData(newFormData)
-  }
+    const newFormData = { ...formData, [e.target.id]: e.target.value };
+    setFormData(newFormData);
+  };
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault()
+    e.preventDefault();
     const postData: PostData = {
       username: formData.email,
       password: formData.password,
-    }
+    };
     try {
-      const response = await signIn(postData)
-      return router.push("/profile-setup")
+      const response = await signIn(postData);
+      return router.push("/profile-setup");
     } catch (err) {
-      setError("There was an error logging in. Please try again.")
+      setError("There was an error logging in. Please try again.");
     }
-  }
+  };
 
   return (
     <Flex
@@ -111,5 +111,5 @@ export default function LoginForm() {
         </Button>
       </Flex>
     </Flex>
-  )
+  );
 }

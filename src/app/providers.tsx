@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { CacheProvider } from "@chakra-ui/next-js"
-import { ChakraProvider, extendTheme } from "@chakra-ui/react"
-import { AuthProvider } from "@/context/AuthContext"
+import { CacheProvider } from "@chakra-ui/next-js";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { AuthProvider } from "@/context/AuthContext";
 
 const breakpoints = {
   base: "360px",
@@ -14,9 +14,9 @@ const breakpoints = {
   "3xl": "1440px",
   "4xl": "1600px",
   "5xl": "2560px",
-}
+};
 
-const theme = extendTheme({ breakpoints })
+const theme = extendTheme({ breakpoints });
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -25,5 +25,5 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <AuthProvider>{children}</AuthProvider>
       </ChakraProvider>
     </CacheProvider>
-  )
+  );
 }

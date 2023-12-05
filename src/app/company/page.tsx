@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Header from "@/components/shared/Header"
 import Footer from "@/components/shared/Footer"
@@ -8,7 +8,7 @@ import { Role } from "@/types/Auth"
 import {Flex, Spinner} from "@chakra-ui/react"
 
 export default function Company() {
-  const { loading } = useProtectedRoute([Role.RECRUITER])
+  const { loading } = useProtectedRoute([Role.RECRUITER]);
 
   return (
     <>
@@ -16,5 +16,5 @@ export default function Company() {
         {loading && <Flex height="100vh" align="center" justifyContent="center"><Spinner size='xl' /></Flex>}
       <Footer />
     </>
-  )
+  );
 }

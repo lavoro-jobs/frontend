@@ -1,44 +1,34 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading, IconButton,
-  Input,
-  Progress,
-  Select,
-  Text,
-  useSteps,
-} from "@chakra-ui/react"
+import { Box, Button, Flex, Heading, IconButton, Input, Progress, Select, Text, useSteps } from "@chakra-ui/react";
 import { FiXCircle } from "react-icons/fi";
-import MultiSelect from "multiselect-react-dropdown"
-import React, {useEffect, useState} from "react"
-import FormState from "@/interfaces/applicant/form-state.interface"
-import GoogleMapReact from 'google-map-react';
+import MultiSelect from "multiselect-react-dropdown";
+import React, { useEffect, useState } from "react";
+import FormState from "@/interfaces/applicant/form-state.interface";
+import GoogleMapReact from "google-map-react";
 import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import createApplicantProfile from "@/helpers/createApplicantProfile";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
 import Experience from "@/interfaces/shared/experience";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface FormOptions {
-  positions?: [{id: number, position_name: string}]
-  skills?: [{id: number, skill_name: string}]
-  education?: [{id: number, education_level: string}]
-  contract_types?: [{id: number, contract_type: string}]
-  work_types?: [{id: number, work_type: string}]
+  positions?: [{ id: number; position_name: string }];
+  skills?: [{ id: number; skill_name: string }];
+  education?: [{ id: number; education_level: string }];
+  contract_types?: [{ id: number; contract_type: string }];
+  work_types?: [{ id: number; work_type: string }];
 }
 
 export default function ApplicantProfileSetup() {
   const router = useRouter();
 
   const [formData, setFormData] = useState<FormState>({
-    first_name: '',
-    last_name: '',
+    first_name: "",
+    last_name: "",
     education_level_id: undefined,
     age: undefined,
-    gender: '',
+    gender: "",
     skill_id_list: [],
-    cv: '',
+    cv: "",
     work_type_id: undefined,
     seniority_level_id: undefined,
     position_id: undefined,
@@ -54,33 +44,36 @@ export default function ApplicantProfileSetup() {
 
   const [formOptions, setFormOptions] = useState<FormOptions>({});
 
-  const [marker, setMarker] = useState({lat: 0, lng: 0});
+  const [marker, setMarker] = useState({ lat: 0, lng: 0 });
 
-  const [skills, setSkills] = useState<{id: number, skill_name: string}[]>([]);
+  const [skills, setSkills] = useState<{ id: number; skill_name: string }[]>([]);
 
   const [experience, setExperience] = useState<Experience[]>([]);
 
-  useEffect(()=> {
-    getAllCatalogs().then( resp => {
+  useEffect(() => {
+    getAllCatalogs().then((resp) => {
       setFormOptions(resp);
-    })
-  }, [])
+    });
+  }, []);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const newFormData = { ...formData, [e.target.id]: e.target.value }
-    setFormData(newFormData)
-  }
+    const newFormData = { ...formData, [e.target.id]: e.target.value };
+    setFormData(newFormData);
+  };
 
   const handleNumberFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const newFormData = { ...formData, [e.target.id]: +e.target.value }
-    setFormData(newFormData)
-  }
+    const newFormData = { ...formData, [e.target.id]: +e.target.value };
+    setFormData(newFormData);
+  };
 
-  const handleSkills = (selectedList: [{id: number, skill_name: string}], selectedItem: {id: number, skill_name: string}) => {
-    const skillIdArray = selectedList.map(item => item.id);
-    const newFormData = { ...formData, skill_id_list: skillIdArray }
-    setSkills(selectedList)
-    setFormData(newFormData)
+  const handleSkills = (
+    selectedList: [{ id: number; skill_name: string }],
+    selectedItem: { id: number; skill_name: string }
+  ) => {
+    const skillIdArray = selectedList.map((item) => item.id);
+    const newFormData = { ...formData, skill_id_list: skillIdArray };
+    setSkills(selectedList);
+    setFormData(newFormData);
   };
 
   const addInput = () => {
@@ -92,11 +85,15 @@ export default function ApplicantProfileSetup() {
     const updatedExperience = experience.filter((item, i) => index !== i);
     setExperience(updatedExperience);
 
-    const newFormData = { ...formData, experiences: updatedExperience }
-    setFormData(newFormData)
+    const newFormData = { ...formData, experiences: updatedExperience };
+    setFormData(newFormData);
   };
 
-  const handleExperience = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, index: number, property: string) => {
+  const handleExperience = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    index: number,
+    property: string
+  ) => {
     const value = e.target.value;
 
     const updatedExperience = [...experience];
@@ -104,43 +101,46 @@ export default function ApplicantProfileSetup() {
     if (updatedExperience[index]) {
       updatedExperience[index] = {
         ...updatedExperience[index],
-        [property]: (property === 'position_id' || property === 'years') ? parseInt(value, 10) : value,
+        [property]: property === "position_id" || property === "years" ? parseInt(value, 10) : value,
       };
 
       setExperience(updatedExperience);
 
-      const newFormData = { ...formData, experiences: updatedExperience }
-      setFormData(newFormData)
+      const newFormData = { ...formData, experiences: updatedExperience };
+      setFormData(newFormData);
     }
-  }
+  };
 
   const handleMapClick = ({ x, y, lat, lng, event }: MapClickEvent) => {
-    setMarker({lat, lng})
-    const newFormData = { ...formData, home_location: {
-      longitude: lng,
-      latitude: lat
-    }}
-    setFormData(newFormData)
+    setMarker({ lat, lng });
+    const newFormData = {
+      ...formData,
+      home_location: {
+        longitude: lng,
+        latitude: lat,
+      },
+    };
+    setFormData(newFormData);
   };
 
   const handleSubmit = async () => {
     const response = await createApplicantProfile(formData);
-    if(response == 201) {
+    if (response == 201) {
       router.push("/dashboard");
     }
-  }
+  };
 
   const steps = [
     { title: "Personal info" },
     { title: "Education & skills" },
     { title: "Work experience" },
-    { title: "Preferences" }
-  ]
+    { title: "Preferences" },
+  ];
   const { activeStep, goToNext, goToPrevious } = useSteps({
     index: 0,
     count: steps.length,
-  })
-  const progressPercent = (activeStep / (steps.length - 1)) * 100
+  });
+  const progressPercent = (activeStep / (steps.length - 1)) * 100;
 
   return (
     <Flex minH="100vh" align="center" padding="100px 0" justify="center" direction="column" bg="#E0EAF5">
@@ -178,7 +178,7 @@ export default function ApplicantProfileSetup() {
                 </Text>
                 <Input id="age" type="number" value={formData.age} onChange={handleNumberFormChange} />
               </div>
-              
+
               <div className="input-box w-50">
                 <Text fontSize="lg" paddingTop="16px" textAlign="center">
                   Gender
@@ -202,14 +202,20 @@ export default function ApplicantProfileSetup() {
               Education level
             </Text>
 
-            <Select paddingTop="16px" id="education_level_id" value={formData.education_level_id} onChange={handleNumberFormChange} placeholder="Select">
-              {formOptions && formOptions.education?.map((item, index) => (
-                <option value={item.id} key={index}>
-                  {item.education_level}
-                </option>
-              ))}
+            <Select
+              paddingTop="16px"
+              id="education_level_id"
+              value={formData.education_level_id}
+              onChange={handleNumberFormChange}
+              placeholder="Select"
+            >
+              {formOptions &&
+                formOptions.education?.map((item, index) => (
+                  <option value={item.id} key={index}>
+                    {item.education_level}
+                  </option>
+                ))}
             </Select>
-
 
             <div className="inputs-wrapper">
               <div className="input-box w-50">
@@ -217,21 +223,34 @@ export default function ApplicantProfileSetup() {
                   Position
                 </Text>
 
-                <Select paddingTop="16px" id="position_id" value={formData.position_id} onChange={handleNumberFormChange} placeholder="Select">
-                  {formOptions && formOptions.positions?.map((item, index) => (
-                    <option value={item.id} key={index}>
-                      {item.position_name}
-                    </option>
-                  ))}
-                </Select>  
+                <Select
+                  paddingTop="16px"
+                  id="position_id"
+                  value={formData.position_id}
+                  onChange={handleNumberFormChange}
+                  placeholder="Select"
+                >
+                  {formOptions &&
+                    formOptions.positions?.map((item, index) => (
+                      <option value={item.id} key={index}>
+                        {item.position_name}
+                      </option>
+                    ))}
+                </Select>
               </div>
-              
+
               <div className="input-box w-50">
                 <Text fontSize="lg" paddingTop="16px" textAlign="center">
                   Seniority level
                 </Text>
 
-                <Select paddingTop="16px" id="seniority_level_id" value={formData.seniority_level_id} onChange={handleNumberFormChange} placeholder="Select">
+                <Select
+                  paddingTop="16px"
+                  id="seniority_level_id"
+                  value={formData.seniority_level_id}
+                  onChange={handleNumberFormChange}
+                  placeholder="Select"
+                >
                   <option value="0">Junior (L1)</option>
                   <option value="1">Junior (L2)</option>
                   <option value="2">Junior (L3)</option>
@@ -249,7 +268,7 @@ export default function ApplicantProfileSetup() {
               id="skills"
               options={formOptions.skills}
               selectedValues={skills}
-              displayValue="skill_name" 
+              displayValue="skill_name"
               placeholder="Select"
               onSelect={handleSkills}
               onRemove={handleSkills}
@@ -264,62 +283,65 @@ export default function ApplicantProfileSetup() {
 
             <Flex flexFlow={"column"} align={"center"}>
               {experience.map((input, index) => (
-                  <div key={index} className="experience-wrapper">
-                    <IconButton
-                      variant="outline"
-                      aria-label="remove"
-                      className="remove-btn"
-                      onClick={() => removeExperience(index)}
-                      icon={<FiXCircle />}
-                    />
+                <div key={index} className="experience-wrapper">
+                  <IconButton
+                    variant="outline"
+                    aria-label="remove"
+                    className="remove-btn"
+                    onClick={() => removeExperience(index)}
+                    icon={<FiXCircle />}
+                  />
 
-                    <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                      Company name
-                    </Text>
-                    <Input key={index}
-                           value={input.company_name}
-                           id="company_name"
-                           type="text"
-                           onChange={(e) => handleExperience(e, index, 'company_name')}
-                           placeholder="Company name"
-                    />
+                  <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                    Company name
+                  </Text>
+                  <Input
+                    key={index}
+                    value={input.company_name}
+                    id="company_name"
+                    type="text"
+                    onChange={(e) => handleExperience(e, index, "company_name")}
+                    placeholder="Company name"
+                  />
 
-                    <div className="inputs-wrapper">
-                      <div className="input-box w-50">
-                        <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                          Position
-                        </Text>
+                  <div className="inputs-wrapper">
+                    <div className="input-box w-50">
+                      <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                        Position
+                      </Text>
 
-                        <Select
-                          id="position_id"
-                          value={input.position_id}
-                          placeholder="Select"
-                          onChange={(e) => handleExperience(e, index, 'position_id')}
-                        >
-                          {formOptions && formOptions.positions?.map((item, innerIndex) => (
+                      <Select
+                        id="position_id"
+                        value={input.position_id}
+                        placeholder="Select"
+                        onChange={(e) => handleExperience(e, index, "position_id")}
+                      >
+                        {formOptions &&
+                          formOptions.positions?.map((item, innerIndex) => (
                             <option value={item.id} key={innerIndex}>
                               {item.position_name}
                             </option>
                           ))}
-                        </Select>
-                      </div>
-
-                      <div className="input-box w-50">
-                        <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                          Years
-                        </Text>
-                        <Input
-                          id="years"
-                          value={input.years}
-                          type="number"
-                          onChange={(e) => handleExperience(e, index, 'years')}
-                        />
-                      </div>
+                      </Select>
                     </div>
 
+                    <div className="input-box w-50">
+                      <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                        Years
+                      </Text>
+                      <Input
+                        id="years"
+                        value={input.years}
+                        type="number"
+                        onChange={(e) => handleExperience(e, index, "years")}
+                      />
+                    </div>
                   </div>
+                </div>
               ))}
-              <Button marginTop="32px" onClick={addInput}>Add company</Button>
+              <Button marginTop="32px" onClick={addInput}>
+                Add company
+              </Button>
             </Flex>
           </>
         )}
@@ -335,44 +357,60 @@ export default function ApplicantProfileSetup() {
                   Contract type
                 </Text>
 
-                <Select id="contract_type_id" value={formData.contract_type_id} onChange={handleNumberFormChange} placeholder="Select">
-                  {formOptions && formOptions.contract_types?.map((item, index) => (
-                    <option value={item.id} key={index}>
-                      {item.contract_type}
-                    </option>
-                  ))}
+                <Select
+                  id="contract_type_id"
+                  value={formData.contract_type_id}
+                  onChange={handleNumberFormChange}
+                  placeholder="Select"
+                >
+                  {formOptions &&
+                    formOptions.contract_types?.map((item, index) => (
+                      <option value={item.id} key={index}>
+                        {item.contract_type}
+                      </option>
+                    ))}
                 </Select>
               </div>
-              
+
               <div className="input-box w-50">
                 <Text fontSize="lg" paddingTop="16px" textAlign="center">
                   Minimum salary
-                </Text>  
+                </Text>
                 <Input id="min_salary" type="number" value={formData.min_salary} onChange={handleNumberFormChange} />
               </div>
             </div>
 
-            
             <div className="inputs-wrapper">
               <div className="input-box w-50">
                 <Text fontSize="lg" paddingTop="16px" textAlign="center">
                   Work type
                 </Text>
-                
-                <Select id="work_type_id" value={formData.work_type_id} onChange={handleNumberFormChange} placeholder="Select">
-                  {formOptions && formOptions.work_types?.map((item, index) => (
-                    <option value={item.id} key={index}>
-                      {item.work_type}
-                    </option>
-                  ))}
+
+                <Select
+                  id="work_type_id"
+                  value={formData.work_type_id}
+                  onChange={handleNumberFormChange}
+                  placeholder="Select"
+                >
+                  {formOptions &&
+                    formOptions.work_types?.map((item, index) => (
+                      <option value={item.id} key={index}>
+                        {item.work_type}
+                      </option>
+                    ))}
                 </Select>
               </div>
-              
+
               <div className="input-box w-50">
                 <Text fontSize="lg" paddingTop="16px" textAlign="center">
                   Max distance
-                </Text>  
-                <Input id="work_location_max_distance" type="number" value={formData.work_location_max_distance} onChange={handleNumberFormChange} />
+                </Text>
+                <Input
+                  id="work_location_max_distance"
+                  type="number"
+                  value={formData.work_location_max_distance}
+                  onChange={handleNumberFormChange}
+                />
               </div>
             </div>
             <div className="inputs-wrapper">
@@ -382,26 +420,24 @@ export default function ApplicantProfileSetup() {
                 </Text>
                 <Input id="lat" type="number" value={marker.lat} onChange={handleNumberFormChange} />
               </div>
-              
+
               <div className="input-box w-50">
                 <Text fontSize="lg" paddingTop="16px" textAlign="center">
                   Longitude
-                </Text>  
+                </Text>
                 <Input id="lng" type="number" value={marker.lng} onChange={handleNumberFormChange} />
               </div>
             </div>
             <Text fontSize="lg" paddingTop="32px" textAlign="center">
               Click location on map to get Latitude/Longitude
-            </Text> 
-            <div style={{ height: '400px', width: '100%', paddingTop: "32px"}}>
+            </Text>
+            <div style={{ height: "400px", width: "100%", paddingTop: "32px" }}>
               <GoogleMapReact
                 defaultCenter={{ lat: 0, lng: 0 }}
                 defaultZoom={3}
                 onClick={handleMapClick}
-              >
-              </GoogleMapReact>
+              ></GoogleMapReact>
             </div>
-
           </>
         )}
 
@@ -418,8 +454,7 @@ export default function ApplicantProfileSetup() {
             </Button>
           )}
           {activeStep < steps.length - 1 && (
-            <Button
-            color="white" bg="#2E77AE" _hover={{ color: "#0D2137", bg: "#6ba5d1" }} onClick={() => goToNext()}>
+            <Button color="white" bg="#2E77AE" _hover={{ color: "#0D2137", bg: "#6ba5d1" }} onClick={() => goToNext()}>
               Next
             </Button>
           )}
@@ -431,5 +466,5 @@ export default function ApplicantProfileSetup() {
         </Flex>
       </Box>
     </Flex>
-  )
+  );
 }
