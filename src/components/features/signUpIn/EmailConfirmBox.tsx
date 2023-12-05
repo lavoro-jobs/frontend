@@ -19,7 +19,7 @@ export default function EmailConfirmBox() {
     const confirm = async () => {
       if (params.verificationToken) {
         const response = await confirmEmail(params.verificationToken as string);
-        if (response.status === 200) {
+        if (response.status == 200) {
           setConfirmationStatus({
             status: true,
             message: "Your email address has been confirmed. You will be redirected to the sign in page in 5 seconds.",

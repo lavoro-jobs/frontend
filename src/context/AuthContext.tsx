@@ -41,7 +41,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return (
     <AuthContext.Provider value={{ auth, loading, updateAuth: fetchAuth }}>
-      {loading && <Flex height="100vh" align={"center"} justifyContent={"center"}><Spinner size='xl' /></Flex>}
+      {loading && (
+        <Flex height="100vh" align={"center"} justifyContent={"center"}>
+          <Spinner size="xl" />
+        </Flex>
+      )}
       {!loading && children}
     </AuthContext.Provider>
   );
