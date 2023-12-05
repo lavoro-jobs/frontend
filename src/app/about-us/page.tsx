@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Header from "@/components/shared/Header"
-import Footer from "@/components/shared/Footer"
-import { usePathname } from "next/navigation"
+import Header from "@/components/shared/Header";
+import Footer from "@/components/shared/Footer";
+import { usePathname } from "next/navigation";
 
 export default function AboutUs() {
   return (
@@ -47,5 +47,5 @@ export default function AboutUs() {
       </div>
       <Footer />
     </>
-  )
+  );
 }

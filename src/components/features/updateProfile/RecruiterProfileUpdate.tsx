@@ -1,7 +1,5 @@
-import React from 'react'
+import React from "react";
 
 export default function RecruiterProfileUpdate() {
-  return (
-    <div>RecruiterProfileUpdate</div>
-  )
+  return <div>RecruiterProfileUpdate</div>;
 }

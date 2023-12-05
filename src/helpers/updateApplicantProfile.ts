@@ -6,12 +6,12 @@ const updateApplicantProfile = async (formData: any) => {
       headers: {
         "Content-Type": "application/json",
       },
-      withCredentials: true
+      withCredentials: true,
     });
 
     return response.status;
   } catch (error) {
-    console.error('Error updating applicant profile:', error);
+    console.error("Error updating applicant profile:", error);
     throw error;
   }
 };

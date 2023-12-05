@@ -1,19 +1,25 @@
-import { Box, Flex, Heading, Text } from '@chakra-ui/react'
-import Link from 'next/link'
-import React from 'react'
+import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import Link from "next/link";
+import React from "react";
 
 export default function Footer() {
   return (
     <Box p="16px" bgColor="#0071c6" textAlign="center">
-      <Link href='/'>
-        <Heading fontSize="3xl" color="#0D2137">LAVORO</Heading>
+      <Link href="/">
+        <Heading fontSize="3xl" color="#0D2137">
+          LAVORO
+        </Heading>
       </Link>
       <Flex gap="16px" justify="center">
-        <Link href='/job-posts'>
-          <Text fontSize="lg" color="#0D2137">Job posts</Text>
+        <Link href="/job-posts">
+          <Text fontSize="lg" color="#0D2137">
+            Job posts
+          </Text>
         </Link>
-        <Link href='/about-us'>
-          <Text fontSize="lg" color="#0D2137">About us</Text>
+        <Link href="/about-us">
+          <Text fontSize="lg" color="#0D2137">
+            About us
+          </Text>
         </Link>
       </Flex>
       {/*replace with facebook, instagram, youtube, twitter... icons*/}
@@ -26,5 +32,5 @@ export default function Footer() {
       </Flex>
       <Text>© 2023. Lavoro</Text>
     </Box>
-  )
+  );
 }

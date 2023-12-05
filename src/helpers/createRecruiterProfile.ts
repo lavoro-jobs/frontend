@@ -6,12 +6,12 @@ const createRecruiterProfile = async (formData: any) => {
       headers: {
         "Content-Type": "application/json",
       },
-      withCredentials: true
+      withCredentials: true,
     });
 
     return response;
   } catch (error) {
-    console.error('Error creating recruiter profile:', error);
+    console.error("Error creating recruiter profile:", error);
     throw error;
   }
 };

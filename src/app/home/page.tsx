@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import Header from "@/components/shared/Header"
-import Footer from "@/components/shared/Footer"
-import { Button } from "@chakra-ui/react"
-import React from "react"
-import Image from "next/image"
+import Header from "@/components/shared/Header";
+import Footer from "@/components/shared/Footer";
+import { Button } from "@chakra-ui/react";
+import React from "react";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -68,5 +68,5 @@ export default function Home() {
       </div>
       <Footer />
     </>
-  )
+  );
 }
