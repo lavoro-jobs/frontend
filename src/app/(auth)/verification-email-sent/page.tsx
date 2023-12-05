@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import VerificationEmailSent from "@/components/features/signUpIn/VerificationEmailSent"
+import VerificationEmailSent from "@/components/features/signUpIn/VerificationEmailSent";
 
 export default function VerificationEmail() {
-  return <VerificationEmailSent />
+	return <VerificationEmailSent />;
 }

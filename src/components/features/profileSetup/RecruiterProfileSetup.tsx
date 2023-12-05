@@ -81,11 +81,11 @@ export default function RecruiterProfileSetup() {
 			let res = await createRecruiterProfile(formDataRecruiter);
 			if (res && res.statusText === "OK") {
 				let res2 = await createCompanyProfile(formDataCompany);
-        if (res2 && res2.statusText === "OK") {
-          emails.map((email) => {
-            createInvite(email);
-          });
-        }
+				if (res2 && res2.statusText === "OK") {
+					emails.map((email) => {
+						createInvite(email);
+					});
+				}
 			}
 		} catch (error) {}
 	};

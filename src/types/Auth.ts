@@ -1,9 +1,9 @@
 export default interface Auth {
-  email: string
-  role: Role
+	email: string;
+	role: Role;
 }
 
 export enum Role {
-  APPLICANT = "applicant",
-  RECRUITER = "recruiter",
+	APPLICANT = "applicant",
+	RECRUITER = "recruiter",
 }
