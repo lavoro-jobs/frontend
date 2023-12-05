@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Header from "@/components/shared/Header"
-import Footer from "@/components/shared/Footer"
-import { usePathname } from "next/navigation"
+import Header from "@/components/shared/Header";
+import Footer from "@/components/shared/Footer";
+import { usePathname } from "next/navigation";
 
 export default function JobPosts() {
   return (
@@ -82,5 +82,5 @@ export default function JobPosts() {
       </div>
       <Footer />
     </>
-  )
+  );
 }

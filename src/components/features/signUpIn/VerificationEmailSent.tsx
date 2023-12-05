@@ -1,8 +1,8 @@
-import { Flex, Heading, Text } from "@chakra-ui/react"
-import { useSearchParams } from "next/navigation"
+import { Flex, Heading, Text } from "@chakra-ui/react";
+import { useSearchParams } from "next/navigation";
 
 export default function VerificationEmailSent() {
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
   return (
     <Flex
       w={{ base: "100%", md: "50%" }}
@@ -23,5 +23,5 @@ export default function VerificationEmailSent() {
         </Text>
       </Flex>
     </Flex>
-  )
+  );
 }

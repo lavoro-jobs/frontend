@@ -7,8 +7,8 @@ import useProtectedRoute from "@/hooks/useProtectedRoute";
 import { Role } from "@/types/Auth";
 import { Spinner } from "@chakra-ui/react";
 
-export default function Company() {
-  const { loading } = useProtectedRoute([Role.RECRUITER]);
+export default function Applicant() {
+  const { loading } = useProtectedRoute([Role.APPLICANT]);
 
   return (
     <>
