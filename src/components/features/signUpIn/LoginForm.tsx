@@ -1,4 +1,4 @@
-import signIn from "@/helpers/signIn"
+import signIn from "@/helpers/signIn";
 import {
   Button,
   Flex,
@@ -9,19 +9,19 @@ import {
   InputGroup,
   InputRightElement,
   Text,
-} from "@chakra-ui/react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import React, { useState } from "react"
+} from "@chakra-ui/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 interface FormState {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 interface PostData {
-  username: string
-  password: string
+  username: string;
+  password: string;
 }
 
 export default function LoginForm() {
@@ -37,7 +37,7 @@ export default function LoginForm() {
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value };
     setFormData(newFormData);
-  }
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -46,12 +46,12 @@ export default function LoginForm() {
       password: formData.password,
     };
     try {
-      const response = await signIn(postData)
-      return router.push("/profile-setup")
+      const response = await signIn(postData);
+      return router.push("/profile-setup");
     } catch (err) {
       setError("There was an error logging in. Please try again.");
     }
-  }
+  };
 
   return (
     <Flex
@@ -111,5 +111,5 @@ export default function LoginForm() {
         </Button>
       </Flex>
     </Flex>
-  )
+  );
 }

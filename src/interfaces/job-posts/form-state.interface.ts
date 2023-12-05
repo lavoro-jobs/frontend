@@ -9,6 +9,6 @@ export default interface FormState {
     longitude?: number | undefined;
     latitude?: number | undefined;
   };
-  salary?: number | undefined
+  salary?: number | undefined;
   description?: string | undefined;
 }

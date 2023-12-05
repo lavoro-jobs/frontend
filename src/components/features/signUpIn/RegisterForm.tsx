@@ -1,4 +1,4 @@
-import signUp from "@/helpers/signUp"
+import signUp from "@/helpers/signUp";
 import {
   Button,
   chakra,
@@ -12,21 +12,21 @@ import {
   InputRightElement,
   Select,
   Text,
-} from "@chakra-ui/react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import React, { useState } from "react"
+} from "@chakra-ui/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 interface FormState {
-  role: "applicant" | "recruiter"
-  email: string
-  password: string
+  role: "applicant" | "recruiter";
+  email: string;
+  password: string;
 }
 
 interface PostData {
-  role: "applicant" | "recruiter"
-  email: string
-  password: string
+  role: "applicant" | "recruiter";
+  email: string;
+  password: string;
 }
 
 export default function RegisterForm() {
@@ -42,16 +42,16 @@ export default function RegisterForm() {
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value };
     setFormData(newFormData);
-  }
+  };
 
   const isEmailInvalid = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return !emailRegex.test(email);
-  }
+  };
 
   const isPasswordInvalid = (password: string) => {
     return password.length < 8;
-  }
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -141,5 +141,5 @@ export default function RegisterForm() {
         </Button>
       </Flex>
     </Flex>
-  )
+  );
 }

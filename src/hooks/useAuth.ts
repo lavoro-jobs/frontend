@@ -1,14 +1,14 @@
-import { useContext } from "react"
-import AuthContext, { AuthContextType } from "@/context/AuthContext"
+import { useContext } from "react";
+import AuthContext, { AuthContextType } from "@/context/AuthContext";
 
 const useAuth = (): AuthContextType => {
-  const { auth, updateAuth, loading } = useContext(AuthContext)
+  const { auth, updateAuth, loading } = useContext(AuthContext);
 
   if (!auth) {
-    updateAuth()
+    updateAuth();
   }
 
-  return { auth, updateAuth, loading }
-}
+  return { auth, updateAuth, loading };
+};
 
-export default useAuth
+export default useAuth;
