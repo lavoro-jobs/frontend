@@ -8,13 +8,13 @@ import { Role } from "@/types/Auth";
 import { Spinner } from "@chakra-ui/react";
 
 export default function Applicant() {
-	const { loading } = useProtectedRoute([Role.APPLICANT]);
+  const { loading } = useProtectedRoute([Role.APPLICANT]);
 
-	return (
-		<>
-			<Header currentRoute={usePathname()} />
-			{loading && <Spinner />}
-			<Footer />
-		</>
-	);
+  return (
+    <>
+      <Header currentRoute={usePathname()} />
+      {loading && <Spinner />}
+      <Footer />
+    </>
+  );
 }
