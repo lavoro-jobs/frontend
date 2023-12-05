@@ -22,6 +22,8 @@ import {
 import { IconType } from 'react-icons'
 import { ReactText } from 'react'
 import Link from "next/link";
+import useProtectedRoute from "@/hooks/useProtectedRoute";
+import {Role} from "@/types/Auth";
 
 interface LinkItemProps {
   name: string
@@ -43,6 +45,7 @@ const RecruiterLinks: Array<LinkItemProps> = [
 
 export default function Sidenav({children}: any) {
   const { isOpen, onOpen, onClose } = useDisclosure()
+
   return (
     <Box className="sidenav" minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
@@ -70,6 +73,15 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+  const { auth } = useProtectedRoute([Role.APPLICANT, Role.RECRUITER])
+  let useLinks: Array<LinkItemProps> = [];
+
+  if(auth?.role == Role.APPLICANT) {
+    useLinks = ApplicantLinks;
+  } else if(auth?.role == Role.RECRUITER) {
+    useLinks = RecruiterLinks;
+  }
+
   return (
     <Box
       className="sidenav-menu"
@@ -86,8 +98,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         </Link>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      {/*'TODO: Resolve dynamic load'*/}
-      {ApplicantLinks.map((link) => (
+      {useLinks?.map((link) => (
         <NavItem key={link.name} icon={link.icon}>
           {link.name}
         </NavItem>
