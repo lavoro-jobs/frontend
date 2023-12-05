@@ -6,9 +6,11 @@
 
 // components
 @import "components/inputs";
+@import "components/spinner";
 
 // layout
 @import "layout/header";
+@import "layout/sidenav";
 
 // pages
 @import "pages/home";

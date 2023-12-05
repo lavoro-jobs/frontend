@@ -1,0 +1,24 @@
+.sidenav {
+  .sidenav-menu {
+    display: flex;
+    flex-flow: column;
+  }
+
+  .title-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .header-title {
+    font-family: 'Goldman', sans-serif;
+    font-size: 48px;
+    color: #0071c6;
+    line-height: 72px;
+  }
+
+  .sign-out {
+    margin: auto 16px 16px;
+  }
+}

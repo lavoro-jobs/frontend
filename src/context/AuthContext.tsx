@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState, ReactNode, useCallback } from "react";
 import getCurrentUser from "@/helpers/getCurrentUser";
 import Auth from "@/types/Auth";
-import { Spinner } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 
 interface AuthContextType {
   auth: Auth | null;
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return (
     <AuthContext.Provider value={{ auth, loading, updateAuth: fetchAuth }}>
-      {loading && <Spinner />}
+      {loading && <Flex height="100vh" align={"center"} justifyContent={"center"}><Spinner size='xl' /></Flex>}
       {!loading && children}
     </AuthContext.Provider>
   );
