@@ -1,11 +1,10 @@
-"use client"
+"use client";
 
-import {Flex, Heading} from "@chakra-ui/react";
+import { Flex, Heading } from "@chakra-ui/react";
 import React from "react";
 import Sidenav from "@/components/features/dashboard/Sidenav";
 
 export default function RecruiterDashboard() {
-
   return (
     <div>
       <Sidenav>
