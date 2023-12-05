@@ -79,6 +79,26 @@ export default function RecruiterProfileSetup() {
     setFormDataCompany(newFormData);
   };
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = async (event) => {
+        if (event.target) {
+          const base64String = event.target.result as string;
+          setFormDataCompany({
+            ...formDataCompany,
+            logo: base64String,
+          });
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
+    e.target.value = "";
+  };
+
   const handleSubmit = async () => {
     try {
       let res = await createRecruiterProfile(formDataRecruiter);
@@ -92,6 +112,7 @@ export default function RecruiterProfileSetup() {
         }
       }
     } catch (error) {}
+    console.log(formDataCompany);
   };
 
   const steps = [{ title: "Personal info" }, { title: "Company info" }, { title: "Invite colleagues" }];
@@ -139,21 +160,8 @@ export default function RecruiterProfileSetup() {
 
             <div className="inputs-wrapper-center">
               <Flex direction="column" w="500px" justify="center" align="center" gap="16px">
-                <Input
-                  id="logo"
-                  type="file"
-                  ref={inputRef}
-                  style={{ display: "none" }}
-                  onChange={(e) => {
-                    if (e.target.files?.[0]) {
-                      setFormDataCompany({
-                        ...formDataCompany,
-                        logo: URL.createObjectURL(e.target.files[0]),
-                      });
-                      e.target.value = "";
-                    }
-                  }}
-                />
+                <Input id="logo" type="file" ref={inputRef} style={{ display: "none" }} onChange={handleFileChange} />
+
                 <Button
                   color="white"
                   bg="#2E77AE"
@@ -166,7 +174,7 @@ export default function RecruiterProfileSetup() {
 
                 {formDataCompany.logo && (
                   <Box w="96%" border="#2E77AE solid 2px" borderRadius="16px" overflow="hidden" position="relative">
-                    <Image w="100%" src={formDataCompany.logo} />
+                    <Image w="100%" src={formDataCompany.logo} alt="Company logo" />
                     <Button
                       position="absolute"
                       top="0px"
@@ -174,12 +182,12 @@ export default function RecruiterProfileSetup() {
                       color="#2E77AE"
                       bg="transparent"
                       _hover={{ color: "#0D2137" }}
-                      onClick={() =>
+                      onClick={() => {
                         setFormDataCompany({
                           ...formDataCompany,
                           logo: "",
-                        })
-                      }
+                        });
+                      }}
                     >
                       ✖
                     </Button>

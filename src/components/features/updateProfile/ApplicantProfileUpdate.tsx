@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Sidenav from "../dashboard/Sidenav";
 import { Avatar, Box, Button, Flex, IconButton, Input, Select, Text } from "@chakra-ui/react";
-import Link from "next/link";
 import FormState from "@/interfaces/applicant/form-state.interface";
 import Experience from "@/interfaces/shared/experience";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
@@ -12,15 +10,11 @@ import { useRouter } from "next/navigation";
 import Multiselect from "multiselect-react-dropdown";
 import Slider from "rc-slider";
 import { FiXCircle } from "react-icons/fi";
+import FormOptions from "@/interfaces/shared/formOptions";
 
-interface FormOptions {
-  positions?: [{ id: number; position_name: string }];
-  skills?: [{ id: number; skill_name: string }];
-  education?: [{ id: number; education_level: string }];
-  contract_types?: [{ id: number; contract_type: string }];
-  work_types?: [{ id: number; work_type: string }];
+{
+  /* TODO - kad se doda id na get-applicant-profile uredit props */
 }
-
 export default function ApplicantProfileUpdate({
   first_name,
   last_name,
@@ -42,6 +36,9 @@ export default function ApplicantProfileUpdate({
 
   const [experience, setExperience] = useState<Experience[]>(experiences ? experiences : []);
 
+  {
+    /* TODO - kad se doda id na get-applicant-profile uredit ovo */
+  }
   const [formData, setFormData] = useState<FormState>({
     first_name: first_name,
     last_name: last_name,
@@ -67,7 +64,7 @@ export default function ApplicantProfileUpdate({
     getAllCatalogs().then((resp) => {
       setFormOptions(resp);
     });
-  }, []);
+  }, [formOptions]);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value };
@@ -272,12 +269,14 @@ export default function ApplicantProfileUpdate({
         Seniority level
       </Text>
 
+      {/* TODO - uredit css */}
       <Slider min={1} max={5} step={1} marks={marks} onChange={handleSliderChange} />
 
       <Text fontSize="lg" paddingTop="16px" textAlign="center" mt="16px">
         Skills
       </Text>
 
+      {/* TODO - uredit css */}
       <Multiselect
         options={formOptions.skills}
         selectedValues={skills}

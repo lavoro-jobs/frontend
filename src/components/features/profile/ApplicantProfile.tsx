@@ -10,15 +10,11 @@ import { FaGraduationCap } from "react-icons/fa";
 import getApplicantProfile from "@/helpers/getApplicantProfile";
 import ApplicantProfileUpdate from "../updateProfile/ApplicantProfileUpdate";
 import Experience from "@/interfaces/shared/experience";
+import FormOptions from "@/interfaces/shared/formOptions";
 
-interface FormOptions {
-  positions?: [{ id: number; position_name: string }];
-  education?: [{ id: number; education_level: string }];
-  skills?: [{ id: number; skill_name: string }];
-  work_types?: [{ id: number; work_type: string }];
-  contract_types?: [{ id: number; contract_type: string }];
+{
+  /* TODO - kad se doda id na get-applicant-profile izbrisat ovo i importat FormState iz form-state-get-applicant.interface */
 }
-
 interface FormState {
   first_name: string;
   last_name: string;
@@ -41,10 +37,17 @@ interface FormState {
 
 export default function ApplicantProfile() {
   const [formOptions, setFormOptions] = useState<FormOptions>({});
+
+  {
+    /* TODO - geocode */
+  }
   const [address, setAddress] = useState<string>("");
 
   const [update, setUpdate] = useState<boolean>(false);
 
+  {
+    /* TODO - kad se doda id na get-applicant-profile uredit ovo */
+  }
   const [formData, setFormData] = useState<FormState>({
     first_name: "",
     last_name: "",
@@ -75,12 +78,17 @@ export default function ApplicantProfile() {
     getAllCatalogs().then((resp) => {
       setFormOptions(resp);
     });
-  }, []);
+  }, [formOptions]);
 
   return (
     <Sidenav>
       <Box position="absolute" right="calc(50% - 100px)" transform="translateX(50%)">
         <Flex w="600px" align="center" padding="32px" direction="column" bg="#E0EAF5">
+          {update && (
+            <Button alignSelf="flex-end" colorScheme="blue" onClick={() => setUpdate(!update)}>
+              Cancel
+            </Button>
+          )}
           {!update && (
             <>
               <Avatar size="2xl"></Avatar>
@@ -161,11 +169,6 @@ export default function ApplicantProfile() {
                 experiences={formData.experiences}
               ></ApplicantProfileUpdate>
             </>
-          )}
-          {update && (
-            <Button mt="32px" colorScheme="blue" onClick={() => setUpdate(!update)}>
-              Cancel
-            </Button>
           )}
         </Flex>
       </Box>

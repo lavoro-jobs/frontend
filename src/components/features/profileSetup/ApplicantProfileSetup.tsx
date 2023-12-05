@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Heading, IconButton, Input, Progress, Select, Text, useSteps } from "@chakra-ui/react";
 import { FiXCircle } from "react-icons/fi";
 import MultiSelect from "multiselect-react-dropdown";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import FormState from "@/interfaces/applicant/form-state.interface";
 import GoogleMapReact from "google-map-react";
 import MapClickEvent from "@/interfaces/applicant/map-click-event";
@@ -50,6 +50,10 @@ export default function ApplicantProfileSetup() {
 
   const [experience, setExperience] = useState<Experience[]>([]);
 
+  const [fileName, setFileName] = useState<string>("");
+  const [fileUrl, setFileUrl] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
+
   useEffect(() => {
     getAllCatalogs().then((resp) => {
       setFormOptions(resp);
@@ -66,10 +70,7 @@ export default function ApplicantProfileSetup() {
     setFormData(newFormData);
   };
 
-  const handleSkills = (
-    selectedList: [{ id: number; skill_name: string }],
-    selectedItem: { id: number; skill_name: string }
-  ) => {
+  const handleSkills = (selectedList: [{ id: number; skill_name: string }]) => {
     const skillIdArray = selectedList.map((item) => item.id);
     const newFormData = { ...formData, skill_id_list: skillIdArray };
     setSkills(selectedList);
@@ -121,6 +122,47 @@ export default function ApplicantProfileSetup() {
       },
     };
     setFormData(newFormData);
+  };
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleLogoUpload = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
+
+      if (allowedTypes.includes(file.type)) {
+        setFileUrl(URL.createObjectURL(file));
+        setFileName(file.name);
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          if (event.target) {
+            const base64String = event.target.result as string;
+
+            setFormData({
+              ...formData,
+              cv: base64String,
+            });
+          }
+        };
+
+        reader.readAsDataURL(file);
+        setError(false);
+      } else {
+        setError(true);
+      }
+    }
+
+    e.target.value = "";
   };
 
   const handleSubmit = async () => {
@@ -280,6 +322,46 @@ export default function ApplicantProfileSetup() {
             <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
               Work experience
             </Text>
+
+            <div className="inputs-wrapper-center">
+              <Flex direction="column" w="500px" justify="center" align="center" gap="16px">
+                <Input id="logo" type="file" ref={inputRef} style={{ display: "none" }} onChange={handleFileChange} />
+
+                <Button
+                  color="white"
+                  bg="#2E77AE"
+                  _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
+                  value={formData.cv}
+                  onClick={handleLogoUpload}
+                >
+                  Upload {formData.cv ? "new" : ""} CV
+                </Button>
+                {error && <Text color="red">Please upload a PDF or DOC file!</Text>}
+
+                {formData.cv && (
+                  <>
+                    <Flex align="center">
+                      <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+                        {fileName}
+                      </a>
+                      <Button
+                        color="#2E77AE"
+                        bg="transparent"
+                        _hover={{ color: "#0D2137" }}
+                        onClick={() => {
+                          setFormData({
+                            ...formData,
+                            cv: "",
+                          });
+                        }}
+                      >
+                        ✖
+                      </Button>
+                    </Flex>
+                  </>
+                )}
+              </Flex>
+            </div>
 
             <Flex flexFlow={"column"} align={"center"}>
               {experience.map((input, index) => (
