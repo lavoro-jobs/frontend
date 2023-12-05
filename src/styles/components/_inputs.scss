@@ -1,13 +1,13 @@
 .inputs-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 
-    .input-box {
-        &.w-50 {
-            width: 48%;
-        }
+  .input-box {
+    &.w-50 {
+      width: 48%;
     }
+  }
 }
 
 .inputs-wrapper-center {
@@ -16,12 +16,12 @@
   align-items: center;
 
   .input-box {
-      &.w-50 {
-          width: 96%;
-      }
+    &.w-50 {
+      width: 96%;
+    }
   }
 }
 
 .multiselect-container {
-    padding-top: 16px;
+  padding-top: 16px;
 }

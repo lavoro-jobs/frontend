@@ -6,12 +6,12 @@ const createApplicantProfile = async (formData: any) => {
       headers: {
         "Content-Type": "application/json",
       },
-      withCredentials: true
+      withCredentials: true,
     });
 
     return response.status;
   } catch (error) {
-    console.error('Error creating applicant profile:', error);
+    console.error("Error creating applicant profile:", error);
     throw error;
   }
 };
