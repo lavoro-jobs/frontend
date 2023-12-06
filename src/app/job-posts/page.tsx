@@ -47,31 +47,28 @@ export default function JobPosts() {
     return (
       <Sidenav>
         <Flex align="center" padding="100px 0" justify="center" direction="column" bg="#E0EAF5">
-          <Heading marginBottom="32px" maxW="512px" textAlign="center" color="#0D2137">
-            Job posts
-          </Heading>
-        </Flex>
-        <Link href="/create-job-post">
-          <Button colorScheme="blue" marginTop="16px" marginBottom="16px">
-            Create new job post
-          </Button>
-        </Link>
-        <Flex gap="16px">
-          {/*TODO - get all job posts and create a JobPost component for each */}
-          {fakeJobPosts.map((post, index) => (
-            <JobPost
-              key={index}
-              position_id={post.position_id}
-              education_level_id={post.education_level_id}
-              seniority_level_id={post.seniority_level_id}
-              skill_id_list={post.skill_id_list}
-              work_type_id={post.work_type_id}
-              contract_type_id={post.contract_type_id}
-              work_location={post.work_location}
-              salary={post.salary}
-              description={post.description}
-            ></JobPost>
-          ))}
+          <Link href="/create-job-post">
+            <Button colorScheme="blue" marginTop="16px" marginBottom="16px">
+              Create new job post
+            </Button>
+          </Link>
+          <Flex gap="16px">
+            {/*TODO - get all job posts and create a JobPost component for each */}
+            {fakeJobPosts.map((post, index) => (
+              <JobPost
+                key={index}
+                position_id={post.position_id}
+                education_level_id={post.education_level_id}
+                seniority_level_id={post.seniority_level_id}
+                skill_id_list={post.skill_id_list}
+                work_type_id={post.work_type_id}
+                contract_type_id={post.contract_type_id}
+                work_location={post.work_location}
+                salary={post.salary}
+                description={post.description}
+              ></JobPost>
+            ))}
+          </Flex>
         </Flex>
       </Sidenav>
     );
