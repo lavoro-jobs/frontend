@@ -1,24 +1,16 @@
 "use client";
 
-import Header from "@/components/shared/Header";
-import Footer from "@/components/shared/Footer";
-import { usePathname } from "next/navigation";
-import useProtectedRoute from "@/hooks/useProtectedRoute";
 import { Role } from "@/types/Auth";
-import { Flex, Spinner } from "@chakra-ui/react";
+import useProtectedRoute from "@/hooks/useProtectedRoute";
+import ApplicantProfile from "@/components/features/profile/ApplicantProfile";
+import RecruiterProfile from "@/components/features/profile/RecruiterProfile";
 
 export default function Profile() {
-  const { loading } = useProtectedRoute([Role.APPLICANT]);
+  const { auth } = useProtectedRoute([Role.APPLICANT, Role.RECRUITER]);
 
-  return (
-    <>
-      <Header currentRoute={usePathname()} />
-      {loading && (
-        <Flex height="100vh" align={"center"} justifyContent={"center"}>
-          <Spinner size="xl" />
-        </Flex>
-      )}
-      <Footer />
-    </>
-  );
+  if (auth?.role == Role.APPLICANT) {
+    return <ApplicantProfile></ApplicantProfile>;
+  } else if (auth?.role == Role.RECRUITER) {
+    return <RecruiterProfile></RecruiterProfile>;
+  }
 }

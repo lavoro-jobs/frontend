@@ -27,13 +27,13 @@ interface LinkItemProps {
   url: string;
 }
 const ApplicantLinks: Array<LinkItemProps> = [
-  { name: "Profile", icon: FiSettings, url: "" },
+  { name: "Profile", icon: FiSettings, url: "/profile" },
   { name: "Matches", icon: FiUserCheck, url: "" },
   { name: "Chats", icon: FiSend, url: "" },
 ];
 
 const RecruiterLinks: Array<LinkItemProps> = [
-  { name: "Profile", icon: FiSettings, url: "" },
+  { name: "Profile", icon: FiSettings, url: "/profile" },
   { name: "Company", icon: FiLayers, url: "" },
   { name: "Job Posts", icon: FiCrosshair, url: "/job-posts" },
   { name: "Matches", icon: FiUserCheck, url: "" },
@@ -87,20 +87,18 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         </Link>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
+      {/*TODO - dynamic load*/}
       {RecruiterLinks.map((link) => (
         <Link key={link.name} href={link.url}>
           <NavItem icon={link.icon}>{link.name}</NavItem>
         </Link>
       ))}
-      {/*TODO - dynamic load*/}
-      {/*
-				ApplicantLinks.map((link) => (
-					<Link key={link.name} href={link.url}>
-						<NavItem icon={link.icon}>
-							{link.name}
-						</NavItem>
-					</Link>
-        ))*/}
+
+      {/*ApplicantLinks.map((link) => (
+				<Link key={link.name} href={link.url}>
+					<NavItem icon={link.icon}>{link.name}</NavItem>
+				</Link>
+      ))*/}
       <Button className="sign-out">Sign out</Button>
     </Box>
   );
