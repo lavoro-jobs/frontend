@@ -13,12 +13,12 @@ export default function VerificationEmailSent() {
       bg="white"
       color="#0D2137"
     >
-      <Heading fontSize="6xl" paddingBottom="32px">
+      <Heading fontSize="5xl" textAlign={"center"} paddingBottom="32px">
         Thanks for signing up!
       </Heading>
       <Flex gap="8px" direction="column" textAlign="center">
-        <Text fontSize="3xl">Verification email has been sent to:</Text>
-        <Text fontSize="4xl" fontWeight="extrabold">
+        <Text fontSize="2xl">Verification email has been sent to:</Text>
+        <Text fontSize="3xl" fontWeight="extrabold">
           {searchParams.get("email")}
         </Text>
       </Flex>
