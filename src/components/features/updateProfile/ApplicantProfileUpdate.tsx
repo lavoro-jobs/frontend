@@ -64,7 +64,7 @@ export default function ApplicantProfileUpdate({
     getAllCatalogs().then((resp) => {
       setFormOptions(resp);
     });
-  }, [formOptions]);
+  }, []);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value };

@@ -56,6 +56,15 @@ export default function RegisterForm() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const postData: PostData = { ...formData };
+
+    if (isEmailInvalid(formData.email) || isPasswordInvalid(formData.password)) {
+      isEmailInvalid(formData.email)
+        ? isPasswordInvalid(formData.password)
+          ? setError("Email and password are invalid.")
+          : setError("Email is invalid.")
+        : setError("Password is invalid.")
+      return
+    }
     try {
       const response = await signUp(postData);
 
@@ -107,13 +116,13 @@ export default function RegisterForm() {
           </chakra.option>
         </Select>
 
-        <FormControl isInvalid={isEmailInvalid(formData.email)}>
+        <FormControl >
           <FormLabel htmlFor="email">Email address</FormLabel>
           <Input id="email" type="email" value={formData.email} onChange={handleFormChange} />
           <FormErrorMessage>Email is invalid.</FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={isPasswordInvalid(formData.password)}>
+        <FormControl >
           <FormLabel htmlFor="password">Password</FormLabel>
 
           <InputGroup>
