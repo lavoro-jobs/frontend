@@ -86,7 +86,9 @@ export default function RecruiterProfileSetup() {
 
       reader.onload = async (event) => {
         if (event.target) {
-          const base64String = event.target.result as string;
+          let base64String = event.target.result as string;
+          base64String = base64String.split(',')[1];
+          
           setFormDataCompany({
             ...formDataCompany,
             logo: base64String,
