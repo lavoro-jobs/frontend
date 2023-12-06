@@ -99,8 +99,11 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {useLinks?.map((link) => (
-        <Link key={link.name} href={link.url}>
-          <NavItem icon={link.icon}>{link.name}</NavItem>
+        <Link
+          key={link.name}
+          href={link.url}
+        >
+          <NavItem icon={link.icon}>{ link.name }</NavItem>
         </Link>
       ))}
       <Button className="sign-out">Sign out</Button>
