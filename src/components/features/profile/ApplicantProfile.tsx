@@ -72,13 +72,13 @@ export default function ApplicantProfile() {
     getApplicantProfile().then((resp) => {
       setFormData(resp);
     });
-  }, [formData]);
+  }, []);
 
   useEffect(() => {
     getAllCatalogs().then((resp) => {
       setFormOptions(resp);
     });
-  }, [formOptions]);
+  }, []);
 
   return (
     <Sidenav>

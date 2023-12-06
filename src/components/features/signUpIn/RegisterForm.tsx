@@ -38,7 +38,6 @@ export default function RegisterForm() {
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value };
@@ -47,19 +46,25 @@ export default function RegisterForm() {
 
   const isEmailInvalid = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // if (email === "") return false;
     return !emailRegex.test(email);
   };
 
   const isPasswordInvalid = (password: string) => {
-    // if (password === "") return false;
     return password.length < 8;
   };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    setIsSubmitted(true);
     const postData: PostData = { ...formData };
+
+    if (isEmailInvalid(formData.email) || isPasswordInvalid(formData.password)) {
+      isEmailInvalid(formData.email)
+        ? isPasswordInvalid(formData.password)
+          ? setError("Email and password are invalid.")
+          : setError("Email is invalid.")
+        : setError("Password is invalid.")
+      return
+    }
     try {
       const response = await signUp(postData);
 
@@ -111,13 +116,13 @@ export default function RegisterForm() {
           </chakra.option>
         </Select>
 
-        <FormControl isInvalid={isSubmitted && isEmailInvalid(formData.email)}>
+        <FormControl >
           <FormLabel htmlFor="email">Email address</FormLabel>
           <Input id="email" type="email" value={formData.email} onChange={handleFormChange} />
           <FormErrorMessage>Email is invalid.</FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={isSubmitted && isPasswordInvalid(formData.password)}>
+        <FormControl >
           <FormLabel htmlFor="password">Password</FormLabel>
 
           <InputGroup>

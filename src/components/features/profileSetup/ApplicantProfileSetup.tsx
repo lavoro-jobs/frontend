@@ -146,7 +146,8 @@ export default function ApplicantProfileSetup() {
         const reader = new FileReader();
         reader.onload = async (event) => {
           if (event.target) {
-            const base64String = event.target.result as string;
+            let base64String = event.target.result as string;
+            base64String = base64String.split(',')[1];
 
             setFormData({
               ...formData,
