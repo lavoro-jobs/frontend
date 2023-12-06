@@ -20,6 +20,8 @@ import { FiSettings, FiMenu, FiSend, FiUserCheck, FiLayers, FiCrosshair } from "
 import { IconType } from "react-icons";
 import { ReactText } from "react";
 import Link from "next/link";
+import useProtectedRoute from "@/hooks/useProtectedRoute";
+import {Role} from "@/types/Auth";
 
 interface LinkItemProps {
   name: string;
@@ -70,6 +72,15 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+  const { auth } = useProtectedRoute([Role.APPLICANT, Role.RECRUITER])
+  let useLinks: Array<LinkItemProps> = [];
+
+  if(auth?.role == Role.APPLICANT) {
+    useLinks = ApplicantLinks;
+  } else if(auth?.role == Role.RECRUITER) {
+    useLinks = RecruiterLinks;
+  }
+
   return (
     <Box
       className="sidenav-menu"
@@ -87,18 +98,11 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         </Link>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
-      {/*TODO - dynamic load*/}
-      {RecruiterLinks.map((link) => (
-        <Link key={link.name} href={link.url}>
-          <NavItem icon={link.icon}>{link.name}</NavItem>
-        </Link>
+      {useLinks?.map((link) => (
+        <NavItem key={link.name} icon={link.icon}>
+          {link.name}
+        </NavItem>
       ))}
-
-      {/*ApplicantLinks.map((link) => (
-				<Link key={link.name} href={link.url}>
-					<NavItem icon={link.icon}>{link.name}</NavItem>
-				</Link>
-      ))*/}
       <Button className="sign-out">Sign out</Button>
     </Box>
   );
