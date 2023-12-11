@@ -1,0 +1,65 @@
+:root {
+  --duration: 0.4s;
+  --ease: cubic-bezier(0.6, 0, 0.2, 0);
+  --transition: transform var(--duration) var(--ease);
+}
+
+.main{
+  background: radial-gradient(circle at var(--x) var(--y) , #2e77ae, #144a74);
+}
+
+#app {
+  display: grid;
+  min-height: 100px;
+  width: 600px;
+
+  > section {
+    grid-area: 1 / 1;
+  }
+}
+
+section {
+  display: grid;
+  perspective: 1600px;
+
+  > * {
+    grid-area: 1 / 1;
+  }
+}
+
+.background {
+  background-color: white;
+}
+
+.background,
+article {
+  transition: var(--transition);
+  transition-property: transform, transform-origin, z-index;
+
+  transform: translateX(-40%) translateZ(-50vmin) rotateY(40deg);
+
+  &[data-active="true"] {
+    transform-origin: center center;
+    transform: translateX(0) translateZ(0) rotateY(0deg);
+    z-index: 2;
+  }
+
+  &[data-active="true"] ~ * {
+    transform: translateX(40%) translateZ(-50vmin) rotateY(-40deg);
+  }
+
+  &[data-active="true"] + * {
+    z-index: 1;
+    transform: translateX(40%) translateZ(-50vmin) rotateY(-40deg);
+  }
+}
+
+article {
+  opacity: 0;
+  padding: 64px;
+  transition-property: transform, transform-origin, opacity, z-index;
+
+  &[data-active="true"] {
+    opacity: 1;
+  }
+}
