@@ -6,6 +6,9 @@ import useAuth from "@/hooks/useAuth";
 import { Avatar, AvatarGroup, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Role } from "@/types/Auth";
+import getCurrentRecruiterProfile from "@/helpers/getCurrentRecruiterProfile";
+import {bool} from "prop-types";
 
 export default function AuthLayout({ children }: any) {
   const avatars = [
@@ -36,7 +39,20 @@ export default function AuthLayout({ children }: any) {
 
   useEffect(() => {
     if (auth) {
-      router.push("/profile-setup");
+      if (auth?.role == Role.RECRUITER) {
+        getCurrentRecruiterProfile().then((res) => {
+          // Invited recruiters already have their first_name and other data in the database, so they
+          // should not be redirected to the profile setup.
+          let isInvitedRecruiter = res?.first_name !== null;
+          if (isInvitedRecruiter) {
+            return router.push("/profile-setup");
+          }
+        }).catch((err) => {
+            return router.push("/profile-setup");
+        });
+      } else {
+        router.push("/profile-setup");
+      }
     }
   }, [auth]);
 

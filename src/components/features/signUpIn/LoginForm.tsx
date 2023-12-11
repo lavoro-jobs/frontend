@@ -47,7 +47,9 @@ export default function LoginForm() {
     };
     try {
       const response = await signIn(postData);
-      return router.push("/profile-setup");
+      if (response.status === 200) {
+        return router.push("/dashboard");
+      }
     } catch (err) {
       setError("There was an error logging in. Please try again.");
     }
