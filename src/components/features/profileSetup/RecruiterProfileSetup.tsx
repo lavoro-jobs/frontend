@@ -134,8 +134,8 @@ export default function RecruiterProfileSetup() {
   };
 
   const mainStyle = {
-    '--x': `${mousePosition.x}px`,
-    '--y': `${mousePosition.y}px`,
+    "--x": `${mousePosition.x}px`,
+    "--y": `${mousePosition.y}px`,
   };
 
   const handleSubmit = async () => {
@@ -201,7 +201,7 @@ export default function RecruiterProfileSetup() {
         <IoArrowUndo />
       </Button>
 
-      <Box id="app" justifyContent="center">
+      <Box id="card" justifyContent="center">
         <section className="backgrounds">
           <Box
             onClick={() => {
@@ -238,6 +238,7 @@ export default function RecruiterProfileSetup() {
 
         <section className="content">
           <article
+            className="article"
             onClick={() => {
               !articles[0].isActive && handleClick(1);
             }}
@@ -269,6 +270,7 @@ export default function RecruiterProfileSetup() {
             />
           </article>
           <article
+            className="article"
             onClick={() => {
               !articles[1].isActive && handleClick(2);
             }}
@@ -333,6 +335,7 @@ export default function RecruiterProfileSetup() {
             />
           </article>
           <article
+            className="article"
             onClick={() => {
               !articles[2].isActive && handleClick(3);
             }}
@@ -369,149 +372,6 @@ export default function RecruiterProfileSetup() {
             </Flex>
           </article>
         </section>
-
-        {/*<Box maxW="800px" minW="650px" border="solid" borderRadius="16px" borderColor="#E0EAF5" p="64px" bg="white">
-        <Progress value={progressPercent} w="100%" height="4px" />
-        {activeStep === 0 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
-              Personal information
-            </Text>
-
-            <div className="inputs-wrapper">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  First name
-                </Text>
-                <Input id="first_name" value={formDataRecruiter.first_name} onChange={handleRecruiterFormChange} />
-              </div>
-
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Last name
-                </Text>
-                <Input id="last_name" value={formDataRecruiter.last_name} onChange={handleRecruiterFormChange} />
-              </div>
-            </div>
-          </>
-        )}
-        {activeStep === 1 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
-              Company information
-            </Text>
-
-            <div className="inputs-wrapper-center">
-              <Flex direction="column" w="500px" justify="center" align="center" gap="16px">
-                <Input id="logo" type="file" ref={inputRef} style={{ display: "none" }} onChange={handleFileChange} />
-
-                <Button
-                  color="white"
-                  bg="#2E77AE"
-                  _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
-                  value={formDataCompany.logo}
-                  onClick={handleLogoUpload}
-                >
-                  Upload {formDataCompany.logo ? "new" : ""} company logo
-                </Button>
-
-                {formDataCompany.logo && (
-                  <Box w="96%" border="#2E77AE solid 2px" borderRadius="16px" overflow="hidden" position="relative">
-                    <Image w="100%" src={formDataCompany.logo} alt="Company logo" />
-                    <Button
-                      position="absolute"
-                      top="0px"
-                      right="0px"
-                      color="#2E77AE"
-                      bg="transparent"
-                      _hover={{ color: "#0D2137" }}
-                      onClick={() => {
-                        setFormDataCompany({
-                          ...formDataCompany,
-                          logo: "",
-                        });
-                      }}
-                    >
-                      ✖
-                    </Button>
-                  </Box>
-                )}
-              </Flex>
-            </div>
-
-            <div className="inputs-wrapper-center">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Company name
-                </Text>
-                <Input id="name" value={formDataCompany.name} onChange={handleCompanyFormChange} />
-              </div>
-            </div>
-
-            <div className="inputs-wrapper-center">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Description
-                </Text>
-                <Textarea id="description" value={formDataCompany.description} onChange={handleCompanyFormChange} />
-              </div>
-            </div>
-          </>
-        )}
-        {activeStep === 2 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
-              Invite colleagues
-            </Text>
-            <div className="inputs-wrapper-center">
-              <div className="input-box w-50">
-                <Wrap>
-                  {emails.map((email, index) => (
-                    <Tag key={index} borderRadius="full" variant="solid" colorScheme="blue">
-                      <TagLabel>{email}</TagLabel>
-                      <TagCloseButton onClick={() => removeEmail(index)} />
-                    </Tag>
-                  ))}
-                </Wrap>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter emails"
-                  marginTop="16px"
-                  onKeyDown={handleKeyDown}
-                  onChange={(e) => {
-                    setInputEmail(e.target.value);
-                  }}
-                  value={inputEmail}
-                />
-              </div>
-            </div>
-          </>
-        )}
-
-        <Flex paddingTop="32px" justifyContent="flex-end">
-          {activeStep > 0 && activeStep < steps.length && (
-            <Button
-              color="white"
-              bg="#2E77AE"
-              _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
-              marginRight="8px"
-              onClick={() => goToPrevious()}
-            >
-              Back
-            </Button>
-          )}
-          {activeStep < steps.length - 1 && (
-            <Button color="white" bg="#2E77AE" _hover={{ color: "#0D2137", bg: "#6ba5d1" }} onClick={() => goToNext()}>
-              Next
-            </Button>
-          )}
-          {activeStep === steps.length - 1 && (
-            <Button color="white" bg="#FF8E2B" _hover={{ color: "#0D2137", bg: "#fdb16e" }} onClick={handleSubmit}>
-              Finish
-            </Button>
-          )}
-        </Flex>*/}
       </Box>
     </Flex>
   );
