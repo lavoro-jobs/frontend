@@ -220,6 +220,7 @@ export default function ApplicantProfileSetup() {
   };
 
   const handleSubmit = async () => {
+    console.log(formData)
     const response = await createApplicantProfile(formData);
     if (response == 201) {
       router.push("/dashboard");
@@ -274,7 +275,7 @@ export default function ApplicantProfileSetup() {
         <IoArrowUndo />
       </Button>
 
-      <Box id="app" justifyContent="center">
+      <Box id="card" justifyContent="center">
         <section className="backgrounds">
           <Box
             onClick={() => {
@@ -320,6 +321,7 @@ export default function ApplicantProfileSetup() {
 
         <section className="content">
           <article
+            className="article"
             onClick={() => {
               !articles[0].isActive && handleClick(1);
             }}
@@ -409,6 +411,7 @@ export default function ApplicantProfileSetup() {
             </Flex>
           </article>
           <article
+            className="article"
             onClick={() => {
               !articles[1].isActive && handleClick(2);
             }}
@@ -479,6 +482,7 @@ export default function ApplicantProfileSetup() {
             />
           </article>
           <article
+            className="article"
             onClick={() => {
               !articles[2].isActive && handleClick(3);
             }}
@@ -596,6 +600,7 @@ export default function ApplicantProfileSetup() {
             </Flex>
           </article>
           <article
+            className="article"
             onClick={() => {
               !articles[3].isActive && handleClick(4);
             }}
