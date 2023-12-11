@@ -1,5 +1,5 @@
-import { Avatar, Box, Button, Divider, Flex, Heading, Text } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { Avatar, Box, Button, Divider, Flex, Heading, Image, Text } from "@chakra-ui/react";
+import React, { useEffect, useRef, useState } from "react";
 import Sidenav from "../dashboard/Sidenav";
 import { LiaBirthdayCakeSolid, LiaCertificateSolid } from "react-icons/lia";
 import { FaGenderless, FaLocationDot } from "react-icons/fa6";
@@ -11,6 +11,9 @@ import getApplicantProfile from "@/helpers/getApplicantProfile";
 import ApplicantProfileUpdate from "../updateProfile/ApplicantProfileUpdate";
 import Experience from "@/interfaces/shared/experience";
 import FormOptions from "@/interfaces/shared/formOptions";
+import { GrLocation } from "react-icons/gr";
+import { FaFileDownload } from "react-icons/fa";
+import { MdOutlineMail } from "react-icons/md";
 
 {
   /* TODO - kad se doda id na get-applicant-profile izbrisat ovo i importat FormState iz form-state-get-applicant.interface */
@@ -23,6 +26,7 @@ interface FormState {
   gender: string;
   skills: string[];
   experiences: Experience[];
+  cv: string;
   work_type: number | undefined;
   seniority_level: number | undefined;
   position: number | undefined;
@@ -56,6 +60,7 @@ export default function ApplicantProfile() {
     gender: "",
     skills: [],
     experiences: [],
+    cv: "",
     work_type: undefined,
     seniority_level: undefined,
     position: undefined,
@@ -80,38 +85,84 @@ export default function ApplicantProfile() {
     });
   }, []);
 
+  const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
+  const downloadFile = () => {
+    const linkSource = `data:application/pdf;base64,${formData.cv}`;
+    if (downloadLinkRef.current) {
+      downloadLinkRef.current.href = linkSource;
+      downloadLinkRef.current.download = "cv";
+    }
+  };
+
   return (
     <Sidenav>
-      <Box position="absolute" right="calc(50% - 100px)" transform="translateX(50%)">
-        <Flex w="600px" align="center" padding="32px" direction="column" bg="#E0EAF5">
-          {update && (
-            <Button alignSelf="flex-end" colorScheme="blue" onClick={() => setUpdate(!update)}>
-              Cancel
-            </Button>
-          )}
-          {!update && (
-            <>
-              <Avatar size="2xl"></Avatar>
-              <Heading mt="16px">
-                {formData.first_name} {formData.last_name}
-              </Heading>
-              <Text fontSize="md" color="gray.500" mt="2px">
-                Address: {address}
-              </Text>
-              <Text fontSize="sm" color="gray.500" mt="2px">
-                Max distance: {formData.work_location_max_distance} km
-              </Text>
-              <Flex align="center" gap="16px" mt="8px">
-                <Flex gap="4px">
-                  <LiaBirthdayCakeSolid size="22px" />
-                  <Text>{formData.age}</Text>
-                </Flex>
-                {formData.gender == "male" && <IoMaleSharp size="18px" />}
-                {formData.gender == "female" && <IoFemaleSharp size="18px" />}
-                {formData.gender == "other" && <FaGenderless size="18px" />}
+      {update && (
+        <Button alignSelf="flex-end" colorScheme="blue" onClick={() => setUpdate(!update)}>
+          Cancel
+        </Button>
+      )}
+      {!update && (
+        <>
+          <Flex w="100%" justify="space-between" minHeight="calc(100vh - 32px)">
+            <Box bg="#E0EAF5" flex="1">
+              <Flex direction="column" alignItems="center" className="profile">
+                <Image
+                  src="https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+                  w="200px"
+                  borderRadius="50%"
+                ></Image>
+                <Heading mt="16px">
+                  {formData.first_name} {formData.last_name}
+                </Heading>
               </Flex>
-              <Box mt="32px" border="1px solid #2E77AE" width="80%" />
-              <Heading mt="32px" mb="16px">
+              <Box p="64px 32px 32px 32px">
+                <Heading fontSize="3xl" pb="8px" color="#2E77AE">
+                  ABOUT ME
+                </Heading>
+
+                <Flex mt="16px" gap="8px" align="center">
+                  <LiaBirthdayCakeSolid size="32px" />
+                  <Text>{formData.age} years old</Text>
+                </Flex>
+                {formData.gender == "male" && (
+                  <Flex mt="16px" align="center" gap="8px">
+                    <IoMaleSharp size="32px" />
+                    <Text>Male</Text>
+                  </Flex>
+                )}
+                {formData.gender == "female" && (
+                  <Flex mt="16px" align="center" gap="8px">
+                    <IoFemaleSharp size="32px" />
+                    <Text>Female</Text>
+                  </Flex>
+                )}
+                {formData.gender == "other" && (
+                  <Flex mt="16px" align="center" gap="8px">
+                    <FaGenderless size="32px" />
+                    <Text>Other</Text>
+                  </Flex>
+                )}
+                <Flex mt="16px" align="center" gap="8px">
+                  <MdOutlineMail size="32px" />
+                  <Text>email@gmail.com</Text>
+                </Flex>
+                <Flex mt="16px" gap="8px" align="center">
+                  <GrLocation size="32px" />
+                  <Text>{address}</Text>
+                </Flex>
+
+                <Box mt="32px" mb="32px" border="1px solid #2E77AE" width="100%" />
+                <Flex color="#2E77AE" mt="16px" align="center" gap="8px">
+                  <FaFileDownload size="24px" />
+                  <a ref={downloadLinkRef} onClick={downloadFile}>
+                    Download CV
+                  </a>
+                </Flex>
+              </Box>
+            </Box>
+
+            <Flex direction="column" alignItems="center" bgColor="white" flex="2">
+              <Heading size="2xl" mt="32px" mb="32px">
                 {formData.position}
               </Heading>
               <p>
@@ -120,8 +171,8 @@ export default function ApplicantProfile() {
                     <Text
                       key={index}
                       display="inline-block"
-                      px="2"
-                      py="1"
+                      px="3"
+                      py="2"
                       mr="2"
                       mb="2"
                       borderRadius="md"
@@ -132,7 +183,7 @@ export default function ApplicantProfile() {
                     </Text>
                   ))}
               </p>
-              <Flex mt="16px" align="center" gap="8px">
+              <Flex mt="32px" align="center" gap="8px">
                 <FaGraduationCap size="24px" />
                 <Text>{formData.education_level}</Text>
               </Flex>
@@ -149,29 +200,43 @@ export default function ApplicantProfile() {
                 <Text>{formData.contract_type}</Text>
               </Flex>
 
-              <Box mt="32px" border="1px solid #2E77AE" width="80%" />
-              <Button mt="32px" colorScheme="blue" onClick={() => setUpdate(!update)}>
+              <Box mt="32px" mb="32px" border="1px solid #2E77AE" width="60%" />
+              <Heading fontSize="3xl" pb="16px" color="#2E77AE">
+                WORK EXPERIENCE
+              </Heading>
+
+              {formData.experiences.map((experience, index) => (
+                <>
+                  <Text mb="8px" key={index}>Company name - {experience.company_name}</Text>
+                  <Text mb="8px" key={index}>Position - {experience.position_id}</Text>
+                  <Text mb="32px" key={index}>Years - {experience.years}</Text>
+                </>
+              ))}
+
+              <Box border="1px solid #2E77AE" width="60%" />
+              <Button mt="32px" mb="32px" colorScheme="blue" onClick={() => setUpdate(!update)}>
                 Edit
               </Button>
-            </>
-          )}
-          {update && (
-            <>
-              <ApplicantProfileUpdate
-                first_name={formData.first_name}
-                last_name={formData.last_name}
-                age={formData.age}
-                gender={formData.gender}
-                work_location_max_distance={formData.work_location_max_distance}
-                min_salary={formData.min_salary}
-                seniority_level_id={formData.seniority_level}
-                home_location={formData.home_location}
-                experiences={formData.experiences}
-              ></ApplicantProfileUpdate>
-            </>
-          )}
-        </Flex>
-      </Box>
+            </Flex>
+          </Flex>
+        </>
+      )}
+
+      {update && (
+        <>
+          <ApplicantProfileUpdate
+            first_name={formData.first_name}
+            last_name={formData.last_name}
+            age={formData.age}
+            gender={formData.gender}
+            work_location_max_distance={formData.work_location_max_distance}
+            min_salary={formData.min_salary}
+            seniority_level_id={formData.seniority_level}
+            home_location={formData.home_location}
+            experiences={formData.experiences}
+          ></ApplicantProfileUpdate>
+        </>
+      )}
     </Sidenav>
   );
 }
