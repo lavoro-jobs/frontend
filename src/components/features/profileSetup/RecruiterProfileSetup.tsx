@@ -20,7 +20,8 @@ import {
   useSteps,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { IoArrowRedo, IoArrowUndo } from "react-icons/io5";
 
 export default function RecruiterProfileSetup() {
   const router = useRouter();
@@ -79,16 +80,19 @@ export default function RecruiterProfileSetup() {
     setFormDataCompany(newFormData);
   };
 
+  const [logoUrl, setLogoUrl] = useState<string>("");
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (file) {
+      setLogoUrl(URL.createObjectURL(file));
       const reader = new FileReader();
 
       reader.onload = async (event) => {
         if (event.target) {
           let base64String = event.target.result as string;
-          base64String = base64String.split(',')[1];
-          
+          base64String = base64String.split(",")[1];
+
           setFormDataCompany({
             ...formDataCompany,
             logo: base64String,
@@ -99,6 +103,39 @@ export default function RecruiterProfileSetup() {
       reader.readAsDataURL(file);
     }
     e.target.value = "";
+  };
+
+  const [articles, setArticles] = useState([
+    { id: 1, isActive: true },
+    { id: 2, isActive: false },
+    { id: 3, isActive: false },
+  ]);
+  const [idArticle, setIdArticle] = useState(1);
+  const [btn, setBtn] = useState(true);
+
+  const handleClick = (id: number) => {
+    setIdArticle(id);
+    setBtn(false);
+    setTimeout(() => {
+      setBtn(true);
+    }, 400);
+
+    setArticles((prevArticles) =>
+      prevArticles.map((article) =>
+        article.id === id ? { ...article, isActive: true } : { ...article, isActive: false }
+      )
+    );
+  };
+
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    setMousePosition({ x: e.pageX, y: e.pageY });
+  };
+
+  const mainStyle = {
+    "--x": `${mousePosition.x}px`,
+    "--y": `${mousePosition.y}px`,
   };
 
   const handleSubmit = async () => {
@@ -114,51 +151,135 @@ export default function RecruiterProfileSetup() {
         }
       }
     } catch (error) {}
-    console.log(formDataCompany);
   };
 
-  const steps = [{ title: "Personal info" }, { title: "Company info" }, { title: "Invite colleagues" }];
-  const { activeStep, goToNext, goToPrevious } = useSteps({
-    index: 0,
-    count: steps.length,
-  });
-  const progressPercent = (activeStep / (steps.length - 1)) * 100;
-
   return (
-    <Flex minH="100vh" align="center" padding="100px 0" justify="center" direction="column" bg="#E0EAF5">
+    <Flex
+      className="main"
+      onMouseMove={handleMouseMove}
+      style={mainStyle as React.CSSProperties}
+      minH="100vh"
+      align="center"
+      padding="100px 0"
+      justify="center"
+      direction="column"
+    >
       <Heading marginBottom="32px" maxW="512px" textAlign="center" color="#0D2137">
         Welcome!
       </Heading>
-      <Box maxW="800px" minW="650px" border="solid" borderRadius="16px" borderColor="#E0EAF5" p="64px" bg="white">
-        <Progress value={progressPercent} w="100%" height="4px" />
-        {activeStep === 0 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
+
+      <Button
+        borderRadius="50%"
+        display={idArticle !== 3 && btn ? "" : "none"}
+        position="absolute"
+        top="50%"
+        left="calc(50% + 330px)"
+        zIndex={3}
+        color="white"
+        bg="#FF8E2B"
+        _hover={{ color: "#0D2137", bg: "#fdb16e" }}
+        onClick={() => {
+          handleClick(idArticle + 1);
+        }}
+      >
+        <IoArrowRedo />
+      </Button>
+      <Button
+        borderRadius="50%"
+        display={idArticle !== 1 && btn ? "" : "none"}
+        position="absolute"
+        top="50%"
+        right="calc(50% + 330px)"
+        zIndex={3}
+        color="white"
+        bg="#FF8E2B"
+        _hover={{ color: "#0D2137", bg: "#fdb16e" }}
+        onClick={() => {
+          handleClick(idArticle - 1);
+        }}
+      >
+        <IoArrowUndo />
+      </Button>
+
+      <Box id="card" justifyContent="center">
+        <section className="backgrounds">
+          <Box
+            onClick={() => {
+              handleClick(1);
+            }}
+            w="700px"
+            className="background"
+            border="solid"
+            borderRadius="16px"
+            borderColor="#E0EAF5"
+            data-active={articles[0].isActive}
+          ></Box>
+          <Box
+            onClick={() => {
+              handleClick(2);
+            }}
+            className="background"
+            border="solid"
+            borderRadius="16px"
+            borderColor="#E0EAF5"
+            data-active={articles[1].isActive}
+          ></Box>
+          <Box
+            onClick={() => {
+              handleClick(3);
+            }}
+            className="background"
+            border="solid"
+            borderRadius="16px"
+            borderColor="#E0EAF5"
+            data-active={articles[2].isActive}
+          ></Box>
+        </section>
+
+        <section className="content">
+          <article
+            className="article"
+            onClick={() => {
+              !articles[0].isActive && handleClick(1);
+            }}
+            data-active={articles[0].isActive}
+            data-id="1"
+          >
+            <Heading color="#2E77AE" paddingBottom="16px" textAlign="center">
               Personal information
-            </Text>
+            </Heading>
 
-            <div className="inputs-wrapper">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  First name
-                </Text>
-                <Input id="first_name" value={formDataRecruiter.first_name} onChange={handleRecruiterFormChange} />
-              </div>
+            <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
+              First name
+            </Heading>
+            <Input
+              borderColor="#2E77AE"
+              id="first_name"
+              value={formDataRecruiter.first_name}
+              onChange={handleRecruiterFormChange}
+            />
 
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Last name
-                </Text>
-                <Input id="last_name" value={formDataRecruiter.last_name} onChange={handleRecruiterFormChange} />
-              </div>
-            </div>
-          </>
-        )}
-        {activeStep === 1 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
+            <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
+              Last name
+            </Heading>
+            <Input
+              borderColor="#2E77AE"
+              id="last_name"
+              value={formDataRecruiter.last_name}
+              onChange={handleRecruiterFormChange}
+            />
+          </article>
+          <article
+            className="article"
+            onClick={() => {
+              !articles[1].isActive && handleClick(2);
+            }}
+            data-active={articles[1].isActive}
+            data-id="2"
+          >
+            <Heading color="#2E77AE" paddingBottom="16px" textAlign="center">
               Company information
-            </Text>
+            </Heading>
 
             <div className="inputs-wrapper-center">
               <Flex direction="column" w="500px" justify="center" align="center" gap="16px">
@@ -176,7 +297,7 @@ export default function RecruiterProfileSetup() {
 
                 {formDataCompany.logo && (
                   <Box w="96%" border="#2E77AE solid 2px" borderRadius="16px" overflow="hidden" position="relative">
-                    <Image w="100%" src={formDataCompany.logo} alt="Company logo" />
+                    <Image w="100%" src={logoUrl} alt="Company logo" />
                     <Button
                       position="absolute"
                       top="0px"
@@ -198,79 +319,59 @@ export default function RecruiterProfileSetup() {
               </Flex>
             </div>
 
-            <div className="inputs-wrapper-center">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Company name
-                </Text>
-                <Input id="name" value={formDataCompany.name} onChange={handleCompanyFormChange} />
-              </div>
-            </div>
+            <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
+              Company name
+            </Heading>
+            <Input borderColor="#2E77AE" id="name" value={formDataCompany.name} onChange={handleCompanyFormChange} />
 
-            <div className="inputs-wrapper-center">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Description
-                </Text>
-                <Textarea id="description" value={formDataCompany.description} onChange={handleCompanyFormChange} />
-              </div>
-            </div>
-          </>
-        )}
-        {activeStep === 2 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
+            <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
+              Description
+            </Heading>
+            <Textarea
+              borderColor="#2E77AE"
+              id="description"
+              value={formDataCompany.description}
+              onChange={handleCompanyFormChange}
+            />
+          </article>
+          <article
+            className="article"
+            onClick={() => {
+              !articles[2].isActive && handleClick(3);
+            }}
+            data-active={articles[2].isActive}
+            data-id="3"
+          >
+            <Heading color="#2E77AE" paddingBottom="16px" textAlign="center">
               Invite colleagues
-            </Text>
-            <div className="inputs-wrapper-center">
-              <div className="input-box w-50">
-                <Wrap>
-                  {emails.map((email, index) => (
-                    <Tag key={index} borderRadius="full" variant="solid" colorScheme="blue">
-                      <TagLabel>{email}</TagLabel>
-                      <TagCloseButton onClick={() => removeEmail(index)} />
-                    </Tag>
-                  ))}
-                </Wrap>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter emails"
-                  marginTop="16px"
-                  onKeyDown={handleKeyDown}
-                  onChange={(e) => {
-                    setInputEmail(e.target.value);
-                  }}
-                  value={inputEmail}
-                />
-              </div>
-            </div>
-          </>
-        )}
-
-        <Flex paddingTop="32px" justifyContent="flex-end">
-          {activeStep > 0 && activeStep < steps.length && (
-            <Button
-              color="white"
-              bg="#2E77AE"
-              _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
-              marginRight="8px"
-              onClick={() => goToPrevious()}
-            >
-              Back
-            </Button>
-          )}
-          {activeStep < steps.length - 1 && (
-            <Button color="white" bg="#2E77AE" _hover={{ color: "#0D2137", bg: "#6ba5d1" }} onClick={() => goToNext()}>
-              Next
-            </Button>
-          )}
-          {activeStep === steps.length - 1 && (
-            <Button color="white" bg="#FF8E2B" _hover={{ color: "#0D2137", bg: "#fdb16e" }} onClick={handleSubmit}>
-              Finish
-            </Button>
-          )}
-        </Flex>
+            </Heading>
+            <Wrap>
+              {emails.map((email, index) => (
+                <Tag key={index} borderRadius="full" variant="solid" colorScheme="blue">
+                  <TagLabel>{email}</TagLabel>
+                  <TagCloseButton onClick={() => removeEmail(index)} />
+                </Tag>
+              ))}
+            </Wrap>
+            <Input
+              borderColor="#2E77AE"
+              id="email"
+              type="email"
+              placeholder="Enter emails"
+              marginTop="16px"
+              onKeyDown={handleKeyDown}
+              onChange={(e) => {
+                setInputEmail(e.target.value);
+              }}
+              value={inputEmail}
+            />
+            <Flex paddingTop="32px" justifyContent="flex-end">
+              <Button color="white" bg="#FF8E2B" _hover={{ color: "#0D2137", bg: "#fdb16e" }} onClick={handleSubmit}>
+                Finish
+              </Button>
+            </Flex>
+          </article>
+        </section>
       </Box>
     </Flex>
   );

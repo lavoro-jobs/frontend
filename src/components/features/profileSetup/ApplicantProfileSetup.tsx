@@ -1,5 +1,4 @@
-import { Box, Button, Flex, Heading, IconButton, Input, Progress, Select, Text, useSteps } from "@chakra-ui/react";
-import { FiXCircle } from "react-icons/fi";
+import { Box, Button, Flex, Heading, IconButton, Input, Select, Text } from "@chakra-ui/react";
 import MultiSelect from "multiselect-react-dropdown";
 import React, { useEffect, useState, useRef } from "react";
 import FormState from "@/interfaces/applicant/form-state.interface";
@@ -9,6 +8,11 @@ import createApplicantProfile from "@/helpers/createApplicantProfile";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
 import Experience from "@/interfaces/shared/experience";
 import { useRouter } from "next/navigation";
+import { CgBoy, CgGirl } from "react-icons/cg";
+import { IoHappyOutline } from "react-icons/io5";
+import { IoArrowRedo, IoArrowUndo } from "react-icons/io5";
+import { FiXCircle } from "react-icons/fi";
+import Slider from "rc-slider";
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -68,6 +72,13 @@ export default function ApplicantProfileSetup() {
   const handleNumberFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const newFormData = { ...formData, [e.target.id]: +e.target.value };
     setFormData(newFormData);
+  };
+
+  const handleSliderChange = (value: number | number[]) => {
+    if (typeof value === "number") {
+      const newFormData = { ...formData, seniority_level_id: value - 1 };
+      setFormData(newFormData);
+    }
   };
 
   const handleSkills = (selectedList: [{ id: number; skill_name: string }]) => {
@@ -147,7 +158,7 @@ export default function ApplicantProfileSetup() {
         reader.onload = async (event) => {
           if (event.target) {
             let base64String = event.target.result as string;
-            base64String = base64String.split(',')[1];
+            base64String = base64String.split(",")[1];
 
             setFormData({
               ...formData,
@@ -166,86 +177,257 @@ export default function ApplicantProfileSetup() {
     e.target.value = "";
   };
 
+  const marks = {
+    1: "Novice",
+    2: "Apprentice",
+    3: "Intermediate",
+    4: "Advanced",
+    5: "Expert",
+  };
+
+  const [articles, setArticles] = useState([
+    { id: 1, isActive: true },
+    { id: 2, isActive: false },
+    { id: 3, isActive: false },
+    { id: 4, isActive: false },
+  ]);
+  const [idArticle, setIdArticle] = useState(1);
+  const [btn, setBtn] = useState(true);
+
+  const handleClick = (id: number) => {
+    setIdArticle(id);
+    setBtn(false);
+    setTimeout(() => {
+      setBtn(true);
+    }, 400);
+
+    setArticles((prevArticles) =>
+      prevArticles.map((article) =>
+        article.id === id ? { ...article, isActive: true } : { ...article, isActive: false }
+      )
+    );
+  };
+
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    setMousePosition({ x: e.pageX, y: e.pageY });
+  };
+
+  const mainStyle = {
+    "--x": `${mousePosition.x}px`,
+    "--y": `${mousePosition.y}px`,
+  };
+
   const handleSubmit = async () => {
+    console.log(formData)
     const response = await createApplicantProfile(formData);
     if (response == 201) {
       router.push("/dashboard");
     }
   };
 
-  const steps = [
-    { title: "Personal info" },
-    { title: "Education & skills" },
-    { title: "Work experience" },
-    { title: "Preferences" },
-  ];
-  const { activeStep, goToNext, goToPrevious } = useSteps({
-    index: 0,
-    count: steps.length,
-  });
-  const progressPercent = (activeStep / (steps.length - 1)) * 100;
-
   return (
-    <Flex minH="100vh" align="center" padding="100px 0" justify="center" direction="column" bg="#E0EAF5">
+    <Flex
+      className="main"
+      onMouseMove={handleMouseMove}
+      style={mainStyle as React.CSSProperties}
+      minH="100vh"
+      align="center"
+      padding="100px 0"
+      justify="center"
+      direction="column"
+    >
       <Heading marginBottom="32px" maxW="512px" textAlign="center" color="#0D2137">
         Welcome! Answer questions to get your job matches.
       </Heading>
-      <Box maxW="800px" minW="650px" border="solid" borderRadius="16px" borderColor="#E0EAF5" p="64px" bg="white">
-        <Progress value={progressPercent} w="100%" height="4px" />
-        {activeStep === 0 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
+
+      <Button
+        borderRadius="50%"
+        display={idArticle !== 4 && btn ? "" : "none"}
+        position="absolute"
+        top="50%"
+        left="calc(50% + 330px)"
+        zIndex={3}
+        color="white"
+        bg="#FF8E2B"
+        _hover={{ color: "#0D2137", bg: "#fdb16e" }}
+        onClick={() => {
+          handleClick(idArticle + 1);
+        }}
+      >
+        <IoArrowRedo />
+      </Button>
+      <Button
+        borderRadius="50%"
+        display={idArticle !== 1 && btn ? "" : "none"}
+        position="absolute"
+        top="50%"
+        right="calc(50% + 330px)"
+        zIndex={3}
+        color="white"
+        bg="#FF8E2B"
+        _hover={{ color: "#0D2137", bg: "#fdb16e" }}
+        onClick={() => {
+          handleClick(idArticle - 1);
+        }}
+      >
+        <IoArrowUndo />
+      </Button>
+
+      <Box id="card" justifyContent="center">
+        <section className="backgrounds">
+          <Box
+            onClick={() => {
+              handleClick(1);
+            }}
+            className="background"
+            border="solid"
+            borderRadius="16px"
+            borderColor="#E0EAF5"
+            data-active={articles[0].isActive}
+          ></Box>
+          <Box
+            onClick={() => {
+              handleClick(2);
+            }}
+            className="background"
+            border="solid"
+            borderRadius="16px"
+            borderColor="#E0EAF5"
+            data-active={articles[1].isActive}
+          ></Box>
+          <Box
+            onClick={() => {
+              handleClick(3);
+            }}
+            className="background"
+            border="solid"
+            borderRadius="16px"
+            borderColor="#E0EAF5"
+            data-active={articles[2].isActive}
+          ></Box>
+          <Box
+            onClick={() => {
+              handleClick(4);
+            }}
+            className="background"
+            border="solid"
+            borderRadius="16px"
+            borderColor="#E0EAF5"
+            data-active={articles[3].isActive}
+          ></Box>
+        </section>
+
+        <section className="content">
+          <article
+            className="article"
+            onClick={() => {
+              !articles[0].isActive && handleClick(1);
+            }}
+            data-active={articles[0].isActive}
+            data-id="1"
+          >
+            <Heading color="#2E77AE" paddingBottom="16px" textAlign="center">
               Personal information
-            </Text>
+            </Heading>
 
-            <div className="inputs-wrapper">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  First name
-                </Text>
-                <Input id="first_name" value={formData.first_name} onChange={handleFormChange} />
-              </div>
+            <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
+              First name
+            </Heading>
+            <Input borderColor="#2E77AE" id="first_name" value={formData.first_name} onChange={handleFormChange} />
 
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Last name
-                </Text>
-                <Input id="last_name" value={formData.last_name} onChange={handleFormChange} />
-              </div>
-            </div>
+            <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
+              Last name
+            </Heading>
+            <Input borderColor="#2E77AE" id="last_name" value={formData.last_name} onChange={handleFormChange} />
 
-            <div className="inputs-wrapper">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Age
-                </Text>
-                <Input id="age" type="number" value={formData.age} onChange={handleNumberFormChange} />
-              </div>
+            <Flex direction="column" align="center">
+              <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
+                Age
+              </Heading>
+              <Input
+                w="300px"
+                borderColor="#2E77AE"
+                id="age"
+                type="number"
+                value={formData.age}
+                onChange={handleNumberFormChange}
+              />
+            </Flex>
 
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Gender
-                </Text>
-                <Select id="gender" value={formData.gender} onChange={handleFormChange} placeholder="Select">
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </Select>
-              </div>
-            </div>
-          </>
-        )}
-        {activeStep === 1 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
-              Skills & experience
-            </Text>
+            <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
+              Gender
+            </Heading>
+            <Flex justify="center" gap="16px">
+              <Flex
+                border={formData.gender == "female" ? "#2E77AE 2px solid" : "#E0EAF5 2px solid"}
+                _hover={{ cursor: "pointer", border: "#2E77AE 1px solid" }}
+                borderRadius="16px"
+                w="180px"
+                h="200px"
+                p="16px"
+                direction="column"
+                align="center"
+                onClick={() => setFormData({ ...formData, gender: "female" })}
+              >
+                <CgGirl color={formData.gender == "female" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px" />
+                <Heading size="md" color={formData.gender == "female" ? "#2E77AE" : "#E0EAF5"}>
+                  Female
+                </Heading>
+              </Flex>
+              <Flex
+                border={formData.gender == "male" ? "#2E77AE 2px solid" : "#E0EAF5 2px solid"}
+                _hover={{ cursor: "pointer", border: "#2E77AE 1px solid" }}
+                borderRadius="16px"
+                w="180px"
+                h="200px"
+                p="16px"
+                direction="column"
+                align="center"
+                onClick={() => setFormData({ ...formData, gender: "male" })}
+              >
+                <CgBoy color={formData.gender == "male" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px" />
+                <Heading size="md" color={formData.gender == "male" ? "#2E77AE" : "#E0EAF5"}>
+                  Male
+                </Heading>
+              </Flex>
+              <Flex
+                border={formData.gender == "other" ? "#2E77AE 2px solid" : "#E0EAF5 2px solid"}
+                _hover={{ cursor: "pointer", border: "#2E77AE 1px solid" }}
+                borderRadius="16px"
+                w="180px"
+                h="200px"
+                p="16px"
+                direction="column"
+                align="center"
+                onClick={() => setFormData({ ...formData, gender: "other" })}
+              >
+                <IoHappyOutline color={formData.gender == "other" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px" />
+                <Heading size="md" color={formData.gender == "other" ? "#2E77AE" : "#E0EAF5"}>
+                  Other
+                </Heading>
+              </Flex>
+            </Flex>
+          </article>
+          <article
+            className="article"
+            onClick={() => {
+              !articles[1].isActive && handleClick(2);
+            }}
+            data-active={articles[1].isActive}
+            data-id="2"
+          >
+            <Heading color="#2E77AE" paddingBottom="16px" textAlign="center">
+              Skills & Experience
+            </Heading>
 
-            <Text fontSize="lg" paddingTop="16px" textAlign="center">
+            <Heading fontSize="xl" pt="16px" color="#2E77AE">
               Education level
-            </Text>
+            </Heading>
 
             <Select
+              borderColor="#2E77AE"
               paddingTop="16px"
               id="education_level_id"
               value={formData.education_level_id}
@@ -260,52 +442,34 @@ export default function ApplicantProfileSetup() {
                 ))}
             </Select>
 
-            <div className="inputs-wrapper">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Position
-                </Text>
+            <Heading fontSize="xl" pt="16px" color="#2E77AE">
+              Position
+            </Heading>
 
-                <Select
-                  paddingTop="16px"
-                  id="position_id"
-                  value={formData.position_id}
-                  onChange={handleNumberFormChange}
-                  placeholder="Select"
-                >
-                  {formOptions &&
-                    formOptions.positions?.map((item, index) => (
-                      <option value={item.id} key={index}>
-                        {item.position_name}
-                      </option>
-                    ))}
-                </Select>
-              </div>
+            <Select
+              borderColor="#2E77AE"
+              paddingTop="16px"
+              id="position_id"
+              value={formData.position_id}
+              onChange={handleNumberFormChange}
+              placeholder="Select"
+            >
+              {formOptions &&
+                formOptions.positions?.map((item, index) => (
+                  <option value={item.id} key={index}>
+                    {item.position_name}
+                  </option>
+                ))}
+            </Select>
+            <Heading fontSize="xl" pt="32px" pb="8px" color="#2E77AE">
+              Seniority level
+            </Heading>
 
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Seniority level
-                </Text>
+            <Slider min={1} max={5} step={1} marks={marks} onChange={handleSliderChange} />
 
-                <Select
-                  paddingTop="16px"
-                  id="seniority_level_id"
-                  value={formData.seniority_level_id}
-                  onChange={handleNumberFormChange}
-                  placeholder="Select"
-                >
-                  <option value="0">Junior (L1)</option>
-                  <option value="1">Junior (L2)</option>
-                  <option value="2">Junior (L3)</option>
-                  <option value="3">Mid</option>
-                  <option value="4">Senior</option>
-                </Select>
-              </div>
-            </div>
-
-            <Text fontSize="lg" paddingTop="16px" textAlign="center">
+            <Heading fontSize="xl" pt="48px" color="#2E77AE">
               Skills
-            </Text>
+            </Heading>
 
             <MultiSelect
               id="skills"
@@ -316,13 +480,18 @@ export default function ApplicantProfileSetup() {
               onSelect={handleSkills}
               onRemove={handleSkills}
             />
-          </>
-        )}
-        {activeStep === 2 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
+          </article>
+          <article
+            className="article"
+            onClick={() => {
+              !articles[2].isActive && handleClick(3);
+            }}
+            data-active={articles[2].isActive}
+            data-id="3"
+          >
+            <Heading color="#2E77AE" paddingBottom="16px" textAlign="center">
               Work experience
-            </Text>
+            </Heading>
 
             <div className="inputs-wrapper-center">
               <Flex direction="column" w="500px" justify="center" align="center" gap="16px">
@@ -372,13 +541,14 @@ export default function ApplicantProfileSetup() {
                     aria-label="remove"
                     className="remove-btn"
                     onClick={() => removeExperience(index)}
-                    icon={<FiXCircle />}
+                    icon={<FiXCircle color="#2E77AE" />}
                   />
 
-                  <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                  <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                     Company name
-                  </Text>
+                  </Heading>
                   <Input
+                    borderColor="#2E77AE"
                     key={index}
                     value={input.company_name}
                     id="company_name"
@@ -389,11 +559,12 @@ export default function ApplicantProfileSetup() {
 
                   <div className="inputs-wrapper">
                     <div className="input-box w-50">
-                      <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                      <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                         Position
-                      </Text>
+                      </Heading>
 
                       <Select
+                        borderColor="#2E77AE"
                         id="position_id"
                         value={input.position_id}
                         placeholder="Select"
@@ -409,10 +580,11 @@ export default function ApplicantProfileSetup() {
                     </div>
 
                     <div className="input-box w-50">
-                      <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                      <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                         Years
-                      </Text>
+                      </Heading>
                       <Input
+                        borderColor="#2E77AE"
                         id="years"
                         value={input.years}
                         type="number"
@@ -422,25 +594,31 @@ export default function ApplicantProfileSetup() {
                   </div>
                 </div>
               ))}
-              <Button marginTop="32px" onClick={addInput}>
+              <Button marginTop="32px" onClick={addInput} colorScheme="blue">
                 Add company
               </Button>
             </Flex>
-          </>
-        )}
-        {activeStep === 3 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
+          </article>
+          <article
+            className="article"
+            onClick={() => {
+              !articles[3].isActive && handleClick(4);
+            }}
+            data-active={articles[3].isActive}
+            data-id="4"
+          >
+            <Heading color="#2E77AE" paddingBottom="16px" textAlign="center">
               Preferences
-            </Text>
+            </Heading>
 
-            <div className="inputs-wrapper">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
+            <Flex justify="center" align="flex-start" gap="16px">
+              <Box>
+                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
                   Contract type
-                </Text>
+                </Heading>
 
                 <Select
+                  borderColor="#2E77AE"
                   id="contract_type_id"
                   value={formData.contract_type_id}
                   onChange={handleNumberFormChange}
@@ -453,23 +631,23 @@ export default function ApplicantProfileSetup() {
                       </option>
                     ))}
                 </Select>
-              </div>
 
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
                   Minimum salary
-                </Text>
-                <Input id="min_salary" type="number" value={formData.min_salary} onChange={handleNumberFormChange} />
-              </div>
-            </div>
+                </Heading>
+                <Input
+                  borderColor="#2E77AE"
+                  id="min_salary"
+                  type="number"
+                  value={formData.min_salary}
+                  onChange={handleNumberFormChange}
+                />
 
-            <div className="inputs-wrapper">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
                   Work type
-                </Text>
-
+                </Heading>
                 <Select
+                  borderColor="#2E77AE"
                   id="work_type_id"
                   value={formData.work_type_id}
                   onChange={handleNumberFormChange}
@@ -482,71 +660,66 @@ export default function ApplicantProfileSetup() {
                       </option>
                     ))}
                 </Select>
-              </div>
 
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
                   Max distance
-                </Text>
+                </Heading>
                 <Input
+                  borderColor="#2E77AE"
                   id="work_location_max_distance"
                   type="number"
                   value={formData.work_location_max_distance}
                   onChange={handleNumberFormChange}
                 />
-              </div>
-            </div>
-            <div className="inputs-wrapper">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
+
+                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
                   Latitude
-                </Text>
-                <Input id="lat" type="number" value={marker.lat} onChange={handleNumberFormChange} />
-              </div>
+                </Heading>
+                <Input
+                  borderColor="#2E77AE"
+                  id="lat"
+                  type="number"
+                  value={marker.lat}
+                  onChange={handleNumberFormChange}
+                />
 
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
                   Longitude
-                </Text>
-                <Input id="lng" type="number" value={marker.lng} onChange={handleNumberFormChange} />
-              </div>
-            </div>
-            <Text fontSize="lg" paddingTop="32px" textAlign="center">
-              Click location on map to get Latitude/Longitude
-            </Text>
-            <div style={{ height: "400px", width: "100%", paddingTop: "32px" }}>
-              <GoogleMapReact
-                defaultCenter={{ lat: 0, lng: 0 }}
-                defaultZoom={3}
-                onClick={handleMapClick}
-              ></GoogleMapReact>
-            </div>
-          </>
-        )}
+                </Heading>
+                <Input
+                  borderColor="#2E77AE"
+                  id="lng"
+                  type="number"
+                  value={marker.lng}
+                  onChange={handleNumberFormChange}
+                />
+              </Box>
 
-        <Flex paddingTop="32px" justifyContent="flex-end">
-          {activeStep > 0 && activeStep < steps.length && (
-            <Button
-              color="white"
-              bg="#2E77AE"
-              _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
-              marginRight="8px"
-              onClick={() => goToPrevious()}
-            >
-              Back
-            </Button>
-          )}
-          {activeStep < steps.length - 1 && (
-            <Button color="white" bg="#2E77AE" _hover={{ color: "#0D2137", bg: "#6ba5d1" }} onClick={() => goToNext()}>
-              Next
-            </Button>
-          )}
-          {activeStep === steps.length - 1 && (
-            <Button color="white" bg="#FF8E2B" _hover={{ color: "#0D2137", bg: "#fdb16e" }} onClick={handleSubmit}>
-              Finish
-            </Button>
-          )}
-        </Flex>
+              <Box>
+                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE" textAlign="center">
+                  Click location on map to get Latitude/Longitude
+                </Heading>
+                <div style={{ height: "400px", width: "100%", paddingTop: "32px" }}>
+                  <GoogleMapReact
+                    defaultCenter={{ lat: 0, lng: 0 }}
+                    defaultZoom={3}
+                    onClick={handleMapClick}
+                  ></GoogleMapReact>
+                </div>
+                <Flex paddingTop="32px" justifyContent="flex-end">
+                  <Button
+                    color="white"
+                    bg="#FF8E2B"
+                    _hover={{ color: "#0D2137", bg: "#fdb16e" }}
+                    onClick={handleSubmit}
+                  >
+                    Finish
+                  </Button>
+                </Flex>
+              </Box>
+            </Flex>
+          </article>
+        </section>
       </Box>
     </Flex>
   );
