@@ -5,8 +5,10 @@ import Footer from "@/components/shared/Footer";
 import { Button } from "@chakra-ui/react";
 import React from "react";
 import Image from "next/image";
+import useAuth from "@/hooks/useAuth";
 
 export default function Home() {
+  const { auth } = useAuth();
   return (
     <>
       <Header />
@@ -19,9 +21,16 @@ export default function Home() {
               <br />
               <span>future</span>
             </h1>
+            { !auth &&
             <Button as="a" href="/signup" bgColor="#FF8E2B" _hover={{ bgColor: "#fdb16e" }} color="#0D2137" h="32px">
               Sign up
             </Button>
+            }
+            { auth &&
+            <Button as="a" href="/dashboard" bgColor="#FF8E2B" _hover={{ bgColor: "#fdb16e" }} color="#0D2137" h="32px">
+              Dashboard
+            </Button>
+            }
           </div>
         </div>
       </div>
