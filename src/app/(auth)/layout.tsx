@@ -48,14 +48,20 @@ export default function AuthLayout({ children }: any) {
         const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
         navigateTo(path);
       } catch (error) {
+        // Navigating to profile-setup if the recruiter is not in the db
         navigateTo("/profile-setup");
       }
     };
 
     const handleApplicantProfile = async () => {
-      const profile = await getApplicantProfile();
-      const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
-      navigateTo(path);
+      try {
+        const profile = await getApplicantProfile();
+        const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
+        navigateTo(path);
+      } catch (error) {
+        // Navigating to profile-setup if the applicant is not in the db
+        navigateTo("/profile-setup")
+      }
     };
 
     const checkProfile = async () => {
