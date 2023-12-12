@@ -114,7 +114,6 @@ export default function RecruiterProfileSetup() {
         }
       }
     } catch (error) {}
-    console.log(formDataCompany);
   };
 
   const steps = [{ title: "Personal info" }, { title: "Company info" }, { title: "Invite colleagues" }];

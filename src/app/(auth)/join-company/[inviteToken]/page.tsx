@@ -54,9 +54,7 @@ export default function JoinCompany() {
             password: formData.password,
         };
         try {
-            console.log("postData: ", postData);
             const response = await joinCompany(postData, params.inviteToken as string);
-            console.log("Response from joinCompany: ", response);
             return router.push("/dashboard");
         } catch (err) {
             setError("There was an error logging in. Please try again.");
