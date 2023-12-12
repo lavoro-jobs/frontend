@@ -8,6 +8,8 @@ import {useRouter} from "next/navigation";
 import {useEffect} from "react";
 import {Role} from "@/types/Auth";
 import getCurrentRecruiterProfile from "@/helpers/getCurrentRecruiterProfile";
+import getApplicantProfile from "@/helpers/getApplicantProfile";
+
 
 export default function AuthLayout({ children }: any) {
   const avatars = [
@@ -36,28 +38,36 @@ export default function AuthLayout({ children }: any) {
   const router = useRouter();
   const { auth } = useAuth();
 
-
-
   useEffect(() => {
-    const checkProfile = async () => {
-      if (auth) {
-        if (auth?.role == Role.RECRUITER) {
-          try {
-            const response = await getCurrentRecruiterProfile();
-            let isInvitedRecruiter = response?.first_name !== null;
-            if (isInvitedRecruiter) {
-              return router.push("/profile-setup");
-            }
-          } catch (err) {
-            return router.push("/profile-setup");
-          }
-        } else {
-           return router.push("/profile-setup");
-        }
+    const navigateTo = (path: string) => router.push(path);
+    const isProfileSetupNeeded = (profile: any) => profile?.first_name === null;
+
+    const handleRecruiterProfile = async () => {
+      try {
+        const profile = await getCurrentRecruiterProfile();
+        const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
+        navigateTo(path);
+      } catch (error) {
+        navigateTo("/profile-setup");
       }
-    }
-    checkProfile()
-  }, [auth]);
+    };
+
+    const handleApplicantProfile = async () => {
+      const profile = await getApplicantProfile();
+      const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
+      navigateTo(path);
+    };
+
+    const checkProfile = async () => {
+      if (!auth) return;
+      if (auth.role === Role.RECRUITER) {
+        await handleRecruiterProfile();
+      } else {
+        await handleApplicantProfile();
+      }
+    };
+    checkProfile();
+  }, [auth, router]);
 
   return (
     <>
