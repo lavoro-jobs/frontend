@@ -3,12 +3,11 @@
 import InfoBox from "@/components/features/signUpIn/InfoBox";
 import Header from "@/components/shared/Header";
 import useAuth from "@/hooks/useAuth";
-import { Avatar, AvatarGroup, Flex, Heading, Stack, Text } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { Role } from "@/types/Auth";
+import {Avatar, AvatarGroup, Flex, Heading, Stack, Text} from "@chakra-ui/react";
+import {useRouter} from "next/navigation";
+import {useEffect} from "react";
+import {Role} from "@/types/Auth";
 import getCurrentRecruiterProfile from "@/helpers/getCurrentRecruiterProfile";
-import {bool} from "prop-types";
 
 export default function AuthLayout({ children }: any) {
   const avatars = [
@@ -37,23 +36,27 @@ export default function AuthLayout({ children }: any) {
   const router = useRouter();
   const { auth } = useAuth();
 
+
+
   useEffect(() => {
-    if (auth) {
-      if (auth?.role == Role.RECRUITER) {
-        getCurrentRecruiterProfile().then((res) => {
-          // Invited recruiters already have their first_name and other data in the database, so they
-          // should not be redirected to the profile setup.
-          let isInvitedRecruiter = res?.first_name !== null;
-          if (isInvitedRecruiter) {
+    const checkProfile = async () => {
+      if (auth) {
+        if (auth?.role == Role.RECRUITER) {
+          try {
+            const response = await getCurrentRecruiterProfile();
+            let isInvitedRecruiter = response?.first_name !== null;
+            if (isInvitedRecruiter) {
+              return router.push("/profile-setup");
+            }
+          } catch (err) {
             return router.push("/profile-setup");
           }
-        }).catch((err) => {
-            return router.push("/profile-setup");
-        });
-      } else {
-        router.push("/profile-setup");
+        } else {
+           return router.push("/profile-setup");
+        }
       }
     }
+    checkProfile()
   }, [auth]);
 
   return (
