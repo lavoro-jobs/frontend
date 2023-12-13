@@ -69,9 +69,21 @@ export default function ApplicantProfileUpdate({
       contract_type: contract_type.contract_type,
     },
     min_salary: min_salary,
+    education_level_id: undefined,
+    position_id: undefined,
+    contract_type_id: undefined,
+    work_type_id: undefined,
   });
 
   useEffect(() => {
+    const newFormData = {
+    ...formData,
+    education_level_id: education_level.id,
+    position_id: position.id,
+    contract_type_id: contract_type.id,
+    work_type_id: work_type.id
+    };
+    setFormData(newFormData);
     getAllCatalogs().then((resp) => {
       setFormOptions(resp);
     });
@@ -152,21 +164,21 @@ export default function ApplicantProfileUpdate({
     return ({
       first_name: formData.first_name,
       last_name: formData.last_name,
-      education_level_id: formData.education_level.id,
+      education_level_id: formData.education_level_id,
       age: formData.age,
       gender: formData.gender,
       skill_ids: formData.skills.map((skill) => skill.id).filter((id) => typeof id === "number") as number[],
       //experiences: formData.experiences,
       cv: formData.cv,
-      work_type_id: formData.work_type.id,
+      work_type_id: formData.work_type_id,
       seniority_level: formData.seniority_level,
-      position_id: formData.position.id,
+      position_id: formData.position_id,
       home_location: {
         longitude: formData.home_location.longitude,
         latitude: formData.home_location.latitude,
       },
       work_location_max_distance: formData.work_location_max_distance,
-      contract_type_id: formData.contract_type.id,
+      contract_type_id: formData.contract_type_id,
       min_salary: formData.min_salary,
     });
   }
@@ -277,7 +289,7 @@ export default function ApplicantProfileUpdate({
             paddingTop="16px"
             borderColor="#2E77AE"
             id="education_level_id"
-            value={formData.education_level.id}
+            value={formData.education_level_id}
             onChange={handleNumberFormChange}
             placeholder="Select"
           >
@@ -296,7 +308,7 @@ export default function ApplicantProfileUpdate({
             paddingTop="16px"
             borderColor="#2E77AE"
             id="position_id"
-            value={formData.position.id}
+            value={formData.position_id}
             onChange={handleNumberFormChange}
             placeholder="Select"
           >
@@ -311,7 +323,7 @@ export default function ApplicantProfileUpdate({
           <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
             Seniority level
           </Heading>
-          <Slider min={1} max={5} step={1} marks={marks} onChange={handleSliderChange} />
+          <Slider id="seniority_level" min={1} max={5} step={1} defaultValue="seniority_level" marks={marks} onChange={handleSliderChange} />
 
           <Heading fontSize="xl" pt="32px" pb="8px" color="#2E77AE">
             Skills
@@ -336,7 +348,7 @@ export default function ApplicantProfileUpdate({
                 id="contract_type_id"
                 w="300px"
                 borderColor="#2E77AE"
-                value={formData.contract_type.id}
+                value={formData.contract_type_id}
                 onChange={handleNumberFormChange}
                 placeholder="Select"
               >
@@ -356,7 +368,7 @@ export default function ApplicantProfileUpdate({
                 w="300px"
                 borderColor="#2E77AE"
                 id="work_type_id"
-                value={formData.work_type.id}
+                value={formData.work_type_id}
                 onChange={handleNumberFormChange}
                 placeholder="Select"
               >
@@ -431,7 +443,7 @@ export default function ApplicantProfileUpdate({
           <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE" textAlign="center">
             Click location on map to get Latitude/Longitude
           </Heading>
-          <div style={{ height: "400px", width: "100%", paddingTop: "16px", paddingBottom: "16px" }}>
+          <div style={{ height: "400px", width: "100%", paddingTop: "16px", paddingBottom: "16px", marginTop: "16px", marginBottom: "8px" }}>
             <MapContainer
               center={[0, 0]}
               zoom={2}
