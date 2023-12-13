@@ -31,10 +31,10 @@ export default function ApplicantProfileSetup() {
     education_level_id: undefined,
     age: undefined,
     gender: "",
-    skill_id_list: [],
+    skill_ids: [],
     cv: "",
     work_type_id: undefined,
-    seniority_level_id: undefined,
+    seniority_level: undefined,
     position_id: undefined,
     home_location: {
       longitude: undefined,
@@ -76,14 +76,14 @@ export default function ApplicantProfileSetup() {
 
   const handleSliderChange = (value: number | number[]) => {
     if (typeof value === "number") {
-      const newFormData = { ...formData, seniority_level_id: value - 1 };
+      const newFormData = { ...formData, seniority_level: value - 1 };
       setFormData(newFormData);
     }
   };
 
   const handleSkills = (selectedList: [{ id: number; skill_name: string }]) => {
     const skillIdArray = selectedList.map((item) => item.id);
-    const newFormData = { ...formData, skill_id_list: skillIdArray };
+    const newFormData = { ...formData, skill_ids: skillIdArray };
     setSkills(selectedList);
     setFormData(newFormData);
   };
@@ -220,6 +220,7 @@ export default function ApplicantProfileSetup() {
   };
 
   const handleSubmit = async () => {
+    console.log(formData)
     const response = await createApplicantProfile(formData);
     if (response == 201) {
       router.push("/dashboard");
@@ -274,7 +275,7 @@ export default function ApplicantProfileSetup() {
         <IoArrowUndo />
       </Button>
 
-      <Box id="app" justifyContent="center">
+      <Box id="card" justifyContent="center">
         <section className="backgrounds">
           <Box
             onClick={() => {
@@ -320,6 +321,7 @@ export default function ApplicantProfileSetup() {
 
         <section className="content">
           <article
+            className="article"
             onClick={() => {
               !articles[0].isActive && handleClick(1);
             }}
@@ -409,6 +411,7 @@ export default function ApplicantProfileSetup() {
             </Flex>
           </article>
           <article
+            className="article"
             onClick={() => {
               !articles[1].isActive && handleClick(2);
             }}
@@ -479,6 +482,7 @@ export default function ApplicantProfileSetup() {
             />
           </article>
           <article
+            className="article"
             onClick={() => {
               !articles[2].isActive && handleClick(3);
             }}
@@ -596,6 +600,7 @@ export default function ApplicantProfileSetup() {
             </Flex>
           </article>
           <article
+            className="article"
             onClick={() => {
               !articles[3].isActive && handleClick(4);
             }}

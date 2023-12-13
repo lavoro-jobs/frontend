@@ -22,7 +22,7 @@ export default function ApplicantProfileUpdate({
   gender,
   work_location_max_distance,
   min_salary,
-  seniority_level_id,
+  seniority_level,
   home_location,
   experiences,
 }: FormState) {
@@ -45,10 +45,10 @@ export default function ApplicantProfileUpdate({
     education_level_id: undefined,
     age: age,
     gender: gender,
-    skill_id_list: [],
+    skill_ids: [],
     cv: "",
     work_type_id: undefined,
-    seniority_level_id: seniority_level_id,
+    seniority_level: seniority_level,
     position_id: undefined,
     home_location: {
       longitude: home_location?.longitude,
@@ -78,14 +78,14 @@ export default function ApplicantProfileUpdate({
 
   const handleSliderChange = (value: number | number[]) => {
     if (typeof value === "number") {
-      const newFormData = { ...formData, seniority_level_id: value - 1 };
+      const newFormData = { ...formData, seniority_level: value - 1 };
       setFormData(newFormData);
     }
   };
 
   const handleSkills = (selectedList: [{ id: number; skill_name: string }]) => {
     const skillIdArray = selectedList.map((item) => item.id);
-    const newFormData = { ...formData, skill_id_list: skillIdArray };
+    const newFormData = { ...formData, skill_ids: skillIdArray };
     setSkills(selectedList);
     setFormData(newFormData);
   };

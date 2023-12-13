@@ -1,4 +1,5 @@
 import confirmEmail from "@/helpers/confirmEmail";
+import axios from "axios";
 import { Flex, Text } from "@chakra-ui/react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,30 +14,45 @@ export default function EmailConfirmBox() {
   const router = useRouter();
   const [confirmationStatus, setConfirmationStatus] = useState<ConfirmationStatus>({
     status: null,
-    message: "Verify your email address... Please wait...",
+    message: "Verifying your email address... Please wait...",
   });
+
   useEffect(() => {
-    const confirm = async () => {
-      if (params.verificationToken) {
-        const response = await confirmEmail(params.verificationToken as string);
-        if (response.status == 200) {
-          setConfirmationStatus({
-            status: true,
-            message: "Your email address has been confirmed. You will be redirected to the sign in page in 5 seconds.",
-          });
-          setTimeout(() => {
-            router.push("/signin");
-          }, 5000);
-        } else {
-          setConfirmationStatus({
-            status: false,
-            message: "Your email address has NOT been confirmed. This link may have expired.",
-          });
-        }
-      }
-    };
-    confirm();
+    if (params.verificationToken) {
+      confirmUserEmail(params.verificationToken as string);
+    }
   }, []);
+
+  const confirmUserEmail = async (token: string) => {
+    try {
+      const response = await confirmEmail(token);
+      handleEmailConfirmationResponse(response);
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleEmailConfirmationResponse = (response: any) => {
+    if (response.status === 200) {
+      updateConfirmationStatus(true, "Your email address has been confirmed. You will be redirected to the sign in page in 5 seconds.");
+      setTimeout(() => router.push("/signin"), 5000);
+    } else {
+      updateConfirmationStatus(false, "Your email address has NOT been confirmed. This link may have expired.");
+    }
+  };
+
+  const updateConfirmationStatus = (status: boolean, message: string) => {
+    setConfirmationStatus({ status, message });
+  };
+
+  const handleError = (error: unknown) => {
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data.detail || 'An unknown error occurred';
+      updateConfirmationStatus(false, message);
+    } else {
+      updateConfirmationStatus(false, 'An unknown error occurred');
+    }
+  };
 
   return (
     <Flex

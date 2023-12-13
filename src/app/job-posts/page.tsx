@@ -14,8 +14,8 @@ export default function JobPosts() {
     {
       position_id: 1,
       education_level_id: 1,
-      seniority_level_id: 1,
-      skill_id_list: [1, 2, 3, 4, 5, 6, 7, 8],
+      seniority_level: 1,
+      skill_ids: [1, 2, 3, 4, 5, 6, 7, 8],
       work_type_id: 1,
       contract_type_id: 1,
       work_location: {
@@ -29,8 +29,8 @@ export default function JobPosts() {
     {
       position_id: 5,
       education_level_id: 2,
-      seniority_level_id: 4,
-      skill_id_list: [10, 11, 13, 20, 6, 7, 8],
+      seniority_level: 4,
+      skill_ids: [10, 11, 13, 20, 6, 7, 8],
       work_type_id: 3,
       contract_type_id: 4,
       work_location: {
@@ -59,8 +59,8 @@ export default function JobPosts() {
                 key={index}
                 position_id={post.position_id}
                 education_level_id={post.education_level_id}
-                seniority_level_id={post.seniority_level_id}
-                skill_id_list={post.skill_id_list}
+                seniority_level={post.seniority_level}
+                skill_ids={post.skill_ids}
                 work_type_id={post.work_type_id}
                 contract_type_id={post.contract_type_id}
                 work_location={post.work_location}

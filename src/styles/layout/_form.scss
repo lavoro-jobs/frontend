@@ -8,17 +8,17 @@
   background: radial-gradient(circle at var(--x) var(--y) , #2e77ae, #144a74);
 }
 
-#app {
+#card {
   display: grid;
   min-height: 100px;
   width: 600px;
 
-  > section {
+  > .backgrounds, .content {
     grid-area: 1 / 1;
   }
 }
 
-section {
+.backgrounds, .content {
   display: grid;
   perspective: 1600px;
 
@@ -32,7 +32,7 @@ section {
 }
 
 .background,
-article {
+.article {
   transition: var(--transition);
   transition-property: transform, transform-origin, z-index;
 
@@ -54,7 +54,7 @@ article {
   }
 }
 
-article {
+.article {
   opacity: 0;
   padding: 64px;
   transition-property: transform, transform-origin, opacity, z-index;
