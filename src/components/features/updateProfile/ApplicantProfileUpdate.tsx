@@ -443,7 +443,7 @@ export default function ApplicantProfileUpdate({
           <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE" textAlign="center">
             Click location on map to get Latitude/Longitude
           </Heading>
-          <div style={{ height: "400px", width: "100%", paddingTop: "16px", paddingBottom: "16px" }}>
+          <div style={{ height: "400px", width: "100%", paddingTop: "16px", paddingBottom: "16px", marginTop: "16px", marginBottom: "8px" }}>
             <MapContainer
               center={[0, 0]}
               zoom={2}
