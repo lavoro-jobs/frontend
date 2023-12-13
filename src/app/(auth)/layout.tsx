@@ -3,9 +3,13 @@
 import InfoBox from "@/components/features/signUpIn/InfoBox";
 import Header from "@/components/shared/Header";
 import useAuth from "@/hooks/useAuth";
-import { Avatar, AvatarGroup, Flex, Heading, Stack, Text } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import {Avatar, AvatarGroup, Flex, Heading, Stack, Text} from "@chakra-ui/react";
+import {useRouter} from "next/navigation";
+import {useEffect} from "react";
+import {Role} from "@/types/Auth";
+import getCurrentRecruiterProfile from "@/helpers/getCurrentRecruiterProfile";
+import getApplicantProfile from "@/helpers/getApplicantProfile";
+
 
 export default function AuthLayout({ children }: any) {
   const avatars = [
@@ -35,10 +39,41 @@ export default function AuthLayout({ children }: any) {
   const { auth } = useAuth();
 
   useEffect(() => {
-    if (auth) {
-      router.push("/profile-setup");
-    }
-  }, [auth]);
+    const navigateTo = (path: string) => router.push(path);
+    const isProfileSetupNeeded = (profile: any) => profile?.first_name === null;
+
+    const handleRecruiterProfile = async () => {
+      try {
+        const profile = await getCurrentRecruiterProfile();
+        const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
+        navigateTo(path);
+      } catch (error) {
+        // Navigating to profile-setup if the recruiter is not in the db
+        navigateTo("/profile-setup");
+      }
+    };
+
+    const handleApplicantProfile = async () => {
+      try {
+        const profile = await getApplicantProfile();
+        const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
+        navigateTo(path);
+      } catch (error) {
+        // Navigating to profile-setup if the applicant is not in the db
+        navigateTo("/profile-setup")
+      }
+    };
+
+    const checkProfile = async () => {
+      if (!auth) return;
+      if (auth.role === Role.RECRUITER) {
+        await handleRecruiterProfile();
+      } else {
+        await handleApplicantProfile();
+      }
+    };
+    checkProfile();
+  }, [auth, router]);
 
   return (
     <>
