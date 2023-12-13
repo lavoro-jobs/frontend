@@ -1,7 +1,7 @@
 import Experience from "../shared/experience";
 import Skill from "../shared/skill";
 
-export default interface FormState {
+export default interface Form {
   first_name: string;
   last_name: string;
   education_level: {
