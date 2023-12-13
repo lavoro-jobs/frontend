@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Avatar, Box, Button, Divider, Flex, Heading, IconButton, Input, Select, Text } from "@chakra-ui/react";
 import Experience from "@/interfaces/shared/experience";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
-import GoogleMapReact from "google-map-react";
 import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import updateApplicantProfile from "@/helpers/updateApplicantProfile";
 import { useRouter } from "next/navigation";
@@ -10,6 +9,8 @@ import Multiselect from "multiselect-react-dropdown";
 import Slider from "rc-slider";
 import { FiXCircle } from "react-icons/fi";
 import FormOptions from "@/interfaces/shared/formOptions";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useMapEvents } from 'react-leaflet/hooks'
 import Form from "@/interfaces/applicant/form-state-get-applicant.interface";
 import FormState from "@/interfaces/applicant/form-state.interface";
 import Skill from "@/interfaces/shared/skill";
@@ -169,7 +170,25 @@ export default function ApplicantProfileUpdate({
       min_salary: formData.min_salary,
     });
   }
-  
+
+    const [clickedLatLng, setClickedLatLng] = useState(null);
+
+    const LocationFinderDummy = () => {
+        const map = useMapEvents({
+            click(e) {
+                setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
+                const newFormData = {
+                  ...formData,
+                  home_location: {
+                    longitude: e.latlng.lng,
+                    latitude: e.latlng.lat,
+                  },
+                };
+                setFormData(newFormData);
+            },
+        });
+        return null;
+    };
 
   const handleSubmit = async () => {
     const postData = await getPostData();
@@ -413,11 +432,22 @@ export default function ApplicantProfileUpdate({
             Click location on map to get Latitude/Longitude
           </Heading>
           <div style={{ height: "400px", width: "100%", paddingTop: "16px", paddingBottom: "16px" }}>
-            <GoogleMapReact
-              defaultCenter={{ lat: 0, lng: 0 }}
-              defaultZoom={3}
-              onClick={handleMapClick}
-            ></GoogleMapReact>
+            <MapContainer
+              center={[0, 0]}
+              zoom={2}
+              style={{ height: '400px', width: '100%' }}
+            >
+              <LocationFinderDummy />
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              {clickedLatLng && (
+                <Marker position={clickedLatLng}>
+                  <Popup>
+                    Latitude: {clickedLatLng.lat}<br />
+                    Longitude: {clickedLatLng.lng}
+                  </Popup>
+                </Marker>
+              )}
+            </MapContainer>
           </div>
         </Box>
       </Flex>
@@ -433,7 +463,7 @@ export default function ApplicantProfileUpdate({
                 onClick={() => removeExperience(index)}
                 icon={<FiXCircle />}
               />
-              
+
               <Flex direction="column" justify="center" align="center">
                 <Box>
                   <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE" textAlign="center">
