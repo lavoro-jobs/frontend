@@ -19,11 +19,12 @@ import {
 import Multiselect from "multiselect-react-dropdown";
 import Slider from "rc-slider";
 import { useEffect, useState } from "react";
-import GoogleMapReact from "google-map-react";
 import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import { useRouter } from "next/navigation";
 import assignColleague from "@/helpers/assignColleague";
 import createJobPost from "@/helpers/createJobPost";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useMapEvents } from 'react-leaflet/hooks'
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -87,17 +88,24 @@ export default function CreateJobPost() {
     }
   };
 
-  const handleMapClick = ({ x, y, lat, lng, event }: MapClickEvent) => {
-    setMarker({ lat, lng });
-    const newFormData = {
-      ...formData,
-      home_location: {
-        longitude: lng,
-        latitude: lat,
-      },
+    const [clickedLatLng, setClickedLatLng] = useState(null);
+
+    const LocationFinderDummy = () => {
+        const map = useMapEvents({
+            click(e) {
+                setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
+                const newFormData = {
+                  ...formData,
+                  home_location: {
+                    longitude: e.latlng.lng,
+                    latitude: e.latlng.lat,
+                  },
+                };
+                setFormData(newFormData);
+            },
+        });
+        return null;
     };
-    setFormData(newFormData);
-  };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value };
@@ -295,7 +303,22 @@ export default function CreateJobPost() {
               Click location on map to get Latitude/Longitude
             </Text>
             <div style={{ height: "400px", width: "100%", paddingTop: "32px" }}>
-              <GoogleMapReact defaultCenter={{ lat: 0, lng: 0 }} defaultZoom={3} onClick={handleMapClick} />
+                <MapContainer
+                  center={[0, 0]}
+                  zoom={2}
+                  style={{ height: '400px', width: '100%' }}
+                >
+                  <LocationFinderDummy />
+                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  {clickedLatLng && (
+                    <Marker position={clickedLatLng}>
+                      <Popup>
+                        Latitude: {clickedLatLng.lat}<br />
+                        Longitude: {clickedLatLng.lng}
+                      </Popup>
+                    </Marker>
+                  )}
+                </MapContainer>
             </div>
           </>
         )}
