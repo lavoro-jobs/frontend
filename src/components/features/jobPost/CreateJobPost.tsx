@@ -118,7 +118,7 @@ export default function CreateJobPost() {
 
   const handleSkills = (selectedList: [{ id: number; skill_name: string }]) => {
     const skillIdArray = selectedList.map((item) => item.id);
-    const newFormData = { ...formData, skills: skillIdArray };
+    const newFormData = { ...formData, skill_ids: skillIdArray };
     setSkills(selectedList);
     setFormData(newFormData);
   };
