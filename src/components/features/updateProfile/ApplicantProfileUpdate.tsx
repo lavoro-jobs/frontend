@@ -3,7 +3,6 @@ import { Avatar, Box, Button, Flex, IconButton, Input, Select, Text } from "@cha
 import FormState from "@/interfaces/applicant/form-state.interface";
 import Experience from "@/interfaces/shared/experience";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
-import GoogleMapReact from "google-map-react";
 import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import updateApplicantProfile from "@/helpers/updateApplicantProfile";
 import { useRouter } from "next/navigation";
@@ -11,6 +10,8 @@ import Multiselect from "multiselect-react-dropdown";
 import Slider from "rc-slider";
 import { FiXCircle } from "react-icons/fi";
 import FormOptions from "@/interfaces/shared/formOptions";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useMapEvents } from 'react-leaflet/hooks'
 
 {
   /* TODO - kad se doda id na get-applicant-profile uredit props */
@@ -125,17 +126,24 @@ export default function ApplicantProfileUpdate({
     }
   };
 
-  const handleMapClick = ({ x, y, lat, lng, event }: MapClickEvent) => {
-    setMarker({ lat, lng });
-    const newFormData = {
-      ...formData,
-      home_location: {
-        longitude: lng,
-        latitude: lat,
-      },
+    const [clickedLatLng, setClickedLatLng] = useState(null);
+
+    const LocationFinderDummy = () => {
+        const map = useMapEvents({
+            click(e) {
+                setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
+                const newFormData = {
+                  ...formData,
+                  home_location: {
+                    longitude: e.latlng.lng,
+                    latitude: e.latlng.lat,
+                  },
+                };
+                setFormData(newFormData);
+            },
+        });
+        return null;
     };
-    setFormData(newFormData);
-  };
 
   const handleSubmit = async () => {
     const response = await updateApplicantProfile(formData);
@@ -399,7 +407,22 @@ export default function ApplicantProfileUpdate({
         Click location on map to get Latitude/Longitude
       </Text>
       <div style={{ height: "400px", width: "100%", paddingTop: "32px" }}>
-        <GoogleMapReact defaultCenter={{ lat: 0, lng: 0 }} defaultZoom={3} onClick={handleMapClick}></GoogleMapReact>
+        <MapContainer
+          center={[0, 0]}
+          zoom={2}
+          style={{ height: '400px', width: '100%' }}
+        >
+          <LocationFinderDummy />
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {clickedLatLng && (
+            <Marker position={clickedLatLng}>
+              <Popup>
+                Latitude: {clickedLatLng.lat}<br />
+                Longitude: {clickedLatLng.lng}
+              </Popup>
+            </Marker>
+          )}
+        </MapContainer>
       </div>
 
       <Box mt="32px" border="1px solid #2E77AE" width="80%" />
