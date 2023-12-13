@@ -1,24 +1,26 @@
 import Experience from "../shared/experience";
+import Skill from "../shared/skill";
 
 export default interface FormState {
   first_name: string;
   last_name: string;
-  education_level: string;
-  age: number | undefined;
-  gender: string;
-  skills: {
-    ids: number[];
-    names: string[];
+  education_level: {
+    id: number | undefined;
+    education_level: string | undefined;
   };
+  age: number | undefined;
+  gender: string | undefined;
+  skills: Skill[];
   experiences: Experience[];
+  cv: string | undefined;
   work_type: {
     id: number | undefined;
-    work_type_name: string | undefined;
+    work_type: string | undefined;
   };
   seniority_level: number | undefined;
   position: {
     id: number | undefined;
-    name: string | undefined;
+    position_name: string | undefined;
   };
   home_location: {
     longitude: number | undefined;
@@ -27,7 +29,7 @@ export default interface FormState {
   work_location_max_distance: number | undefined;
   contract_type: {
     id: number | undefined;
-    name: string | undefined;
+    contract_type: string | undefined;
   };
   min_salary: number | undefined;
 }
