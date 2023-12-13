@@ -17,38 +17,28 @@ export default function Dashboard() {
     const navigateTo = (path: string) => router.push(path);
     const isProfileSetupNeeded = (profile: any) => profile == null || profile?.first_name === null;
 
-    const handleRecruiterProfile = async () => {
+    const handleProfile = async (getProfileFunction: any) => {
       try {
-        const profile = await getCurrentRecruiterProfile();
-        const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
-        navigateTo(path);
+        const profile = await getProfileFunction();
+        if (isProfileSetupNeeded(profile)) {
+          navigateTo("/profile-setup");
+        }
       } catch (error) {
-        // Navigating to profile-setup if the recruiter is not in the db
+        // Navigating to profile-setup if the person is not in the db
+        console.error("ERROR:", error);
         navigateTo("/profile-setup");
-      }
-    };
-
-    const handleApplicantProfile = async () => {
-      try {
-        const profile = await getApplicantProfile();
-        console.log(profile);
-        const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
-        navigateTo(path);
-      } catch (error) {
-        console.log(("ERROR"))
-        // Navigating to profile-setup if the applicant is not in the db
-        navigateTo("/profile-setup")
       }
     };
 
     const checkProfile = async () => {
       if (!auth) return;
       if (auth.role === Role.RECRUITER) {
-        await handleRecruiterProfile();
+        await handleProfile(getCurrentRecruiterProfile);
       } else {
-        await handleApplicantProfile();
+        await handleProfile(getApplicantProfile);
       }
     };
+
     checkProfile();
   }, [auth, router]);
 
