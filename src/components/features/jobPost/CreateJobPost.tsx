@@ -56,8 +56,10 @@ export default function CreateJobPost() {
       longitude: undefined,
       latitude: undefined,
     },
-    salary: undefined,
+    salary_min: undefined,
+    salary_max: undefined,
     description: undefined,
+    end_date: "2024-12-13T19:38:10.767Z"
   });
 
   useEffect(() => {
@@ -96,7 +98,7 @@ export default function CreateJobPost() {
                 setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
                 const newFormData = {
                   ...formData,
-                  home_location: {
+                  work_location: {
                     longitude: e.latlng.lng,
                     latitude: e.latlng.lat,
                   },
@@ -133,11 +135,11 @@ export default function CreateJobPost() {
 
   const handleSubmit = async () => {
     const res = await createJobPost(formData);
-    if (res == 201) {
+    if (res == 200) {
       emails.map((email) => {
         assignColleague(email);
       });
-      router.push("/dashboard");
+      router.push("/job-posts");
     }
   };
 
@@ -251,7 +253,7 @@ export default function CreateJobPost() {
                 <Select
                   id="contract_type_id"
                   value={formData.contract_type_id}
-                  onChange={handleNumberFormChange}
+                  onChange={handleFormChange}
                   placeholder="Select"
                 >
                   {formOptions &&
@@ -271,7 +273,7 @@ export default function CreateJobPost() {
                 <Select
                   id="work_type_id"
                   value={formData.work_type_id}
-                  onChange={handleNumberFormChange}
+                  onChange={handleFormChange}
                   placeholder="Select"
                 >
                   {formOptions &&
@@ -327,12 +329,20 @@ export default function CreateJobPost() {
             <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
               Job post description and salary
             </Text>
-
-            <Text fontSize="lg" paddingTop="16px" textAlign="center">
-              Salary
-            </Text>
-            <Input id="min_salary" type="number" value={formData.salary} onChange={handleNumberFormChange} />
-
+            <div className="inputs-wrapper">
+              <div className="input-box w-50">
+                <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                  Min Salary
+                </Text>
+                <Input id="salary_min" type="number" value={formData.salary_min} onChange={handleFormChange} />
+              </div>
+              <div className="input-box w-50">
+                <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                  Max Salary
+                </Text>
+                <Input id="salary_max" type="number" value={formData.salary_max} onChange={handleFormChange} />
+              </div>
+            </div>
             <Text fontSize="lg" paddingTop="16px" textAlign="center">
               Description
             </Text>
