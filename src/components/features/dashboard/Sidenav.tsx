@@ -16,7 +16,7 @@ import {
   FlexProps,
   Button,
 } from "@chakra-ui/react";
-import { FiSettings, FiMenu, FiSend, FiUserCheck, FiLayers, FiCrosshair } from "react-icons/fi";
+import { FiSettings, FiMenu, FiSend, FiUserCheck, FiLayers, FiCrosshair, FiHome } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
 import Link from "next/link";
@@ -29,12 +29,14 @@ interface LinkItemProps {
   url: string;
 }
 const ApplicantLinks: Array<LinkItemProps> = [
+  { name: "Home", icon: FiHome, url: "/" },
   { name: "Profile", icon: FiSettings, url: "/profile" },
   { name: "Matches", icon: FiUserCheck, url: "" },
   { name: "Chats", icon: FiSend, url: "" },
 ];
 
 const RecruiterLinks: Array<LinkItemProps> = [
+  { name: "Home", icon: FiHome, url: "/" },
   { name: "Profile", icon: FiSettings, url: "/profile" },
   { name: "Company", icon: FiLayers, url: "" },
   { name: "Job Posts", icon: FiCrosshair, url: "/job-posts" },
