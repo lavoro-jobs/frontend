@@ -6,10 +6,10 @@ export default interface FormState {
   education_level_id?: number | undefined;
   age?: number | undefined;
   gender?: string;
-  skill_id_list?: number[];
+  skill_ids?: number[];
   cv?: string;
   work_type_id?: number | undefined;
-  seniority_level_id?: number | undefined;
+  seniority_level?: number | undefined;
   position_id?: number | undefined;
   home_location?: {
     longitude?: number | undefined;

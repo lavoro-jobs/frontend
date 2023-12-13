@@ -9,67 +9,49 @@ import getAllCatalogs from "@/helpers/getAllCatalogs";
 import { FaGraduationCap } from "react-icons/fa";
 import getApplicantProfile from "@/helpers/getApplicantProfile";
 import ApplicantProfileUpdate from "../updateProfile/ApplicantProfileUpdate";
-import Experience from "@/interfaces/shared/experience";
+import FormState from "@/interfaces/applicant/form-state-get-applicant.interface";
 import FormOptions from "@/interfaces/shared/formOptions";
 import { GrLocation } from "react-icons/gr";
 import { FaFileDownload } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
 
-{
-  /* TODO - kad se doda id na get-applicant-profile izbrisat ovo i importat FormState iz form-state-get-applicant.interface */
-}
-interface FormState {
-  first_name: string;
-  last_name: string;
-  education_level: string;
-  age: number | undefined;
-  gender: string;
-  skills: string[];
-  experiences: Experience[];
-  cv: string;
-  work_type: number | undefined;
-  seniority_level: number | undefined;
-  position: number | undefined;
-  home_location: {
-    longitude: number | undefined;
-    latitude: number | undefined;
-  };
-  work_location_max_distance: number | undefined;
-  contract_type: number | undefined;
-  min_salary: number | undefined;
-}
-
 export default function ApplicantProfile() {
   const [formOptions, setFormOptions] = useState<FormOptions>({});
 
-  {
-    /* TODO - geocode */
-  }
+  /* TODO - geocode */
   const [address, setAddress] = useState<string>("");
-
   const [update, setUpdate] = useState<boolean>(false);
 
-  {
-    /* TODO - kad se doda id na get-applicant-profile uredit ovo */
-  }
   const [formData, setFormData] = useState<FormState>({
     first_name: "",
     last_name: "",
-    education_level: "",
+    education_level: {
+      id: undefined,
+      education_level: ""
+    },
     age: undefined,
     gender: "",
     skills: [],
     experiences: [],
     cv: "",
-    work_type: undefined,
+    work_type: {
+      id: undefined,
+      work_type: ""
+    },
     seniority_level: undefined,
-    position: undefined,
+    position: {
+      id: undefined,
+      position_name: ""
+    },
     home_location: {
       longitude: undefined,
-      latitude: undefined,
+      latitude: undefined
     },
     work_location_max_distance: undefined,
-    contract_type: undefined,
+    contract_type: {
+      id: undefined,
+      contract_type: ""
+    },
     min_salary: undefined,
   });
 
@@ -163,7 +145,7 @@ export default function ApplicantProfile() {
 
             <Flex direction="column" alignItems="center" bgColor="white" flex="2">
               <Heading size="2xl" mt="32px" mb="32px">
-                {formData.position}
+                {formData.position.position_name}
               </Heading>
               <p>
                 {formData.skills &&
@@ -179,13 +161,13 @@ export default function ApplicantProfile() {
                       backgroundColor="blue.500"
                       color="white"
                     >
-                      {skill}
+                      {skill.skill_name}
                     </Text>
                   ))}
               </p>
               <Flex mt="32px" align="center" gap="8px">
                 <FaGraduationCap size="24px" />
-                <Text>{formData.education_level}</Text>
+                <Text>{formData.education_level.education_level}</Text>
               </Flex>
               <Flex mt="16px" align="center" gap="8px">
                 <LiaCertificateSolid size="24px" />
@@ -193,11 +175,11 @@ export default function ApplicantProfile() {
               </Flex>
               <Flex mt="16px" align="center" gap="8px">
                 <FaLocationDot size="24px" />
-                <Text>{formData.work_type}</Text>
+                <Text>{formData.work_type.work_type}</Text>
               </Flex>
               <Flex mt="16px" align="center" gap="8px">
                 <IoBriefcaseSharp size="24px" />
-                <Text>{formData.contract_type}</Text>
+                <Text>{formData.contract_type.contract_type}</Text>
               </Flex>
 
               <Box mt="32px" mb="32px" border="1px solid #2E77AE" width="60%" />
@@ -231,7 +213,7 @@ export default function ApplicantProfile() {
             gender={formData.gender}
             work_location_max_distance={formData.work_location_max_distance}
             min_salary={formData.min_salary}
-            seniority_level_id={formData.seniority_level}
+            seniority_level={formData.seniority_level}
             home_location={formData.home_location}
             experiences={formData.experiences}
           ></ApplicantProfileUpdate>
