@@ -19,8 +19,8 @@ interface FormOptions {
 export default function JobPost({
   position_id,
   education_level_id,
-  seniority_level_id,
-  skill_id_list,
+  seniority_level,
+  skill_ids,
   work_type_id,
   contract_type_id,
   work_location,
@@ -77,8 +77,8 @@ export default function JobPost({
           </Text>
           <Text mb="8px">{description}</Text>
           <p>
-            {skill_id_list &&
-              skill_id_list.map((skillId, index) => (
+            {skill_ids &&
+              skill_ids.map((skillId, index) => (
                 <Text
                   key={index}
                   display="inline-block"
@@ -100,7 +100,7 @@ export default function JobPost({
           </Flex>
           <Flex mt="8px" align="center" gap="8px">
             <LiaCertificateSolid size="24px" />
-            <Text>Seniority level - {seniority_level_id}</Text>
+            <Text>Seniority level - {seniority_level}</Text>
           </Flex>
           <Flex mt="8px" align="center" gap="8px">
             <FaLocationDot size="24px" />
