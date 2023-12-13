@@ -323,7 +323,7 @@ export default function ApplicantProfileUpdate({
           <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
             Seniority level
           </Heading>
-          <Slider id="seniority_level" min={1} max={5} step={1} defaultValue="seniority_level" marks={marks} onChange={handleSliderChange} />
+          <Slider id="seniority_level" min={0} max={4} step={1} defaultValue={seniority_level} marks={marks} onChange={handleSliderChange} />
 
           <Heading fontSize="xl" pt="32px" pb="8px" color="#2E77AE">
             Skills
