@@ -2,7 +2,7 @@ import { Box, Button, Flex, Heading, IconButton, Input, Select, Text } from "@ch
 import MultiSelect from "multiselect-react-dropdown";
 import React, { useEffect, useState, useRef } from "react";
 import FormState from "@/interfaces/applicant/form-state.interface";
-import GoogleMapReact from "google-map-react";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import createApplicantProfile from "@/helpers/createApplicantProfile";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
@@ -13,6 +13,7 @@ import { IoHappyOutline } from "react-icons/io5";
 import { IoArrowRedo, IoArrowUndo } from "react-icons/io5";
 import { FiXCircle } from "react-icons/fi";
 import Slider from "rc-slider";
+import { useMapEvents } from 'react-leaflet/hooks'
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -123,24 +124,32 @@ export default function ApplicantProfileSetup() {
     }
   };
 
-  const handleMapClick = ({ x, y, lat, lng, event }: MapClickEvent) => {
-    setMarker({ lat, lng });
-    const newFormData = {
-      ...formData,
-      home_location: {
-        longitude: lng,
-        latitude: lat,
-      },
-    };
-    setFormData(newFormData);
-  };
-
   const inputRef = useRef<HTMLInputElement>(null);
   const handleLogoUpload = () => {
     if (inputRef.current) {
       inputRef.current.click();
     }
   };
+
+    const [clickedLatLng, setClickedLatLng] = useState(null);
+
+    const LocationFinderDummy = () => {
+        const map = useMapEvents({
+            click(e) {
+                setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
+                const newFormData = {
+                  ...formData,
+                  home_location: {
+                    longitude: e.latlng.lng,
+                    latitude: e.latlng.lat,
+                  },
+                };
+                setFormData(newFormData);
+            },
+        });
+        return null;
+    };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -220,7 +229,6 @@ export default function ApplicantProfileSetup() {
   };
 
   const handleSubmit = async () => {
-    console.log(formData)
     const response = await createApplicantProfile(formData);
     if (response == 201) {
       router.push("/dashboard");
@@ -238,7 +246,7 @@ export default function ApplicantProfileSetup() {
       justify="center"
       direction="column"
     >
-      <Heading marginBottom="32px" maxW="512px" textAlign="center" color="#0D2137">
+      <Heading marginBottom="32px" maxW="512px" textAlign="center" color="#fff">
         Welcome! Answer questions to get your job matches.
       </Heading>
 
@@ -699,12 +707,23 @@ export default function ApplicantProfileSetup() {
                 <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE" textAlign="center">
                   Click location on map to get Latitude/Longitude
                 </Heading>
-                <div style={{ height: "400px", width: "100%", paddingTop: "32px" }}>
-                  <GoogleMapReact
-                    defaultCenter={{ lat: 0, lng: 0 }}
-                    defaultZoom={3}
-                    onClick={handleMapClick}
-                  ></GoogleMapReact>
+                <div style={{ height: "400px", width: "100%", paddingTop: "32px", marginBottom: "32px" }}>
+                  <MapContainer
+                      center={[0, 0]}
+                      zoom={2}
+                      style={{ height: '400px', width: '100%' }}
+                    >
+                      <LocationFinderDummy />
+                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                      {clickedLatLng && (
+                        <Marker position={clickedLatLng}>
+                          <Popup>
+                            Latitude: {clickedLatLng.lat}<br />
+                            Longitude: {clickedLatLng.lng}
+                          </Popup>
+                        </Marker>
+                      )}
+                    </MapContainer>
                 </div>
                 <Flex paddingTop="32px" justifyContent="flex-end">
                   <Button

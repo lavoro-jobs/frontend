@@ -12,8 +12,10 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
+import useAuth from "@/hooks/useAuth";
 
 export default function Header({ currentRoute }: { currentRoute?: string }) {
+  const { auth } = useAuth();
   return (
     <header>
       <Flex h="100%" justify="space-between" align="stretch">
@@ -41,12 +43,21 @@ export default function Header({ currentRoute }: { currentRoute?: string }) {
           </Flex>
 
           <ButtonGroup>
-            <Button as="a" href="/signin" bgColor="#E0EAF5" _hover={{ bgColor: "gray.300" }} color="#0D2137" h="32px">
-              Sign in
-            </Button>
-            <Button as="a" href="/signup" bgColor="#FF8E2B" _hover={{ bgColor: "#fdb16e" }} color="#0D2137" h="32px">
-              Sign up
-            </Button>
+            { !auth &&
+              <>
+              <Button as="a" href="/signin" bgColor="#E0EAF5" _hover={{ bgColor: "gray.300" }} color="#0D2137" h="32px">
+                Sign in
+              </Button>
+              <Button as="a" href="/signup" bgColor="#FF8E2B" _hover={{ bgColor: "#fdb16e" }} color="#0D2137" h="32px">
+                Sign up
+              </Button>
+              </>
+            }
+            { auth &&
+              <Button as="a" href="/dashboard" bgColor="#E0EAF5" _hover={{ bgColor: "gray.300" }} color="#0D2137" h="32px">
+                Dashboard
+              </Button>
+            }
           </ButtonGroup>
 
           <Menu>

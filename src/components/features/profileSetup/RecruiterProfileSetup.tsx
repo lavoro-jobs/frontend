@@ -164,7 +164,7 @@ export default function RecruiterProfileSetup() {
       justify="center"
       direction="column"
     >
-      <Heading marginBottom="32px" maxW="512px" textAlign="center" color="#0D2137">
+      <Heading marginBottom="32px" maxW="512px" textAlign="center" color="#fff">
         Welcome!
       </Heading>
 
