@@ -32,4 +32,8 @@ export default interface Form {
     contract_type: string | undefined;
   };
   min_salary: number | undefined;
+  education_level_id: number | undefined;
+  position_id: number | undefined;
+  contract_type_id: number | undefined;
+  work_type_id: number | undefined;
 }
