@@ -51,6 +51,10 @@ export default function ApplicantProfile() {
       contract_type: "",
     },
     min_salary: undefined,
+    education_level_id: undefined,
+    position_id: undefined,
+    contract_type_id: undefined,
+    work_type_id: undefined,
   });
 
   useEffect(() => {
@@ -218,6 +222,10 @@ export default function ApplicantProfile() {
             work_location_max_distance={formData.work_location_max_distance}
             contract_type={formData.contract_type}
             min_salary={formData.min_salary}
+            education_level_id={formData.education_level_id}
+            position_id={formData.position_id}
+            contract_type_id={formData.contract_type_id}
+            work_type_id={formData.work_type_id}
           ></ApplicantProfileUpdate>
         </Box>
       )}
