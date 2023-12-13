@@ -9,8 +9,12 @@ const getApplicantProfile = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching applicant profile:", error);
-    throw error;
+    if (error.response && error.response.status === 404) {
+        return null;
+    } else {
+        console.error("Error fetching applicant profile:", error);
+        throw error;
+    }
   }
 };
 
