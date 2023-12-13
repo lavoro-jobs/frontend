@@ -45,7 +45,7 @@ export default function AuthLayout({ children }: any) {
     const handleRecruiterProfile = async () => {
       try {
         const profile = await getCurrentRecruiterProfile();
-        const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
+        const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/dashboard";
         navigateTo(path);
       } catch (error) {
         // Navigating to profile-setup if the recruiter is not in the db
@@ -56,7 +56,7 @@ export default function AuthLayout({ children }: any) {
     const handleApplicantProfile = async () => {
       try {
         const profile = await getApplicantProfile();
-        const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
+        const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/dashboard";
         navigateTo(path);
       } catch (error) {
         // Navigating to profile-setup if the applicant is not in the db
