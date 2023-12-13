@@ -47,8 +47,8 @@ export default function CreateJobPost() {
   const [formData, setFormData] = useState<FormState>({
     position_id: undefined,
     education_level_id: undefined,
-    seniority_level_id: 0,
-    skill_id_list: [],
+    seniority_level: 0,
+    skill_ids: [],
     work_type_id: undefined,
     contract_type_id: undefined,
     work_location: {
@@ -111,14 +111,14 @@ export default function CreateJobPost() {
 
   const handleSliderChange = (value: number | number[]) => {
     if (typeof value === "number") {
-      const newFormData = { ...formData, seniority_level_id: value - 1 };
+      const newFormData = { ...formData, seniority_level: value - 1 };
       setFormData(newFormData);
     }
   };
 
   const handleSkills = (selectedList: [{ id: number; skill_name: string }]) => {
     const skillIdArray = selectedList.map((item) => item.id);
-    const newFormData = { ...formData, skill_id_list: skillIdArray };
+    const newFormData = { ...formData, skills: skillIdArray };
     setSkills(selectedList);
     setFormData(newFormData);
   };
