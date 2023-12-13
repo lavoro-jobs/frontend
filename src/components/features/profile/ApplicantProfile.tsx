@@ -9,25 +9,23 @@ import getAllCatalogs from "@/helpers/getAllCatalogs";
 import { FaGraduationCap } from "react-icons/fa";
 import getApplicantProfile from "@/helpers/getApplicantProfile";
 import ApplicantProfileUpdate from "../updateProfile/ApplicantProfileUpdate";
-import FormState from "@/interfaces/applicant/form-state-get-applicant.interface";
+import Form from "@/interfaces/applicant/form-state-get-applicant.interface";
 import FormOptions from "@/interfaces/shared/formOptions";
 import { GrLocation } from "react-icons/gr";
 import { FaFileDownload } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
 
 export default function ApplicantProfile() {
-  const [formOptions, setFormOptions] = useState<FormOptions>({});
-
   /* TODO - geocode */
   const [address, setAddress] = useState<string>("");
   const [update, setUpdate] = useState<boolean>(false);
 
-  const [formData, setFormData] = useState<FormState>({
+  const [formData, setFormData] = useState<Form>({
     first_name: "",
     last_name: "",
     education_level: {
       id: undefined,
-      education_level: ""
+      education_level: "",
     },
     age: undefined,
     gender: "",
@@ -36,21 +34,21 @@ export default function ApplicantProfile() {
     cv: "",
     work_type: {
       id: undefined,
-      work_type: ""
+      work_type: "",
     },
     seniority_level: undefined,
     position: {
       id: undefined,
-      position_name: ""
+      position_name: "",
     },
     home_location: {
       longitude: undefined,
-      latitude: undefined
+      latitude: undefined,
     },
     work_location_max_distance: undefined,
     contract_type: {
       id: undefined,
-      contract_type: ""
+      contract_type: "",
     },
     min_salary: undefined,
   });
@@ -58,12 +56,6 @@ export default function ApplicantProfile() {
   useEffect(() => {
     getApplicantProfile().then((resp) => {
       setFormData(resp);
-    });
-  }, []);
-
-  useEffect(() => {
-    getAllCatalogs().then((resp) => {
-      setFormOptions(resp);
     });
   }, []);
 
@@ -78,11 +70,6 @@ export default function ApplicantProfile() {
 
   return (
     <Sidenav>
-      {update && (
-        <Button alignSelf="flex-end" colorScheme="blue" onClick={() => setUpdate(!update)}>
-          Cancel
-        </Button>
-      )}
       {!update && (
         <>
           <Flex w="100%" justify="space-between" minHeight="calc(100vh - 32px)">
@@ -189,9 +176,15 @@ export default function ApplicantProfile() {
 
               {formData.experiences.map((experience, index) => (
                 <>
-                  <Text mb="8px" key={index}>Company name - {experience.company_name}</Text>
-                  <Text mb="8px" key={index}>Position - {experience.position_id}</Text>
-                  <Text mb="32px" key={index}>Years - {experience.years}</Text>
+                  <Text mb="8px" key={index}>
+                    Company name - {experience.company_name}
+                  </Text>
+                  <Text mb="8px" key={index}>
+                    Position - {experience.position_id}
+                  </Text>
+                  <Text mb="32px" key={index}>
+                    Years - {experience.years}
+                  </Text>
                 </>
               ))}
 
@@ -205,19 +198,28 @@ export default function ApplicantProfile() {
       )}
 
       {update && (
-        <>
+        <Box bg="white" p="32px">
+          <Button alignSelf="flex-end" colorScheme="blue" onClick={() => setUpdate(!update)}>
+            Cancel
+          </Button>
           <ApplicantProfileUpdate
             first_name={formData.first_name}
             last_name={formData.last_name}
+            education_level={formData.education_level}
             age={formData.age}
             gender={formData.gender}
-            work_location_max_distance={formData.work_location_max_distance}
-            min_salary={formData.min_salary}
-            seniority_level={formData.seniority_level}
-            home_location={formData.home_location}
+            skills={formData.skills}
             experiences={formData.experiences}
+            cv={formData.cv}
+            work_type={formData.work_type}
+            seniority_level={formData.seniority_level}
+            position={formData.position}
+            home_location={formData.home_location}
+            work_location_max_distance={formData.work_location_max_distance}
+            contract_type={formData.contract_type}
+            min_salary={formData.min_salary}
           ></ApplicantProfileUpdate>
-        </>
+        </Box>
       )}
     </Sidenav>
   );
