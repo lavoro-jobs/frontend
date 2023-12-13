@@ -20,8 +20,10 @@ export default function Dashboard() {
     const handleRecruiterProfile = async () => {
       try {
         const profile = await getCurrentRecruiterProfile();
-        const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
-        navigateTo(path);
+        console.log(profile);
+        if (isProfileSetupNeeded(profile)) {
+          navigateTo("/profile-setup");
+        }
       } catch (error) {
         // Navigating to profile-setup if the recruiter is not in the db
         navigateTo("/profile-setup");
@@ -31,9 +33,9 @@ export default function Dashboard() {
     const handleApplicantProfile = async () => {
       try {
         const profile = await getApplicantProfile();
-        console.log(profile);
-        const path = isProfileSetupNeeded(profile) ? "/profile-setup" : "/profile";
-        navigateTo(path);
+        if (isProfileSetupNeeded(profile)) {
+          navigateTo("/profile-setup");
+        }
       } catch (error) {
         console.log(("ERROR"))
         // Navigating to profile-setup if the applicant is not in the db
