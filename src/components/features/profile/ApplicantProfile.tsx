@@ -5,12 +5,10 @@ import { LiaBirthdayCakeSolid, LiaCertificateSolid } from "react-icons/lia";
 import { FaGenderless, FaLocationDot } from "react-icons/fa6";
 import { IoBriefcaseSharp, IoMaleSharp } from "react-icons/io5";
 import { IoFemaleSharp } from "react-icons/io5";
-import getAllCatalogs from "@/helpers/getAllCatalogs";
 import { FaGraduationCap } from "react-icons/fa";
 import getApplicantProfile from "@/helpers/getApplicantProfile";
 import ApplicantProfileUpdate from "../updateProfile/ApplicantProfileUpdate";
 import Form from "@/interfaces/applicant/form-state-get-applicant.interface";
-import FormOptions from "@/interfaces/shared/formOptions";
 import { GrLocation } from "react-icons/gr";
 import { FaFileDownload } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
@@ -51,10 +49,6 @@ export default function ApplicantProfile() {
       contract_type: "",
     },
     min_salary: undefined,
-    education_level_id: undefined,
-    position_id: undefined,
-    contract_type_id: undefined,
-    work_type_id: undefined,
   });
 
   useEffect(() => {
@@ -222,10 +216,6 @@ export default function ApplicantProfile() {
             work_location_max_distance={formData.work_location_max_distance}
             contract_type={formData.contract_type}
             min_salary={formData.min_salary}
-            education_level_id={formData.education_level_id}
-            position_id={formData.position_id}
-            contract_type_id={formData.contract_type_id}
-            work_type_id={formData.work_type_id}
           ></ApplicantProfileUpdate>
         </Box>
       )}

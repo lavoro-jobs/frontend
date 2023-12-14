@@ -183,11 +183,9 @@ export default function ApplicantProfileUpdate({
     });
   }
 
-    const [clickedLatLng, setClickedLatLng] = useState(null);
-
     const LocationFinderDummy = () => {
         const map = useMapEvents({
-            click(e) {
+            click(e:any) {
                 setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
                 const newFormData = {
                   ...formData,
@@ -222,25 +220,25 @@ export default function ApplicantProfileUpdate({
     <>
       <Flex gap="32px">
         <Box flex="1" pr="32px" borderRight="solid #2E77AE 1px">
-          <Flex gap="8px" justify="center">
-            <Box>
+          <Flex gap="8px" justify="space-between">
+            <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                 First name
               </Heading>
               <Input
-                w="300px"
+                w="100%"
                 borderColor="#2E77AE"
                 id="first_name"
                 value={formData.first_name}
                 onChange={handleFormChange}
               />
             </Box>
-            <Box>
+            <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                 Last name
               </Heading>
               <Input
-                w="300px"
+                w="100%"
                 borderColor="#2E77AE"
                 id="last_name"
                 value={formData.last_name}
@@ -249,13 +247,13 @@ export default function ApplicantProfileUpdate({
             </Box>
           </Flex>
 
-          <Flex gap="8px" justify="center">
-            <Box>
+          <Flex gap="8px" justify="space-between">
+            <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                 Age
               </Heading>
               <Input
-                w="300px"
+                w="100%"
                 borderColor="#2E77AE"
                 id="age"
                 type="number"
@@ -263,12 +261,12 @@ export default function ApplicantProfileUpdate({
                 onChange={handleNumberFormChange}
               />
             </Box>
-            <Box>
+            <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                 Gender
               </Heading>
               <Select
-                w="300px"
+                w="100%"
                 borderColor="#2E77AE"
                 id="gender"
                 value={formData.gender}
@@ -323,7 +321,7 @@ export default function ApplicantProfileUpdate({
           <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
             Seniority level
           </Heading>
-          <Slider id="seniority_level" min={0} max={4} step={1} defaultValue={seniority_level} marks={marks} onChange={handleSliderChange} />
+          <Slider min={0} max={4} step={1} defaultValue={seniority_level} marks={marks} onChange={handleSliderChange} />
 
           <Heading fontSize="xl" pt="32px" pb="8px" color="#2E77AE">
             Skills
@@ -339,14 +337,14 @@ export default function ApplicantProfileUpdate({
         </Box>
 
         <Box flex="1">
-          <Flex gap="8px" justify="center">
-            <Box>
+          <Flex gap="8px" justify="space-between">
+            <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                 Contract type
               </Heading>
               <Select
                 id="contract_type_id"
-                w="300px"
+                w="100%"
                 borderColor="#2E77AE"
                 value={formData.contract_type_id}
                 onChange={handleNumberFormChange}
@@ -360,12 +358,12 @@ export default function ApplicantProfileUpdate({
                   ))}
               </Select>
             </Box>
-            <Box>
+            <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                 Work type
               </Heading>
               <Select
-                w="300px"
+                w="100%"
                 borderColor="#2E77AE"
                 id="work_type_id"
                 value={formData.work_type_id}
@@ -382,13 +380,13 @@ export default function ApplicantProfileUpdate({
             </Box>
           </Flex>
 
-          <Flex gap="8px" justify="center">
-            <Box>
+          <Flex gap="8px" justify="space-between">
+            <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                 Minimum salary
               </Heading>
               <Input
-                w="300px"
+                w="100%"
                 borderColor="#2E77AE"
                 id="min_salary"
                 type="number"
@@ -396,13 +394,13 @@ export default function ApplicantProfileUpdate({
                 onChange={handleNumberFormChange}
               />
             </Box>
-            <Box>
+            <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                 Max distance
               </Heading>
               <Input
                 id="work_location_max_distance"
-                w="300px"
+                w="100%"
                 borderColor="#2E77AE"
                 type="number"
                 value={formData.work_location_max_distance}
@@ -411,27 +409,27 @@ export default function ApplicantProfileUpdate({
             </Box>
           </Flex>
 
-          <Flex gap="8px" justify="center">
-            <Box>
+          <Flex gap="8px" justify="space-between">
+            <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                 Latitude
               </Heading>
               <Input
                 id="lat"
-                w="300px"
+                w="100%"
                 borderColor="#2E77AE"
                 type="number"
                 value={marker.lat || formData.home_location?.latitude}
                 onChange={handleNumberFormChange}
               />
             </Box>
-            <Box>
+            <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
                 Longitude
               </Heading>
               <Input
                 id="lng"
-                w="300px"
+                w="100%"
                 borderColor="#2E77AE"
                 type="number"
                 value={marker.lng || formData.home_location?.longitude}
@@ -447,18 +445,10 @@ export default function ApplicantProfileUpdate({
             <MapContainer
               center={[0, 0]}
               zoom={2}
-              style={{ height: '400px', width: '100%' }}
+              style={{ height: '350px', width: '100%' }}
             >
               <LocationFinderDummy />
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              {clickedLatLng && (
-                <Marker position={clickedLatLng}>
-                  <Popup>
-                    Latitude: {clickedLatLng.lat}<br />
-                    Longitude: {clickedLatLng.lng}
-                  </Popup>
-                </Marker>
-              )}
             </MapContainer>
           </div>
         </Box>
@@ -483,7 +473,7 @@ export default function ApplicantProfileUpdate({
                   </Heading>
                   <Input
                     alignSelf="center"
-                    w="300px"
+                    w="100%"
                     key={index}
                     value={input.company_name}
                     id="company_name"
