@@ -22,6 +22,9 @@ import { ReactText } from "react";
 import Link from "next/link";
 import useProtectedRoute from "@/hooks/useProtectedRoute";
 import {Role} from "@/types/Auth";
+import { useRouter } from "next/navigation";
+import signOut from "@/helpers/signOut";
+import useAuth from "@/hooks/useAuth";
 
 interface LinkItemProps {
   name: string;
@@ -74,13 +77,28 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
-  const { auth } = useProtectedRoute([Role.APPLICANT, Role.RECRUITER])
+  const { auth } = useProtectedRoute([Role.APPLICANT, Role.RECRUITER]);
+  const router = useRouter();
+  const { updateAuth } = useAuth();
   let useLinks: Array<LinkItemProps> = [];
 
   if(auth?.role == Role.APPLICANT) {
     useLinks = ApplicantLinks;
   } else if(auth?.role == Role.RECRUITER) {
     useLinks = RecruiterLinks;
+  }
+
+  const handleSignOut = async () => {
+    try {
+      const response = await signOut();
+      if (response.status === 200) {
+        localStorage.clear();
+        updateAuth();
+        router.push("/signIn");
+      }
+    } catch (err) {
+      throw new Error(err,"There was an error logging out. Please try again.");
+    }
   }
 
   return (
@@ -108,7 +126,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           <NavItem icon={link.icon}>{ link.name }</NavItem>
         </Link>
       ))}
-      <Button className="sign-out">Sign out</Button>
+      <Button className="sign-out" onClick={handleSignOut}>Sign out</Button>
     </Box>
   );
 };
