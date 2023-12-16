@@ -3,45 +3,32 @@
 import useProtectedRoute from "@/hooks/useProtectedRoute";
 import { Role } from "@/types/Auth";
 import Sidenav from "@/components/features/dashboard/Sidenav";
-import { Button, Flex, Heading, Text } from "@chakra-ui/react";
+import {Button, Flex, Wrap, WrapItem} from "@chakra-ui/react";
 import Link from "next/link";
+import React, {useEffect, useState} from "react";
+import getJobPostsByRecruiter from "@/helpers/getJobPosts";
+import FormState from "@/interfaces/job-posts/form-state.interface";
 import JobPost from "@/components/features/jobPost/JobPost";
 
 export default function JobPosts() {
+
   const { auth } = useProtectedRoute([Role.APPLICANT, Role.RECRUITER]);
 
-  const fakeJobPosts = [
-    {
-      position_id: 1,
-      education_level_id: 1,
-      seniority_level: 1,
-      skill_ids: [1, 2, 3, 4, 5, 6, 7, 8],
-      work_type_id: 1,
-      contract_type_id: 1,
-      work_location: {
-        longitude: 0,
-        latitude: 0,
-      },
-      salary: 5,
-      description:
-        "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque, itaque facere esse sit sint molestiae?",
-    },
-    {
-      position_id: 5,
-      education_level_id: 2,
-      seniority_level: 4,
-      skill_ids: [10, 11, 13, 20, 6, 7, 8],
-      work_type_id: 3,
-      contract_type_id: 4,
-      work_location: {
-        longitude: 0,
-        latitude: 0,
-      },
-      salary: 10,
-      description:
-        "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque, itaque facere esse sit sint molestiae?",
-    },
-  ];
+  const [jobPosts, setJobPosts] = useState<FormState[]>([]);
+
+  useEffect(() => {
+    const fetchJobPosts = async () => {
+      try {
+        const data = await getJobPostsByRecruiter();
+        console.log(data)
+        setJobPosts(data);
+      } catch (error) {
+        console.error("Failed to fetch job posts", error);
+      }
+    };
+
+    fetchJobPosts();
+  }, []);
 
   if (auth?.role == Role.RECRUITER) {
     return (
@@ -52,23 +39,24 @@ export default function JobPosts() {
               Create new job post
             </Button>
           </Link>
-          <Flex gap="16px">
-            {/*TODO - get all job posts and create a JobPost component for each */}
-            {fakeJobPosts.map((post, index) => (
-              <JobPost
-                key={index}
-                position_id={post.position_id}
-                education_level_id={post.education_level_id}
-                seniority_level={post.seniority_level}
-                skill_ids={post.skill_ids}
-                work_type_id={post.work_type_id}
-                contract_type_id={post.contract_type_id}
-                work_location={post.work_location}
-                salary={post.salary}
-                description={post.description}
-              ></JobPost>
+          <Wrap spacing="16px" justify="center" align="stretch">
+            {jobPosts.map((post) => (
+              <WrapItem key={post.id}> {}
+                <JobPost
+                  position_id={post.position_id}
+                  education_level_id={post.education_level_id}
+                  seniority_level={post.seniority_level}
+                  skill_ids={post.skill_ids}
+                  work_type_id={post.work_type_id}
+                  contract_type_id={post.contract_type_id}
+                  work_location={post.work_location}
+                  salary_min={post.salary_min}
+                  salary_max={post.salary_max}
+                  description={post.description}
+                />
+              </WrapItem>
             ))}
-          </Flex>
+          </Wrap>
         </Flex>
       </Sidenav>
     );

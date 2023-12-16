@@ -1,4 +1,5 @@
 export default interface FormState {
+  id?: string | undefined;
   position_id?: number | undefined;
   education_level_id?: number | undefined;
   seniority_level?: number | undefined;

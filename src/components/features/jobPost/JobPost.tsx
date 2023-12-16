@@ -24,7 +24,8 @@ export default function JobPost({
   work_type_id,
   contract_type_id,
   work_location,
-  salary,
+  salary_min,
+  salary_max,
   description,
 }: FormState) {
   const [formOptions, setFormOptions] = useState<FormOptions>({});
@@ -68,9 +69,9 @@ export default function JobPost({
   };
 
   return (
-    <>
-      <Card w="sm">
-        <CardBody>
+    <Flex direction="column" h="100%">
+      <Card w="sm" h="100%" display="flex" flexDirection="column">
+        <CardBody flex="1" display="flex" flexDirection="column"> {/* This will make the card body flex and take available space */}
           <Heading>{position_id && getNameById(position_id, "positions")}</Heading>
           <Text fontSize="sm" color="gray.500" mt="2px" mb="8px">
             Address: {address}
@@ -112,7 +113,15 @@ export default function JobPost({
           </Flex>
           <Flex mt="8px" align="center" gap="8px">
             <FaMoneyBillWave size="24px" />
-            <Text>€{salary}</Text>
+            <Text>
+              {salary_min !== undefined && salary_max !== undefined
+                ? `$${salary_min} - $${salary_max}`
+                : salary_min !== undefined
+                  ? `From $${salary_min}`
+                  : salary_max !== undefined
+                    ? `Up to $${salary_max}`
+                    : "Salary not specified"}
+            </Text>
           </Flex>
         </CardBody>
         <Divider color="#2E77AE" />
@@ -127,6 +136,6 @@ export default function JobPost({
           </ButtonGroup>
         </CardFooter>
       </Card>
-    </>
+    </Flex>
   );
 }
