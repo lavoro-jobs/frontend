@@ -59,7 +59,8 @@ export default function CreateJobPost() {
     salary_min: undefined,
     salary_max: undefined,
     description: undefined,
-    end_date: "2024-12-13T19:38:10.767Z"
+    end_date: "2024-12-13T19:38:10.767Z",
+    assignees: undefined
   });
 
   useEffect(() => {
@@ -67,6 +68,13 @@ export default function CreateJobPost() {
       setFormOptions(resp);
     });
   }, []);
+
+  useEffect(() => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      assignees: emails,
+    }));
+  }, [emails]);
 
   const addEmails = (emailsToAdd: string[]) => {
     const validatedEmails = emailsToAdd
@@ -134,6 +142,7 @@ export default function CreateJobPost() {
   };
 
   const handleSubmit = async () => {
+    console.log(formData);
     const res = await createJobPost(formData);
     if (res == 200) {
       emails.map((email) => {
