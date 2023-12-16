@@ -62,7 +62,7 @@ export default function Sidenav({ children }: any) {
         </DrawerContent>
       </Drawer>
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
+      <Box ml={{ base: 0, md: 60 }} p="16px">
         {children}
       </Box>
     </Box>
