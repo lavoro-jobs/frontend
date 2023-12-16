@@ -12,4 +12,6 @@ export default interface FormState {
   salary_min?: number | undefined;
   salary_max?: number | undefined;
   description?: string | undefined;
+  end_date?: string | undefined;
+  assignees?: string[] | undefined;
 }
