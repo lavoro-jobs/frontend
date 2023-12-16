@@ -2,7 +2,7 @@ import axiosInstance from ".";
 
 const updateApplicantProfile = async (formData: any) => {
   try {
-    const response = await axiosInstance.post("/applicant/update-applicant-profile", JSON.stringify(formData), {
+    const response = await axiosInstance.patch("/applicant/update-applicant-profile", JSON.stringify(formData), {
       headers: {
         "Content-Type": "application/json",
       },

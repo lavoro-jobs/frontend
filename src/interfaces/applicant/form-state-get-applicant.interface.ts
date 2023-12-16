@@ -1,7 +1,7 @@
 import Experience from "../shared/experience";
 import Skill from "../shared/skill";
 
-export default interface FormState {
+export default interface Form {
   first_name: string;
   last_name: string;
   education_level: {
@@ -32,4 +32,8 @@ export default interface FormState {
     contract_type: string | undefined;
   };
   min_salary: number | undefined;
+  education_level_id?: number;
+  position_id?: number;
+  contract_type_id?: number;
+  work_type_id?: number;
 }

@@ -135,7 +135,7 @@ export default function ApplicantProfileSetup() {
 
     const LocationFinderDummy = () => {
         const map = useMapEvents({
-            click(e) {
+            click(e: any) {
                 setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
                 const newFormData = {
                   ...formData,
