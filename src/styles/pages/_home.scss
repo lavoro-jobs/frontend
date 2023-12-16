@@ -33,7 +33,7 @@
         content: "";
         display: block;
         position: absolute;
-        width: 200%;
+        width: 300%;
         height: 100%;
         top: 0;
         left: 0%;
@@ -96,6 +96,7 @@
   max-width: 1400px;
   margin: auto;
   display: flex;
+  flex-wrap: wrap;
   align-items: stretch;
   justify-content: space-between;
 
@@ -207,4 +208,128 @@
       left: 20%;
     }
   }
+}
+
+
+@media screen and (max-width: 1280px) {
+    .homepage-banner-wrapper .homepage-banner-container img {
+        width: 75%;
+    }
+
+    .homepage-banner-wrapper .homepage-banner-container .homepage-banner-box {
+        width: 25%;
+    }
+    .homepage-banner-wrapper .homepage-banner-container .homepage-banner-box h1 {
+        width: 150%;
+    }
+    .homepage-highlights-container .homepage-highlights-box {
+        width: 48%;
+        margin-bottom: 4%
+    }
+}
+
+@media screen and (max-width: 680px) {
+
+    .homepage-banner-wrapper .homepage-banner-container .homepage-banner-box:before {
+    display: none;
+    }
+    .homepage-banner-wrapper .homepage-banner-container img {
+        width: 100%;
+    }
+
+    .homepage-banner-wrapper .homepage-banner-container .homepage-banner-box {
+        width: 100%;
+        position: absolute;
+    }
+    .homepage-banner-wrapper .homepage-banner-container .homepage-banner-box {
+        align-items: center;
+        .chakra-button {
+            right: unset;
+            margin-top: 40px;
+        }
+
+        h1 {
+            width: auto;
+            font-size: 14vw;
+            right: unset;
+            text-align: center;
+            border-radius: 10px;
+            padding: 40px 20px;
+            background-color: rgba(255,255,255, 0.8);
+
+            span {
+                font-size: 14vw;
+                right: unset;
+            }
+        }
+    }
+
+    .homepage-highlights-wrapper h2 {
+        font-size: 9vw;
+    }
+    .homepage-highlights-container {
+        padding: 64px 32px;
+    }
+
+    .homepage-highlights-container .homepage-highlights-box {
+        width: 100%;
+        margin-bottom: 4%
+    }
+
+    .homepage-matching-container img {
+        width: 100%;
+        min-height: 500px;
+    }
+    .homepage-matching-container {
+        position: relative;
+    }
+    .homepage-matching-container .homepage-matching-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 0;
+    }
+    .homepage-matching-container .homepage-matching-box h1 {
+        width: auto;
+        left: unset;
+        font-size: 8vw;
+        text-align: center;
+
+        br {
+            display: none;
+        }
+    }
+    .homepage-matching-container .homepage-matching-box p {
+        width: auto;
+        left: unset;
+        font-size: 5vw;
+        text-align: center;
+    }
+    .homepage-matching-container .homepage-matching-box h1 span {
+        font-size: 8vw;
+        text-align: center;
+    }
+    .homepage-matching-container .homepage-matching-box .chakra-button {
+        width: auto;
+        left: unset;
+        font-size: 8vw;
+    }
+    .homepage-matching-background {
+        border-radius: 10px;
+        padding: 30px;
+        background-color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 20px;
+    }
+    .homepage-matching-container .homepage-matching-box p {
+        margin-bottom: 0;
+    }
+    .homepage-matching-container .homepage-matching-box:before {
+        display: none;
+    }
 }
