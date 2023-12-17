@@ -10,11 +10,13 @@
 @import "components/slider";
 
 // layout
+@import "layout/footer";
 @import "layout/header";
 @import "layout/sidenav";
 @import "layout/form";
 
 // pages
+@import "pages/about-us";
 @import "pages/home";
 @import "pages/profile-setup";
 @import "pages/profile";
