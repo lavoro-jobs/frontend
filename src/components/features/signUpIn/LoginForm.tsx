@@ -13,6 +13,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import useAuth from "@/hooks/useAuth";
 
 interface FormState {
   email: string;
@@ -26,6 +27,7 @@ interface PostData {
 
 export default function LoginForm() {
   const router = useRouter();
+  const { updateAuth } = useAuth();
 
   const [formData, setFormData] = useState<FormState>({
     email: "",
@@ -48,7 +50,8 @@ export default function LoginForm() {
     try {
       const response = await signIn(postData);
       if (response.status === 200) {
-        return router.push("/dashboard");
+        updateAuth();
+        router.push("/dashboard");
       }
     } catch (err) {
       setError("There was an error logging in. Please try again.");
