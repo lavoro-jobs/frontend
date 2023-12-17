@@ -58,16 +58,18 @@ export default function Home() {
       <div className="homepage-matching-wrapper">
         <div className="homepage-matching-container">
           <div className="homepage-matching-box">
-            <h1>
-              How
-              <br />
-              <span>it works</span>
-            </h1>
-            <p>
-              See how our ML algorithm
-              <br />
-              shapes your future
-            </p>
+            <div className="homepage-matching-background">
+                <h1>
+                  How&nbsp;
+                  <br />
+                  <span>it works</span>
+                </h1>
+                <p>
+                  See how our ML algorithm
+                  <br />
+                  shapes your future
+                </p>
+            </div>
             <Button as="a" href="/signup" bgColor="#FF8E2B" _hover={{ bgColor: "#fdb16e" }} color="#0D2137" h="32px">
               Discover
             </Button>
