@@ -38,6 +38,5 @@ export default function Footer() {
         </div>
       </Flex>
     </Container>
-
   );
 }
