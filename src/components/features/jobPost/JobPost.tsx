@@ -73,7 +73,7 @@ export default function JobPost({
           </Flex>
           <Flex mt="8px" align="center" gap="8px">
             <LiaCertificateSolid size="24px" />
-            <Text>Seniority level - {seniority_level}</Text>
+            <Text>Seniority level - {seniority_level ? seniority_level + 1 : 0}</Text>
           </Flex>
           <Flex mt="8px" align="center" gap="8px">
             <FaLocationDot size="24px" />
