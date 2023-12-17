@@ -6,14 +6,7 @@ header {
   right: 0;
   width: 100%;
   z-index: 88;
-
-  .header-title {
-    font-family: "Goldman", sans-serif;
-    font-size: 48px;
-    color: #0071c6;
-    padding: 0 32px;
-    line-height: 72px;
-  }
+  overflow: hidden;
 
   nav {
     display: flex;
@@ -72,8 +65,80 @@ header {
       padding-left: 48px;
     }
   }
+}
 
-  .chakra-menu__menu-button {
-    display: none;
-  }
+.header-title {
+    font-family: "Goldman", sans-serif;
+    font-size: 48px;
+    color: #0071c6;
+    padding: 0 32px;
+    line-height: 72px;
+}
+
+.drawer-close {
+    z-index: 99;
+    top: 16px;
+    right: 24px;
+}
+
+.drawer-title {
+    .header-title {
+        font-family: "Goldman", sans-serif;
+        font-size: 32px;
+        color: #0071c6;
+        padding: 0;
+        line-height: 32px;
+    }
+}
+.drawer-body {
+    padding-top: 120px;
+
+    p {
+        margin-bottom: 12px;
+    }
+}
+
+.hamby {
+    display: none
+}
+
+.material-symbols-outlined.icon-menu {
+    color: white;
+    font-size: 32px;
+}
+
+@media screen and (max-width: 1280px) {
+    header nav {
+        > div:not(.nav-esthetic) {
+            display: none;
+        }
+        .hamby {
+            display: flex;
+        }
+
+        padding: 0 24px 0 32px;
+    }
+}
+
+@media screen and (max-width: 680px) {
+    .drawer-body {
+        p {
+            font-size: 40px;
+        }
+    }
+
+    .chakra-modal__footer {
+        .chakra-button__group {
+            display: flex;
+            flex-flow: column;
+                width: 100%;
+
+            .chakra-button {
+                width: 100%;
+                margin: 10px 0;
+                font-size: 6vw;
+                height: 12vw;
+            }
+        }
+    }
 }

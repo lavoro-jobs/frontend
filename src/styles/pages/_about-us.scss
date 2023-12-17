@@ -1,0 +1,47 @@
+.chakra-heading {
+
+    &.secondary-heading {
+    mark {
+    font-size: var(--chakra-fontSizes-4xl);
+    padding: 5px 15px;
+    }
+    }
+    mark {
+    font-size: var(--chakra-fontSizes-6xl);
+    padding: 10px 30px;
+    }
+}
+
+.about-us-subtitle {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 100px;
+
+    h2 {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .chakra-button  {
+        font-size: 40px;
+        height: 60px;
+        padding: 15px 30px;
+    }
+}
+
+.about-us-details {
+    > div {
+        width: 45%;
+
+    }
+
+    img {
+        width: 45%;
+        aspect-ratio: 1;
+        object-fit: cover;
+    }
+}
