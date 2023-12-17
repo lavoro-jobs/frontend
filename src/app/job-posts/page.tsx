@@ -3,15 +3,14 @@
 import useProtectedRoute from "@/hooks/useProtectedRoute";
 import { Role } from "@/types/Auth";
 import Sidenav from "@/components/features/dashboard/Sidenav";
-import {Button, Flex, Wrap, WrapItem} from "@chakra-ui/react";
+import { Button, Flex, Wrap, WrapItem } from "@chakra-ui/react";
 import Link from "next/link";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import getJobPostsByRecruiter from "@/helpers/getJobPosts";
 import FormState from "@/interfaces/job-posts/form-state.interface";
 import JobPost from "@/components/features/jobPost/JobPost";
 
 export default function JobPosts() {
-
   const { auth } = useProtectedRoute([Role.APPLICANT, Role.RECRUITER]);
 
   const [jobPosts, setJobPosts] = useState<FormState[]>([]);
@@ -20,7 +19,6 @@ export default function JobPosts() {
     const fetchJobPosts = async () => {
       try {
         const data = await getJobPostsByRecruiter();
-        console.log(data)
         setJobPosts(data);
       } catch (error) {
         console.error("Failed to fetch job posts", error);
@@ -41,18 +39,21 @@ export default function JobPosts() {
           </Link>
           <Wrap spacing="16px" justify="center" align="stretch">
             {jobPosts.map((post) => (
-              <WrapItem key={post.id}> {}
+              <WrapItem key={post.id}>
                 <JobPost
-                  position_id={post.position_id}
-                  education_level_id={post.education_level_id}
+                  id={post.id}
+                  position={post.position}
+                  description={post.description}
+                  education_level={post.education_level}
+                  skills={post.skills}
+                  work_type={post.work_type}
                   seniority_level={post.seniority_level}
-                  skill_ids={post.skill_ids}
-                  work_type_id={post.work_type_id}
-                  contract_type_id={post.contract_type_id}
                   work_location={post.work_location}
+                  contract_type={post.contract_type}
                   salary_min={post.salary_min}
                   salary_max={post.salary_max}
-                  description={post.description}
+                  end_date={post.end_date}
+                  assignees={post.assignees}
                 />
               </WrapItem>
             ))}

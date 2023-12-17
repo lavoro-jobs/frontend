@@ -8,23 +8,17 @@ import {
   Input,
   Progress,
   Select,
-  Tag,
-  TagCloseButton,
-  TagLabel,
   Text,
   Textarea,
-  Wrap,
   useSteps,
 } from "@chakra-ui/react";
 import Multiselect from "multiselect-react-dropdown";
 import Slider from "rc-slider";
 import { useEffect, useState } from "react";
-import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import { useRouter } from "next/navigation";
-import assignColleague from "@/helpers/assignColleague";
 import createJobPost from "@/helpers/createJobPost";
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { useMapEvents } from 'react-leaflet/hooks'
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useMapEvents } from "react-leaflet/hooks";
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -37,30 +31,40 @@ interface FormOptions {
 export default function CreateJobPost() {
   const router = useRouter();
 
-  const [inputEmail, setInputEmail] = useState<string>("");
-  const [emails, setEmails] = useState<string[]>([]);
-
   const [formOptions, setFormOptions] = useState<FormOptions>({});
   const [skills, setSkills] = useState<{ id: number; skill_name: string }[]>([]);
 
   const [marker, setMarker] = useState({ lat: 0, lng: 0 });
 
   const [formData, setFormData] = useState<FormState>({
-    position_id: undefined,
-    education_level_id: undefined,
-    seniority_level: 0,
-    skill_ids: [],
-    work_type_id: undefined,
-    contract_type_id: undefined,
+    id: undefined,
+    position: {
+      id: undefined,
+      position_name: undefined,
+    },
+    description: undefined,
+    education_level: {
+      id: undefined,
+      education_level: undefined,
+    },
+    skills: [],
+    work_type: {
+      id: undefined,
+      work_type: undefined,
+    },
+    seniority_level: undefined,
     work_location: {
       longitude: undefined,
       latitude: undefined,
     },
+    contract_type: {
+      id: undefined,
+      contract_type: undefined,
+    },
     salary_min: undefined,
     salary_max: undefined,
-    description: undefined,
     end_date: "2024-12-13T19:38:10.767Z",
-    assignees: undefined
+    assignees: undefined,
   });
 
   useEffect(() => {
@@ -69,53 +73,24 @@ export default function CreateJobPost() {
     });
   }, []);
 
-  useEffect(() => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      assignees: emails,
-    }));
-  }, [emails]);
+  const [clickedLatLng, setClickedLatLng] = useState(null);
 
-  const addEmails = (emailsToAdd: string[]) => {
-    const validatedEmails = emailsToAdd
-      .map((e) => e.trim())
-      .filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && !emails.includes(email));
-
-    setEmails((prevEmails) => [...prevEmails, ...validatedEmails]);
-    setInputEmail("");
+  const LocationFinderDummy = () => {
+    const map = useMapEvents({
+      click(e) {
+        setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
+        const newFormData = {
+          ...formData,
+          work_location: {
+            longitude: e.latlng.lng,
+            latitude: e.latlng.lat,
+          },
+        };
+        setFormData(newFormData);
+      },
+    });
+    return null;
   };
-
-  const removeEmail = (index: number) => {
-    const updatedEmails = [...emails];
-    updatedEmails.splice(index, 1);
-    setEmails(updatedEmails);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (["Enter", "Tab", ",", " "].includes(e.key)) {
-      e.preventDefault();
-      addEmails([inputEmail]);
-    }
-  };
-
-    const [clickedLatLng, setClickedLatLng] = useState(null);
-
-    const LocationFinderDummy = () => {
-        const map = useMapEvents({
-            click(e) {
-                setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
-                const newFormData = {
-                  ...formData,
-                  work_location: {
-                    longitude: e.latlng.lng,
-                    latitude: e.latlng.lat,
-                  },
-                };
-                setFormData(newFormData);
-            },
-        });
-        return null;
-    };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value };
@@ -142,12 +117,8 @@ export default function CreateJobPost() {
   };
 
   const handleSubmit = async () => {
-    console.log(formData);
     const res = await createJobPost(formData);
     if (res == 200) {
-      emails.map((email) => {
-        assignColleague(email);
-      });
       router.push("/job-posts");
     }
   };
@@ -185,16 +156,16 @@ export default function CreateJobPost() {
             <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
               Skills
             </Text>
+
             <div className="inputs-wrapper">
               <div className="input-box w-50">
                 <Text fontSize="lg" paddingTop="16px" textAlign="center">
                   Education level
                 </Text>
-
                 <Select
                   paddingTop="16px"
                   id="education_level_id"
-                  value={formData.education_level_id}
+                  value={formData.education_level?.id}
                   onChange={handleNumberFormChange}
                   placeholder="Select"
                 >
@@ -211,11 +182,10 @@ export default function CreateJobPost() {
                 <Text fontSize="lg" paddingTop="16px" textAlign="center">
                   Position
                 </Text>
-
                 <Select
                   paddingTop="16px"
                   id="position_id"
-                  value={formData.position_id}
+                  value={formData.position?.id}
                   onChange={handleNumberFormChange}
                   placeholder="Select"
                 >
@@ -228,15 +198,15 @@ export default function CreateJobPost() {
                 </Select>
               </div>
             </div>
+
             <Text fontSize="lg" paddingTop="32px" textAlign="center">
               Seniority level
             </Text>
-
             <Slider min={1} max={5} step={1} marks={marks} onChange={handleSliderChange} />
+
             <Text fontSize="lg" paddingTop="48px" textAlign="center">
               Skills
             </Text>
-
             <Multiselect
               id="skills"
               options={formOptions.skills}
@@ -258,10 +228,9 @@ export default function CreateJobPost() {
                 <Text fontSize="lg" paddingTop="16px" textAlign="center">
                   Contract type
                 </Text>
-
                 <Select
                   id="contract_type_id"
-                  value={formData.contract_type_id}
+                  value={formData.contract_type?.id}
                   onChange={handleFormChange}
                   placeholder="Select"
                 >
@@ -278,10 +247,9 @@ export default function CreateJobPost() {
                 <Text fontSize="lg" paddingTop="16px" textAlign="center">
                   Work type
                 </Text>
-
                 <Select
                   id="work_type_id"
-                  value={formData.work_type_id}
+                  value={formData.work_type?.id}
                   onChange={handleFormChange}
                   placeholder="Select"
                 >
@@ -302,7 +270,6 @@ export default function CreateJobPost() {
                 </Text>
                 <Input id="lat" type="number" value={marker.lat} onChange={handleNumberFormChange} />
               </div>
-
               <div className="input-box w-50">
                 <Text fontSize="lg" paddingTop="16px" textAlign="center">
                   Longitude
@@ -313,23 +280,21 @@ export default function CreateJobPost() {
             <Text fontSize="lg" paddingTop="32px" textAlign="center">
               Click location on map to get Latitude/Longitude
             </Text>
+
             <div style={{ height: "400px", width: "100%", paddingTop: "32px" }}>
-                <MapContainer
-                  center={[0, 0]}
-                  zoom={2}
-                  style={{ height: '400px', width: '100%' }}
-                >
-                  <LocationFinderDummy />
-                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                  {clickedLatLng && (
-                    <Marker position={clickedLatLng}>
-                      <Popup>
-                        Latitude: {clickedLatLng.lat}<br />
-                        Longitude: {clickedLatLng.lng}
-                      </Popup>
-                    </Marker>
-                  )}
-                </MapContainer>
+              <MapContainer center={[0, 0]} zoom={2} style={{ height: "400px", width: "100%" }}>
+                <LocationFinderDummy />
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                {clickedLatLng && (
+                  <Marker position={clickedLatLng}>
+                    <Popup>
+                      Latitude: {clickedLatLng.lat}
+                      <br />
+                      Longitude: {clickedLatLng.lng}
+                    </Popup>
+                  </Marker>
+                )}
+              </MapContainer>
             </div>
           </>
         )}
@@ -363,25 +328,7 @@ export default function CreateJobPost() {
             <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
               Assign colleagues
             </Text>
-            <Wrap>
-              {emails.map((email, index) => (
-                <Tag key={index} borderRadius="full" variant="solid" colorScheme="blue">
-                  <TagLabel>{email}</TagLabel>
-                  <TagCloseButton onClick={() => removeEmail(index)} />
-                </Tag>
-              ))}
-            </Wrap>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter emails"
-              marginTop="16px"
-              onKeyDown={handleKeyDown}
-              onChange={(e) => {
-                setInputEmail(e.target.value);
-              }}
-              value={inputEmail}
-            />
+            
           </>
         )}
 
