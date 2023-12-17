@@ -1,36 +1,43 @@
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { Heading, Flex, ButtonGroup, Container, IconButton, Stack, Text } from '@chakra-ui/react'
+import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa'
 import Link from "next/link";
 import React from "react";
 
 export default function Footer() {
   return (
-    <Box p="16px" bgColor="#0071c6" textAlign="center">
-      <Link href="/">
-        <Heading fontSize="3xl" color="#0D2137">
-          LAVORO
-        </Heading>
-      </Link>
-      <Flex gap="16px" justify="center">
-        <Link href="/job-posts">
-          <Text fontSize="lg" color="#0D2137">
-            Job posts
+    <Container className="footer" bgColor="#0071c6" w="100%" as="footer" role="contentinfo">
+    <Flex align="center" justify="space-between">
+        <Stack spacing={{ base: '4', md: '5' }}>
+          <Stack justify="space-between" direction="row" align="center">
+            <Link href="/">
+              <h1 className="footer-title">Lavoro</h1>
+            </Link>
+          </Stack>
+          <Text fontSize="sm" color="#fff">
+            &copy; {new Date().getFullYear()} Lavoro
           </Text>
-        </Link>
-        <Link href="/about-us">
-          <Text fontSize="lg" color="#0D2137">
-            About us
-          </Text>
-        </Link>
+        </Stack>
+        <div className="footer-right">
+            <Flex gap="16px" justify="center">
+                <Link href="/job-posts">
+                  <Text fontSize="xl" color="#fff">
+                    Job posts
+                  </Text>
+                </Link>
+                <Link href="/about-us">
+                  <Text fontSize="xl" color="#fff">
+                    About us
+                  </Text>
+                </Link>
+            </Flex>
+            <ButtonGroup className="footer-icons" variant="tertiary">
+              <IconButton as="a" href="#" color="#fff" aria-label="LinkedIn" icon={<FaLinkedin />} />
+              <IconButton as="a" href="#" color="#fff" aria-label="GitHub" icon={<FaGithub />} />
+              <IconButton as="a" href="#" color="#fff" aria-label="Twitter" icon={<FaTwitter />} />
+            </ButtonGroup>
+        </div>
       </Flex>
-      {/*replace with facebook, instagram, youtube, twitter... icons*/}
-      <Flex gap="16px" p="16px" justify="center">
-        <span className="material-symbols-outlined">stadia_controller</span>
-        <span className="material-symbols-outlined">g_translate</span>
-        <span className="material-symbols-outlined">shop</span>
-        <span className="material-symbols-outlined">nest_heat_link_gen_3</span>
-        <span className="material-symbols-outlined">nest_display</span>
-      </Flex>
-      <Text>© 2023. Lavoro</Text>
-    </Box>
+    </Container>
+
   );
 }
