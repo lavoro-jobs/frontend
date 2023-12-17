@@ -2,32 +2,32 @@ import Assignee from "../shared/assignee";
 import Skill from "../shared/skill";
 
 export default interface FormState {
-  id?: string | undefined;
+  id?: string;
   position?: {
-    id?: number | undefined;
-    position_name?: string | undefined;
+    id?: number;
+    position_name?: string;
   };
-  description?: string | undefined;
+  description?: string;
   education_level?: {
-    id?: number | undefined;
-    education_level?: string | undefined;
+    id?: number;
+    education_level?: string;
   };
   skills?: Skill[];
   work_type?: {
-    id?: number | undefined;
-    work_type?: string | undefined;
+    id?: number;
+    work_type?: string;
   };
-  seniority_level?: number | undefined;
+  seniority_level?: number;
   work_location?: {
-    longitude?: number | undefined;
-    latitude?: number | undefined;
+    longitude?: number;
+    latitude?: number;
   };
   contract_type?: {
-    id?: number | undefined;
-    contract_type?: string | undefined;
+    id?: number;
+    contract_type?: string;
   };
-  salary_min?: number | undefined;
-  salary_max?: number | undefined;
-  end_date?: string | undefined;
-  assignees?: Assignee[] | undefined;
+  salary_min?: number;
+  salary_max?: number;
+  end_date?: string;
+  assignees?: Assignee[];
 }
