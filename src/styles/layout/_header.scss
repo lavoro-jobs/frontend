@@ -8,14 +8,6 @@ header {
   z-index: 88;
   overflow: hidden;
 
-  .header-title {
-    font-family: "Goldman", sans-serif;
-    font-size: 48px;
-    color: #0071c6;
-    padding: 0 32px;
-    line-height: 72px;
-  }
-
   nav {
     display: flex;
     width: auto;
@@ -73,6 +65,14 @@ header {
       padding-left: 48px;
     }
   }
+}
+
+.header-title {
+    font-family: "Goldman", sans-serif;
+    font-size: 48px;
+    color: #0071c6;
+    padding: 0 32px;
+    line-height: 72px;
 }
 
 .drawer-close {

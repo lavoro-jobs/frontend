@@ -1,0 +1,149 @@
+.chakra-heading {
+
+    &.secondary-heading {
+    mark {
+    font-size: var(--chakra-fontSizes-4xl);
+    padding: 5px 15px;
+    }
+    }
+    mark {
+    font-size: var(--chakra-fontSizes-6xl);
+    padding: 10px 30px;
+    }
+}
+
+.about-us-subtitle {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 100px;
+
+    h2 {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .chakra-button  {
+        font-size: 32px;
+        height: 60px;
+        padding: 15px 30px;
+    }
+}
+
+.about-us-details {
+    > div {
+        width: 45%;
+
+    }
+
+    img {
+        width: 45%;
+        aspect-ratio: 1;
+        object-fit: cover;
+    }
+}
+
+@media screen and (max-width: 960px) {
+    .chakra-heading {
+        padding-left: 40px;
+        padding-right: 40px;
+        font-size: 40px;
+
+        &.secondary-heading {
+        font-size: 24px;
+        padding: 0;
+        mark {
+        font-size: 24px;
+        padding: 5px 15px;
+        }
+        }
+        mark {
+        font-size: 40px;
+        padding: 10px 30px;
+        }
+    }
+
+    .about-us-subtitle h2 {
+        padding: 0 40px;
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .about-us-subtitle .chakra-button {
+        font-size: 32px;
+        height: 40px;
+        padding: 25px 24px;
+    }
+
+    .about-us-details {
+        width: calc(100% - 80px)
+    }
+    .about-us-details {
+    > div, img {
+        width: 48%
+    }
+    }
+}
+
+@media screen and (max-width: 680px) {
+    .chakra-heading {
+        padding-left: 16px;
+        padding-right: 16px;
+        font-size: 24px;
+
+        &.secondary-heading {
+        font-size: 24px;
+        padding: 0;
+        mark {
+        font-size: 24px;
+        padding: 10px 20px;
+        }
+        }
+        mark {
+        font-size: 24px;
+        padding: 10px 20px;
+        }
+    }
+
+    .about-us-details {
+        width: calc(100% - 32px)
+    }
+    .about-us-subtitle h2 {
+        padding: 0 16px;
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .about-us-subtitle {
+        margin-bottom: 64px;
+
+        h2 {
+            padding: 0 16px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .chakra-button {
+            font-size: 18px;
+            height: 40px;
+            padding: 15px 20px;
+        }
+    }
+
+    .about-us-details {
+        flex-flow: column-reverse
+    }
+
+    .about-us-details {
+        > div {
+            width: 100%
+        }
+        img {
+            aspect-ratio: 1.5;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+    }
+}
