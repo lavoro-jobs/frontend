@@ -1,7 +1,7 @@
 import axiosInstance from ".";
 const createJobPost = async (formData: any) => {
   try {
-    const response = await axiosInstance.post("/job-post/create-job-post", JSON.stringify(formData), {
+    const response = await axiosInstance.post("/company/create-job-post", JSON.stringify(formData), {
       headers: {
         "Content-Type": "application/json",
       },

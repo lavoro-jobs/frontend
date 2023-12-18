@@ -17,15 +17,19 @@ interface FormOptions {
 }
 
 export default function JobPost({
-  position_id,
-  education_level_id,
-  seniority_level,
-  skill_ids,
-  work_type_id,
-  contract_type_id,
-  work_location,
-  salary,
+  id,
+  position,
   description,
+  education_level,
+  skills,
+  work_type,
+  seniority_level,
+  work_location,
+  contract_type,
+  salary_min,
+  salary_max,
+  end_date,
+  assignees,
 }: FormState) {
   const [formOptions, setFormOptions] = useState<FormOptions>({});
   const [address, setAddress] = useState<string>("");
@@ -36,51 +40,20 @@ export default function JobPost({
     });
   }, []);
 
-  useEffect(() => {
-    if (work_location && work_location.latitude && work_location.longitude) {
-      const geocodeApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${work_location.latitude},${work_location.longitude}&key=YOUR_GOOGLE_MAPS_API_KEY`;
-
-      fetch(geocodeApiUrl)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.results && data.results[0]) {
-            setAddress(data.results[0].formatted_address);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching address:", error);
-        });
-    }
-  }, [work_location]);
-
-  const getNameById = (id: number | number[], category: keyof FormOptions): string => {
-    let categoryOptions = formOptions[category] || [];
-    let foundOption = categoryOptions.find((option) => option.id === id);
-    let dynamicProperty;
-    if (category == "positions" || category == "skills") {
-      dynamicProperty = `${category.slice(0, -1)}_name` as keyof typeof foundOption;
-    } else if (category == "education") {
-      dynamicProperty = `${category}_level` as keyof typeof foundOption;
-    } else {
-      dynamicProperty = `${category.slice(0, -1)}` as keyof typeof foundOption;
-    }
-    return foundOption ? (foundOption[dynamicProperty] as string) || "" : "";
-  };
-
   return (
-    <>
-      <Card w="sm">
-        <CardBody>
-          <Heading>{position_id && getNameById(position_id, "positions")}</Heading>
+    <Flex direction="column" h="100%">
+      <Card w="sm" h="100%" display="flex" flexDirection="column">
+        <CardBody flex="1" display="flex" flexDirection="column">
+          <Heading>{position?.position_name}</Heading>
           <Text fontSize="sm" color="gray.500" mt="2px" mb="8px">
             Address: {address}
           </Text>
           <Text mb="8px">{description}</Text>
           <p>
-            {skill_ids &&
-              skill_ids.map((skillId, index) => (
+            {skills &&
+              skills.map((skill) => (
                 <Text
-                  key={index}
+                  key={skill.id}
                   display="inline-block"
                   px="2"
                   py="1"
@@ -90,29 +63,37 @@ export default function JobPost({
                   backgroundColor="blue.500"
                   color="white"
                 >
-                  {getNameById(skillId, "skills")}
+                  {skill.skill_name}
                 </Text>
               ))}
           </p>
           <Flex mt="8px" align="center" gap="8px">
             <FaGraduationCap size="24px" />
-            <Text>{education_level_id && getNameById(education_level_id, "education")}</Text>
+            <Text>{education_level?.education_level}</Text>
           </Flex>
           <Flex mt="8px" align="center" gap="8px">
             <LiaCertificateSolid size="24px" />
-            <Text>Seniority level - {seniority_level}</Text>
+            <Text>Seniority level - {seniority_level ? seniority_level + 1 : 0}</Text>
           </Flex>
           <Flex mt="8px" align="center" gap="8px">
             <FaLocationDot size="24px" />
-            <Text>{work_type_id && getNameById(work_type_id, "work_types")}</Text>
+            <Text>{work_type?.work_type}</Text>
           </Flex>
           <Flex mt="8px" align="center" gap="8px">
             <IoBriefcaseSharp size="24px" />
-            <Text>{contract_type_id && getNameById(contract_type_id, "contract_types")}</Text>
+            <Text>{contract_type?.contract_type}</Text>
           </Flex>
           <Flex mt="8px" align="center" gap="8px">
             <FaMoneyBillWave size="24px" />
-            <Text>€{salary}</Text>
+            <Text>
+              {salary_min !== undefined && salary_max !== undefined
+                ? `$${salary_min} - $${salary_max}`
+                : salary_min !== undefined
+                ? `From $${salary_min}`
+                : salary_max !== undefined
+                ? `Up to $${salary_max}`
+                : "Salary not specified"}
+            </Text>
           </Flex>
         </CardBody>
         <Divider color="#2E77AE" />
@@ -127,6 +108,6 @@ export default function JobPost({
           </ButtonGroup>
         </CardFooter>
       </Card>
-    </>
+    </Flex>
   );
 }
