@@ -30,4 +30,8 @@ export default interface FormState {
   salary_max?: number;
   end_date?: string;
   assignees?: Assignee[];
+  education_level_id?: number;
+  position_id?: number;
+  contract_type_id?: number;
+  work_type_id?: number;
 }
