@@ -41,7 +41,7 @@ const ApplicantLinks: Array<LinkItemProps> = [
 const RecruiterLinks: Array<LinkItemProps> = [
   { name: "Home", icon: FiHome, url: "/" },
   { name: "Profile", icon: FiSettings, url: "/profile" },
-  { name: "Company", icon: FiLayers, url: "" },
+  { name: "Company", icon: FiLayers, url: "/company" },
   { name: "Job Posts", icon: FiCrosshair, url: "/job-posts" },
   { name: "Matches", icon: FiUserCheck, url: "" },
   { name: "Chats", icon: FiSend, url: "" },
