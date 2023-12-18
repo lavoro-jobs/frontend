@@ -33,11 +33,11 @@ export default function JobPosts() {
       <Sidenav>
         <Flex align="center" padding="100px 0" justify="center" direction="column" bg="#E0EAF5">
           <Link href="/create-job-post">
-            <Button colorScheme="blue" marginTop="16px" marginBottom="16px">
+            <Button colorScheme="blue" marginBottom="32px">
               Create new job post
             </Button>
           </Link>
-          <Wrap spacing="16px" justify="center" align="stretch">
+          <Wrap spacing="32px" justify="center" align="stretch">
             {jobPosts.map((post) => (
               <WrapItem key={post.id}>
                 <JobPost

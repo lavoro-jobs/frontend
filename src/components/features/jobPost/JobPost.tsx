@@ -7,6 +7,7 @@ import { IoBriefcaseSharp } from "react-icons/io5";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaGraduationCap } from "react-icons/fa";
 import { LiaCertificateSolid } from "react-icons/lia";
+import { useRouter } from "next/navigation";
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -31,6 +32,8 @@ export default function JobPost({
   end_date,
   assignees,
 }: FormState) {
+  const router = useRouter();
+
   const [formOptions, setFormOptions] = useState<FormOptions>({});
   const [address, setAddress] = useState<string>("");
 
@@ -44,12 +47,15 @@ export default function JobPost({
     <Flex direction="column" h="100%">
       <Card w="sm" h="100%" display="flex" flexDirection="column">
         <CardBody flex="1" display="flex" flexDirection="column">
+          <Text fontSize="sm" color="gray" mb="8px">
+            End date: {end_date?.substring(0, 10)}, {end_date?.substring(11, 16)}
+          </Text>
           <Heading>{position?.position_name}</Heading>
           <Text fontSize="sm" color="gray.500" mt="2px" mb="8px">
-            Address: {address}
+            Address: {address ? address : `${work_location?.latitude} ${work_location?.longitude}`}
           </Text>
           <Text mb="8px">{description}</Text>
-          <p>
+          <Flex>
             {skills &&
               skills.map((skill) => (
                 <Text
@@ -66,7 +72,7 @@ export default function JobPost({
                   {skill.skill_name}
                 </Text>
               ))}
-          </p>
+          </Flex>
           <Flex mt="8px" align="center" gap="8px">
             <FaGraduationCap size="24px" />
             <Text>{education_level?.education_level}</Text>
@@ -102,7 +108,7 @@ export default function JobPost({
             <Button variant="ghost" colorScheme="blue">
               Archive
             </Button>
-            <Button variant="solid" colorScheme="blue">
+            <Button variant="solid" colorScheme="blue" onClick={() => router.push(`/update-job-post/${id}`)}>
               Update
             </Button>
           </ButtonGroup>
