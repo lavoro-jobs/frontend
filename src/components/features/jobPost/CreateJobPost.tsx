@@ -1,17 +1,6 @@
 import getAllCatalogs from "@/helpers/getAllCatalogs";
 import FormState from "@/interfaces/job-posts/form-state.interface";
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Input,
-  Progress,
-  Select,
-  Text,
-  Textarea,
-  useSteps,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Input, Progress, Select, Text, Textarea, useSteps } from "@chakra-ui/react";
 import Multiselect from "multiselect-react-dropdown";
 import Slider from "rc-slider";
 import { useEffect, useState } from "react";
@@ -38,33 +27,21 @@ export default function CreateJobPost() {
 
   const [formData, setFormData] = useState<FormState>({
     id: undefined,
-    position: {
-      id: undefined,
-      position_name: undefined,
-    },
     description: undefined,
-    education_level: {
-      id: undefined,
-      education_level: undefined,
-    },
     skills: [],
-    work_type: {
-      id: undefined,
-      work_type: undefined,
-    },
     seniority_level: undefined,
     work_location: {
       longitude: undefined,
       latitude: undefined,
     },
-    contract_type: {
-      id: undefined,
-      contract_type: undefined,
-    },
     salary_min: undefined,
     salary_max: undefined,
     end_date: "2024-12-13T19:38:10.767Z",
     assignees: undefined,
+    education_level_id: undefined,
+    position_id: undefined,
+    contract_type_id: undefined,
+    work_type_id: undefined,
   });
 
   useEffect(() => {
@@ -77,7 +54,7 @@ export default function CreateJobPost() {
 
   const LocationFinderDummy = () => {
     const map = useMapEvents({
-      click(e) {
+      click(e: any) {
         setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
         const newFormData = {
           ...formData,
@@ -91,6 +68,7 @@ export default function CreateJobPost() {
     });
     return null;
   };
+  
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value };
@@ -116,8 +94,29 @@ export default function CreateJobPost() {
     setFormData(newFormData);
   };
 
+  const createPostData = async () => {
+    return {
+      position_id: formData.position_id,
+      description: formData.description,
+      education_level_id: formData.education_level_id,
+      skill_ids: formData.skills?.map((skill) => skill.id).filter((id) => typeof id === "number") as number[],
+      work_type_id: formData.work_type_id,
+      seniority_level: formData.seniority_level,
+      work_location: {
+        longitude: formData.work_location?.longitude,
+        latitude: formData.work_location?.latitude,
+      },
+      contract_type_id: formData.contract_type_id,
+      salary_min: formData.salary_min,
+      salary_max: formData.salary_max,
+      end_date: formData.end_date,
+      assignees: formData.assignees,
+    };
+  }
+
   const handleSubmit = async () => {
-    const res = await createJobPost(formData);
+    const postData = await createPostData();
+    const res = await createJobPost(postData);
     if (res == 200) {
       router.push("/job-posts");
     }
@@ -165,7 +164,7 @@ export default function CreateJobPost() {
                 <Select
                   paddingTop="16px"
                   id="education_level_id"
-                  value={formData.education_level?.id}
+                  value={formData.education_level_id}
                   onChange={handleNumberFormChange}
                   placeholder="Select"
                 >
@@ -185,7 +184,7 @@ export default function CreateJobPost() {
                 <Select
                   paddingTop="16px"
                   id="position_id"
-                  value={formData.position?.id}
+                  value={formData.position_id}
                   onChange={handleNumberFormChange}
                   placeholder="Select"
                 >
@@ -230,7 +229,7 @@ export default function CreateJobPost() {
                 </Text>
                 <Select
                   id="contract_type_id"
-                  value={formData.contract_type?.id}
+                  value={formData.contract_type_id}
                   onChange={handleFormChange}
                   placeholder="Select"
                 >
@@ -249,7 +248,7 @@ export default function CreateJobPost() {
                 </Text>
                 <Select
                   id="work_type_id"
-                  value={formData.work_type?.id}
+                  value={formData.work_type_id}
                   onChange={handleFormChange}
                   placeholder="Select"
                 >
@@ -328,7 +327,6 @@ export default function CreateJobPost() {
             <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
               Assign colleagues
             </Text>
-            
           </>
         )}
 
