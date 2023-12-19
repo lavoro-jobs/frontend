@@ -12,11 +12,13 @@ import Form from "@/interfaces/applicant/form-state-get-applicant.interface";
 import { GrLocation } from "react-icons/gr";
 import { FaFileDownload } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
+import dynamic from "next/dynamic";
+
 
 export default function ApplicantProfile() {
-  /* TODO - geocode */
-  const [address, setAddress] = useState<string>("");
   const [update, setUpdate] = useState<boolean>(false);
+  const Address = dynamic(() => import('../../shared/Address'), { ssr: false });
+
 
   const [formData, setFormData] = useState<Form>({
     first_name: "",
@@ -113,10 +115,10 @@ export default function ApplicantProfile() {
                   <MdOutlineMail size="32px" />
                   <Text>email@gmail.com</Text>
                 </Flex>
-                <Flex mt="16px" gap="8px" align="center">
-                  <GrLocation size="32px" />
-                  <Text>{address}</Text>
-                </Flex>
+                <Address
+                  lat={formData.home_location.latitude}
+                  long={formData.home_location.longitude}
+                ></Address>
 
                 <Box mt="32px" mb="32px" border="1px solid #2E77AE" width="100%" />
                 <Flex color="#2E77AE" mt="16px" align="center" gap="8px">
