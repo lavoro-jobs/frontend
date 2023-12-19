@@ -14,6 +14,7 @@ import { useMapEvents } from 'react-leaflet/hooks'
 import Form from "@/interfaces/applicant/form-state-get-applicant.interface";
 import FormState from "@/interfaces/applicant/form-state.interface";
 import Skill from "@/interfaces/shared/skill";
+import deleteExperience from "@/helpers/deleteExperience";
 
 export default function ApplicantProfileUpdate({
   first_name,
@@ -37,6 +38,7 @@ export default function ApplicantProfileUpdate({
   const [marker, setMarker] = useState({ lat: 0, lng: 0 });
   const [skill, setSkill] = useState<Skill[]>(skills);
   const [experience, setExperience] = useState<Experience[]>(experiences ? experiences : []);
+  const [initialExperience, setInitialExperience] = useState<Experience[]>(experiences ? experiences : []);
 
   const [formData, setFormData] = useState<Form>({
     first_name: first_name,
@@ -87,6 +89,8 @@ export default function ApplicantProfileUpdate({
     getAllCatalogs().then((resp) => {
       setFormOptions(resp);
     });
+
+    setInitialExperience(experiences);
   }, []);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -130,7 +134,7 @@ export default function ApplicantProfileUpdate({
     setExperience(newInputs);
   };
 
-  const removeExperience = (index: number) => {
+  const removeExperience = async (index: number) => {
     const updatedExperience = experience.filter((item, i) => index !== i);
     setExperience(updatedExperience);
 
@@ -138,6 +142,7 @@ export default function ApplicantProfileUpdate({
     setFormData(newFormData);
   };
 
+  console.log(experiences)
   const handleExperience = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     index: number,
@@ -160,7 +165,7 @@ export default function ApplicantProfileUpdate({
     }
   };
 
-  const getPostData = async () => {
+  const getApplicantPostData = async () => {
     return ({
       first_name: formData.first_name,
       last_name: formData.last_name,
@@ -201,9 +206,17 @@ export default function ApplicantProfileUpdate({
     };
 
   const handleSubmit = async () => {
-    const postData = await getPostData();
-    const response = await updateApplicantProfile(postData);
-    if (response == 200) {
+    const applicantPostData = await getApplicantPostData();
+    const applicantResponse = await updateApplicantProfile(applicantPostData);
+
+    const currentExperienceIds = new Set(formData.experiences.map(exp => exp.id));
+    for (const exp of initialExperience) {
+      if (!currentExperienceIds.has(exp.id)) {
+        await deleteExperience(exp.id);
+      }
+    }
+
+    if (applicantResponse == 200) {
       window.location.reload();
     }
   };
