@@ -1,23 +1,12 @@
-import React, {useRef, useState} from "react";
-import {Box, Button, Flex, Heading, Image, Input} from "@chakra-ui/react";
+import React, { useRef, useState } from "react";
+import { Box, Button, Flex, Heading, Image, Input } from "@chakra-ui/react";
 import updateCompanyProfile from "@/helpers/updateCompanyProfile";
 
-
-export default function CompanyProfileUpdate({
-  name,
-  description,
-  logo
-}: {
-  name: string,
-  description: string,
-  logo: string | null
-}) {
-
+export default function CompanyProfileUpdate({ description, logo }: { description: string; logo: string | null }) {
   const [logoUrl, setLogoUrl] = useState<string>("");
   const [companyData, setCompanyData] = useState({
-    name: name,
     description: description,
-    logo: logo
+    logo: logo,
   });
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -57,12 +46,11 @@ export default function CompanyProfileUpdate({
   };
 
   const getPostData = async () => {
-    return ({
-      name: companyData.name,
+    return {
       description: companyData.description,
-      logo: companyData.logo
-    })
-  }
+      logo: companyData.logo,
+    };
+  };
 
   const handleSubmit = async () => {
     const postData = await getPostData();
@@ -74,80 +62,64 @@ export default function CompanyProfileUpdate({
 
   return (
     <>
-      <Flex gap="32px">
-        <Box flex="1" pr="32px" borderRight="solid #2E77AE 1px">
-          <Flex gap="8px" justify="space-between">
-            <Box w="49%">
-              <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-                Name
-              </Heading>
-              <Input
-                w="100%"
-                borderColor="#2E77AE"
-                id="name"
-                value={companyData.name}
-                onChange={handleChange}
-              />
-            </Box>
-            <Box w="49%">
-              <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-                Description
-              </Heading>
-              <Input
-                w="100%"
-                borderColor="#2E77AE"
-                id="description"
-                value={companyData.description}
-                onChange={handleChange}
-              />
-            </Box>
-            <Box w="49%">
-              <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-                Description
-              </Heading>
-              <Input id="logo" type="file" ref={inputRef} style={{ display: "none" }} onChange={handleFileChange} />
+      <Flex gap="8px" direction="column">
+        <Heading fontSize="2xl" mt="16px" color="#2E77AE">
+          Description
+        </Heading>
+        <Input
+          w="100%"
+          borderColor="#2E77AE"
+          id="description"
+          value={companyData.description}
+          onChange={handleChange}
+        />
 
-              <Button
-                color="white"
-                bg="#2E77AE"
-                _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
-                value={companyData.logo ? companyData.logo : undefined}
-                onClick={handleLogoUpload}
-              >
-                Upload {companyData.logo ? "new" : ""} company logo
-              </Button>
+        <Heading fontSize="2xl" mt="16px" color="#2E77AE">
+          Company logo
+        </Heading>
+        {companyData.logo && (
+          <Box w="300px" border="#2E77AE solid 2px" borderRadius="16px" overflow="hidden" position="relative">
+            <Image
+              w="100%"
+              src={companyData.logo ? `data:image/jpeg;base64,${companyData.logo}` : logoUrl}
+              alt="Company logo"
+            />
+            <Button
+              position="absolute"
+              top="-5px"
+              right="-5px"
+              color="#2E77AE"
+              bg="transparent"
+              _hover={{ color: "#0D2137" }}
+              onClick={() => {
+                setCompanyData({
+                  ...companyData,
+                  logo: "",
+                });
+              }}
+            >
+              ✖
+            </Button>
+          </Box>
+        )}
+        <Input id="logo" type="file" ref={inputRef} style={{ display: "none" }} onChange={handleFileChange} />
 
-              {companyData.logo && (
-                <Box w="96%" border="#2E77AE solid 2px" borderRadius="16px" overflow="hidden" position="relative">
-                  <Image w="100%" src={logoUrl} alt="Company logo" />
-                  <Button
-                    position="absolute"
-                    top="0px"
-                    right="0px"
-                    color="#2E77AE"
-                    bg="transparent"
-                    _hover={{ color: "#0D2137" }}
-                    onClick={() => {
-                      setCompanyData({
-                        ...companyData,
-                        logo: "",
-                      });
-                    }}
-                  >
-                    ✖
-                  </Button>
-                </Box>
-              )}
-            </Box>
-          </Flex>
-        </Box>
-        <Flex paddingTop="32px" justifyContent="flex-end">
-          <Button color="white" bg="#FF8E2B" _hover={{ color: "#0D2137", bg: "#fdb16e" }} onClick={handleSubmit}>
-            Finish
-          </Button>
-        </Flex>
+        <Button
+          w="300px"
+          color="white"
+          bg="#2E77AE"
+          _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
+          value={companyData.logo ? companyData.logo : undefined}
+          onClick={handleLogoUpload}
+        >
+          Upload {companyData.logo ? "new" : ""} company logo
+        </Button>
       </Flex>
-
+      <Flex paddingTop="32px" justifyContent="flex-end">
+        <Button color="white" bg="#FF8E2B" _hover={{ color: "#0D2137", bg: "#fdb16e" }} onClick={handleSubmit}>
+          Finish
+        </Button>
+      </Flex>
     </>
-  )
+  );
 }
