@@ -178,7 +178,7 @@ export default function ApplicantProfile() {
                     Company name - {experience.company_name}
                   </Text>
                   <Text mb="8px" key={index}>
-                    Position - {experience.position_id}
+                    Position - {experience.position?.position_name}
                   </Text>
                   <Text mb="32px" key={index}>
                     Years - {experience.years}
