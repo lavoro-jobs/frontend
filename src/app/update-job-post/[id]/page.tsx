@@ -95,6 +95,31 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
     });
   }, []);
 
+  useEffect(() => {
+    if (
+      selectedJobPost &&
+      selectedJobPost.salary_min &&
+      selectedJobPost.salary_max &&
+      Number(selectedJobPost.salary_min) > Number(selectedJobPost.salary_max)
+    ) {
+      setError({ ...error, salary: true });
+    } else setError({ ...error, salary: false });
+  }, [selectedJobPost?.salary_min, selectedJobPost?.salary_max]);
+
+  useEffect(() => {
+    if (endDate) {
+      const end_date = new Date(endDate);
+      const today = new Date();
+      if (end_date < today) {
+        setError({ ...error, end_date: true });
+      } else {
+        setError({ ...error, end_date: false });
+      }
+    } else {
+      setError({ ...error, end_date: false });
+    }
+  }, [endDate]);
+
   const getNameById = (id: number | number[] | undefined, category: keyof FormOptions): string => {
     if (id) {
       let categoryOptions = formOptions[category] || [];
@@ -110,32 +135,6 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
       return foundOption ? (foundOption[dynamicProperty] as string) || "" : "";
     }
     return "";
-  };
-
-  const validateDate = () => {
-    if (selectedJobPost?.end_date) {
-      const today = new Date();
-      const end_date = new Date(endDate ? endDate + ":00.000Z" : "2025-06-07T23:59:59.000Z");
-      if (end_date < today) {
-        setError({ ...error, end_date: true });
-        return true;
-      }
-    }
-    setError({ ...error, end_date: false });
-    return false;
-  };
-
-  const validateSalary = () => {
-    if (
-      selectedJobPost?.salary_max &&
-      selectedJobPost?.salary_min &&
-      selectedJobPost.salary_max < selectedJobPost.salary_min
-    ) {
-      setError({ ...error, salary: true });
-      return true;
-    }
-    setError({ ...error, salary: false });
-    return false;
   };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -207,7 +206,7 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
   };
 
   const handleSubmit = async () => {
-    if (!validateDate() && !validateSalary()) {
+    if (!error.salary && !error.end_date) {
       const postData = await createPostData();
       const res = await updateJobPost(postData);
       if (res == 200) {
