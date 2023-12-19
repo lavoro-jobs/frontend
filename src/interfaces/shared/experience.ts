@@ -4,6 +4,7 @@ interface Position {
 }
 
 export default interface Experience {
+  id?: string;
   position?: Position;
   company_name?: string;
   position_id?: number;
