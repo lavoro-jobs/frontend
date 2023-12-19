@@ -11,7 +11,7 @@ const deleteExperience = async (id: any) => {
 
     return response.status;
   } catch (error) {
-    console.error("Error creating recruiter profile:", error);
+    console.error("Error deleting experience!", error);
     throw error;
   }
 };
