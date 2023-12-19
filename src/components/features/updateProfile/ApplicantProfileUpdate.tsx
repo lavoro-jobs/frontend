@@ -15,6 +15,7 @@ import Form from "@/interfaces/applicant/form-state-get-applicant.interface";
 import FormState from "@/interfaces/applicant/form-state.interface";
 import Skill from "@/interfaces/shared/skill";
 import deleteExperience from "@/helpers/deleteExperience";
+import createExperiences from "@/helpers/createExperiences";
 
 export default function ApplicantProfileUpdate({
   first_name,
@@ -50,7 +51,7 @@ export default function ApplicantProfileUpdate({
     age: age,
     gender: gender,
     skills: skill,
-    experiences: experience,
+    experiences: experiences,
     cv: cv,
     work_type: {
       id: work_type.id,
@@ -142,7 +143,7 @@ export default function ApplicantProfileUpdate({
     setFormData(newFormData);
   };
 
-  console.log(experiences)
+  console.log(formOptions)
   const handleExperience = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     index: number,
@@ -173,7 +174,6 @@ export default function ApplicantProfileUpdate({
       age: formData.age,
       gender: formData.gender,
       skill_ids: formData.skills.map((skill) => skill.id).filter((id) => typeof id === "number") as number[],
-      //experiences: formData.experiences,
       cv: formData.cv,
       work_type_id: formData.work_type_id,
       seniority_level: formData.seniority_level,
@@ -214,6 +214,12 @@ export default function ApplicantProfileUpdate({
       if (!currentExperienceIds.has(exp.id)) {
         await deleteExperience(exp.id);
       }
+    }
+
+    const initialExperienceIds = new Set(initialExperience.map(exp => exp.id));
+    const newExperiences = formData.experiences.filter(exp => !initialExperienceIds.has(exp.id));
+    if (newExperiences.length > 0) {
+      const createExperiencesResponse = await createExperiences(newExperiences);
     }
 
     if (applicantResponse == 200) {
@@ -504,7 +510,7 @@ export default function ApplicantProfileUpdate({
                     <Select
                       id="position_id"
                       value={input.position_id}
-                      placeholder="Select"
+                      placeholder={input.position?.position_name ? input.position.position_name : "Select"}
                       onChange={(e) => handleExperience(e, index, "position_id")}
                     >
                       {formOptions &&
