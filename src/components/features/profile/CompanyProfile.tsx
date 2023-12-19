@@ -28,7 +28,7 @@ export default function CompanyProfile() {
       {!update && (
         <Flex w="100%" justify="space-between" minHeight="calc(100vh - 32px)">
           <Box bg="#E0EAF5" flex="1">
-            <Flex direction="column" alignItems="center" className="profile">
+            <Flex direction="column" alignItems="center" className="profile-rc">
               <Image
                 src={companyData.logo ? `data:image/jpeg;base64,${companyData.logo}` : "https://uxwing.com/wp-content/themes/uxwing/download/business-professional-services/company-enterprise-icon.png"}
                 w="200px"
