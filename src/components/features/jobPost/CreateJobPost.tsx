@@ -8,6 +8,13 @@ import { useRouter } from "next/navigation";
 import createJobPost from "@/helpers/createJobPost";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useMapEvents } from "react-leaflet/hooks";
+import Skill from "@/interfaces/shared/skill";
+import Sidenav from "../dashboard/Sidenav";
+import CompanyRecruitersState from "@/interfaces/company/form-state-get-company-with-recruiters.interface";
+import getRecruitersAndCompany from "@/helpers/getRecruitersAndCompany";
+import Recruiter from "@/interfaces/shared/recruiter";
+import getCurrentUser from "@/helpers/getCurrentUser";
+import CurrentUserState from "@/interfaces/current-user/form-state.interface";
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -21,9 +28,16 @@ export default function CreateJobPost() {
   const router = useRouter();
 
   const [formOptions, setFormOptions] = useState<FormOptions>({});
-  const [skills, setSkills] = useState<{ id: number; skill_name: string }[]>([]);
+  const [companyRecruiters, setCompanyRecruiters] = useState<CompanyRecruitersState>({});
+  const [user, setUser] = useState<CurrentUserState>({});
 
+  const [skill, setSkill] = useState<Skill[]>([]);
   const [marker, setMarker] = useState({ lat: 0, lng: 0 });
+  const [clickedLatLng, setClickedLatLng] = useState(null);
+  const [error, setError] = useState({
+    end_date: false,
+    salary: false,
+  });
 
   const [formData, setFormData] = useState<FormState>({
     id: undefined,
@@ -36,8 +50,8 @@ export default function CreateJobPost() {
     },
     salary_min: undefined,
     salary_max: undefined,
-    end_date: "2024-12-13T19:38:10.767Z",
-    assignees: undefined,
+    end_date: undefined,
+    assignees: [],
     education_level_id: undefined,
     position_id: undefined,
     contract_type_id: undefined,
@@ -45,12 +59,42 @@ export default function CreateJobPost() {
   });
 
   useEffect(() => {
+    if (formData.salary_min && formData.salary_max && Number(formData.salary_min) > Number(formData.salary_max)) {
+      setError({ ...error, salary: true });
+    } else setError({ ...error, salary: false });
+  }, [formData.salary_min, formData.salary_max]);
+
+  useEffect(() => {
+    if (formData.end_date) {
+      const end_date = new Date(formData.end_date);
+      const today = new Date();
+      if (end_date < today) {
+        setError({ ...error, end_date: true });
+      } else {
+        setError({ ...error, end_date: false });
+      }
+    } else {
+      setError({ ...error, end_date: false });
+    }
+  }, [formData.end_date]);
+
+  useEffect(() => {
     getAllCatalogs().then((resp) => {
       setFormOptions(resp);
     });
   }, []);
 
-  const [clickedLatLng, setClickedLatLng] = useState(null);
+  useEffect(() => {
+    getRecruitersAndCompany().then((resp) => {
+      setCompanyRecruiters(resp);
+    });
+  }, []);
+
+  useEffect(() => {
+    getCurrentUser().then((resp) => {
+      setUser(resp);
+    });
+  }, []);
 
   const LocationFinderDummy = () => {
     const map = useMapEvents({
@@ -68,7 +112,6 @@ export default function CreateJobPost() {
     });
     return null;
   };
-  
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value };
@@ -89,9 +132,20 @@ export default function CreateJobPost() {
 
   const handleSkills = (selectedList: [{ id: number; skill_name: string }]) => {
     const skillIdArray = selectedList.map((item) => item.id);
-    const newFormData = { ...formData, skill_ids: skillIdArray };
-    setSkills(selectedList);
+    const newFormData = { ...formData, skills: selectedList };
+    setSkill(selectedList);
     setFormData(newFormData);
+  };
+
+  const handleAssignees = (selectedList: Recruiter[]) => {
+    setCompanyRecruiters({
+      ...companyRecruiters,
+      recruiters: selectedList.filter((assignee) => assignee.account_id !== user?.account_id),
+    });
+    setFormData({
+      ...formData,
+      assignees: selectedList.filter((assignee) => assignee.account_id !== user?.account_id),
+    });
   };
 
   const createPostData = async () => {
@@ -109,10 +163,12 @@ export default function CreateJobPost() {
       contract_type_id: formData.contract_type_id,
       salary_min: formData.salary_min,
       salary_max: formData.salary_max,
-      end_date: formData.end_date,
-      assignees: formData.assignees,
+      end_date: formData.end_date ? formData.end_date + ":00.000Z" : "2025-06-07T23:59:59.000Z",
+      assignees: formData.assignees
+        ?.filter((assignee) => assignee.account_id !== user?.account_id)
+        .map((assignee) => assignee.account_id),
     };
-  }
+  };
 
   const handleSubmit = async () => {
     const postData = await createPostData();
@@ -144,216 +200,297 @@ export default function CreateJobPost() {
   const progressPercent = (activeStep / (steps.length - 1)) * 100;
 
   return (
-    <Flex minH="100vh" align="center" padding="100px 0" justify="center" direction="column" bg="#E0EAF5">
-      <Heading marginBottom="32px" maxW="512px" textAlign="center" color="#0D2137">
-        Answer questions to create your job post.
-      </Heading>
-      <Box maxW="800px" minW="650px" border="solid" borderRadius="16px" borderColor="#E0EAF5" p="64px" bg="white">
-        <Progress value={progressPercent} w="100%" height="4px" />
-        {activeStep === 0 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
-              Skills
-            </Text>
+    <Sidenav>
+      <Flex minH="100vh" align="center" padding="100px 0" justify="center" direction="column" bg="#E0EAF5">
+        <Box maxW="800px" minW="650px" border="solid" borderRadius="16px" borderColor="#E0EAF5" p="64px" bg="white">
+          <Progress value={progressPercent} w="100%" height="4px" />
+          {activeStep === 0 && (
+            <>
+              <Heading mt="32px" color="#2E77AE" textAlign="center">
+                Skills
+              </Heading>
 
-            <div className="inputs-wrapper">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Education level
-                </Text>
-                <Select
-                  paddingTop="16px"
-                  id="education_level_id"
-                  value={formData.education_level_id}
-                  onChange={handleNumberFormChange}
-                  placeholder="Select"
-                >
-                  {formOptions &&
-                    formOptions.education?.map((item, index) => (
-                      <option value={item.id} key={index}>
-                        {item.education_level}
-                      </option>
-                    ))}
-                </Select>
+              <div className="inputs-wrapper">
+                <div className="input-box w-50">
+                  <Text fontSize="lg" mt="16px" mb="8px" color="#2E77AE">
+                    Education level
+                  </Text>
+                  <Select
+                    borderColor="#2E77AE"
+                    id="education_level_id"
+                    value={formData.education_level_id}
+                    onChange={handleNumberFormChange}
+                    placeholder="Select"
+                  >
+                    {formOptions &&
+                      formOptions.education?.map((item, index) => (
+                        <option value={item.id} key={index}>
+                          {item.education_level}
+                        </option>
+                      ))}
+                  </Select>
+                </div>
+
+                <div className="input-box w-50">
+                  <Text fontSize="lg" mt="16px" mb="8px" color="#2E77AE">
+                    Position
+                  </Text>
+                  <Select
+                    borderColor="#2E77AE"
+                    id="position_id"
+                    value={formData.position_id}
+                    onChange={handleNumberFormChange}
+                    placeholder="Select"
+                  >
+                    {formOptions &&
+                      formOptions.positions?.map((item, index) => (
+                        <option value={item.id} key={index}>
+                          {item.position_name}
+                        </option>
+                      ))}
+                  </Select>
+                </div>
               </div>
 
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Position
-                </Text>
-                <Select
-                  paddingTop="16px"
-                  id="position_id"
-                  value={formData.position_id}
-                  onChange={handleNumberFormChange}
-                  placeholder="Select"
-                >
-                  {formOptions &&
-                    formOptions.positions?.map((item, index) => (
-                      <option value={item.id} key={index}>
-                        {item.position_name}
-                      </option>
-                    ))}
-                </Select>
+              <Text fontSize="lg" mt="16px" mb="8px" color="#2E77AE">
+                Seniority level
+              </Text>
+              <Slider min={1} max={5} step={1} marks={marks} onChange={handleSliderChange} />
+
+              <Text fontSize="lg" mt="32px" color="#2E77AE">
+                Skills
+              </Text>
+              <Multiselect
+                options={formOptions.skills}
+                selectedValues={skill}
+                displayValue="skill_name"
+                placeholder="Select"
+                onSelect={handleSkills}
+                onRemove={handleSkills}
+              />
+            </>
+          )}
+          {activeStep === 1 && (
+            <>
+              <Heading mt="32px" color="#2E77AE" textAlign="center">
+                Work preferences
+              </Heading>
+              <div className="inputs-wrapper">
+                <div className="input-box w-50">
+                  <Text fontSize="lg" mt="16px" color="#2E77AE">
+                    Contract type
+                  </Text>
+                  <Select
+                    borderColor="#2E77AE"
+                    id="contract_type_id"
+                    value={formData.contract_type_id}
+                    onChange={handleFormChange}
+                    placeholder="Select"
+                  >
+                    {formOptions &&
+                      formOptions.contract_types?.map((item, index) => (
+                        <option value={item.id} key={index}>
+                          {item.contract_type}
+                        </option>
+                      ))}
+                  </Select>
+                </div>
+
+                <div className="input-box w-50">
+                  <Text fontSize="lg" mt="16px" color="#2E77AE">
+                    Work type
+                  </Text>
+                  <Select
+                    borderColor="#2E77AE"
+                    id="work_type_id"
+                    value={formData.work_type_id}
+                    onChange={handleFormChange}
+                    placeholder="Select"
+                  >
+                    {formOptions &&
+                      formOptions.work_types?.map((item, index) => (
+                        <option value={item.id} key={index}>
+                          {item.work_type}
+                        </option>
+                      ))}
+                  </Select>
+                </div>
               </div>
-            </div>
 
-            <Text fontSize="lg" paddingTop="32px" textAlign="center">
-              Seniority level
-            </Text>
-            <Slider min={1} max={5} step={1} marks={marks} onChange={handleSliderChange} />
+              <div className="inputs-wrapper">
+                <div className="input-box w-50">
+                  <Text fontSize="lg" mt="16px" color="#2E77AE">
+                    Latitude
+                  </Text>
+                  <Input
+                    borderColor="#2E77AE"
+                    id="lat"
+                    type="number"
+                    value={marker.lat}
+                    onChange={handleNumberFormChange}
+                  />
+                </div>
+                <div className="input-box w-50">
+                  <Text fontSize="lg" mt="16px" color="#2E77AE">
+                    Longitude
+                  </Text>
+                  <Input
+                    borderColor="#2E77AE"
+                    id="lng"
+                    type="number"
+                    value={marker.lng}
+                    onChange={handleNumberFormChange}
+                  />
+                </div>
+              </div>
+              <Text fontSize="lg" mt="16px" color="#2E77AE" textAlign="center">
+                Click location on map to get Latitude/Longitude
+              </Text>
 
-            <Text fontSize="lg" paddingTop="48px" textAlign="center">
-              Skills
-            </Text>
-            <Multiselect
-              id="skills"
-              options={formOptions.skills}
-              selectedValues={skills}
-              displayValue="skill_name"
-              placeholder="Select"
-              onSelect={handleSkills}
-              onRemove={handleSkills}
-            />
-          </>
-        )}
-        {activeStep === 1 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
-              Work preferences
-            </Text>
-            <div className="inputs-wrapper">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Contract type
+              <div style={{ height: "400px", width: "100%", marginTop: "16px" }}>
+                <MapContainer center={[0, 0]} zoom={2} style={{ height: "400px", width: "100%" }}>
+                  <LocationFinderDummy />
+                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  {clickedLatLng && (
+                    <Marker position={clickedLatLng}>
+                      <Popup>
+                        Latitude: {clickedLatLng.lat}
+                        <br />
+                        Longitude: {clickedLatLng.lng}
+                      </Popup>
+                    </Marker>
+                  )}
+                </MapContainer>
+              </div>
+            </>
+          )}
+          {activeStep === 2 && (
+            <>
+              <Heading mt="32px" color="#2E77AE" textAlign="center">
+                Job post description and salary
+              </Heading>
+              {(formData.contract_type_id == 1 || formData.contract_type_id == 2 || formData.contract_type_id == 3) && (
+                <Text fontSize="2xl" mt="16px" color="#2E77AE">
+                  Salary by hour
                 </Text>
-                <Select
-                  id="contract_type_id"
-                  value={formData.contract_type_id}
+              )}
+              {formData.contract_type_id == 4 && (
+                <Text fontSize="2xl" mt="16px" color="#2E77AE">
+                  Salary by month
+                </Text>
+              )}
+              <div className="inputs-wrapper">
+                <div className="input-box w-50">
+                  <Text fontSize="lg" mt="16px" color="#2E77AE">
+                    Min Salary (€)
+                  </Text>
+                  <Input
+                    borderColor="#2E77AE"
+                    id="salary_min"
+                    type="number"
+                    value={formData.salary_min}
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="input-box w-50">
+                  <Text fontSize="lg" mt="16px" color="#2E77AE">
+                    Max Salary (€)
+                  </Text>
+                  <Input
+                    borderColor="#2E77AE"
+                    id="salary_max"
+                    type="number"
+                    value={formData.salary_max}
+                    onChange={handleFormChange}
+                  />
+                </div>
+              </div>
+
+              {error.salary && (
+                <Text mt="4px" color="red">
+                  Max salary should be greater than min salary.
+                </Text>
+              )}
+
+              <Text fontSize="lg" mt="16px" color="#2E77AE">
+                Description
+              </Text>
+              <Textarea
+                maxLength={150}
+                borderColor="#2E77AE"
+                id="description"
+                value={formData.description}
+                onChange={handleFormChange}
+              />
+              <Text fontSize="lg" mt="16px" color="#2E77AE">
+                End Date
+              </Text>
+              <div className="inputs-wrapper-center">
+                <Input
+                  borderColor="#2E77AE"
+                  id="end_date"
+                  type="datetime-local"
+                  value={formData.end_date}
                   onChange={handleFormChange}
-                  placeholder="Select"
-                >
-                  {formOptions &&
-                    formOptions.contract_types?.map((item, index) => (
-                      <option value={item.id} key={index}>
-                        {item.contract_type}
-                      </option>
-                    ))}
-                </Select>
+                />
               </div>
 
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Work type
+              {error.end_date && (
+                <Text mt="4px" color="red">
+                  The end date should be ahead of today's date.
                 </Text>
-                <Select
-                  id="work_type_id"
-                  value={formData.work_type_id}
-                  onChange={handleFormChange}
-                  placeholder="Select"
-                >
-                  {formOptions &&
-                    formOptions.work_types?.map((item, index) => (
-                      <option value={item.id} key={index}>
-                        {item.work_type}
-                      </option>
-                    ))}
-                </Select>
-              </div>
-            </div>
-
-            <div className="inputs-wrapper">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Latitude
-                </Text>
-                <Input id="lat" type="number" value={marker.lat} onChange={handleNumberFormChange} />
-              </div>
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Longitude
-                </Text>
-                <Input id="lng" type="number" value={marker.lng} onChange={handleNumberFormChange} />
-              </div>
-            </div>
-            <Text fontSize="lg" paddingTop="32px" textAlign="center">
-              Click location on map to get Latitude/Longitude
-            </Text>
-
-            <div style={{ height: "400px", width: "100%", paddingTop: "32px" }}>
-              <MapContainer center={[0, 0]} zoom={2} style={{ height: "400px", width: "100%" }}>
-                <LocationFinderDummy />
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {clickedLatLng && (
-                  <Marker position={clickedLatLng}>
-                    <Popup>
-                      Latitude: {clickedLatLng.lat}
-                      <br />
-                      Longitude: {clickedLatLng.lng}
-                    </Popup>
-                  </Marker>
-                )}
-              </MapContainer>
-            </div>
-          </>
-        )}
-        {activeStep === 2 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
-              Job post description and salary
-            </Text>
-            <div className="inputs-wrapper">
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Min Salary
-                </Text>
-                <Input id="salary_min" type="number" value={formData.salary_min} onChange={handleFormChange} />
-              </div>
-              <div className="input-box w-50">
-                <Text fontSize="lg" paddingTop="16px" textAlign="center">
-                  Max Salary
-                </Text>
-                <Input id="salary_max" type="number" value={formData.salary_max} onChange={handleFormChange} />
-              </div>
-            </div>
-            <Text fontSize="lg" paddingTop="16px" textAlign="center">
-              Description
-            </Text>
-            <Textarea id="description" value={formData.description} onChange={handleFormChange} />
-          </>
-        )}
-        {activeStep === 3 && (
-          <>
-            <Text fontSize="xl" fontWeight="700" paddingTop="32px" paddingBottom="16px" textAlign="center">
-              Assign colleagues
-            </Text>
-          </>
-        )}
-
-        <Flex paddingTop="32px" justifyContent="flex-end">
-          {activeStep > 0 && activeStep < steps.length && (
-            <Button
-              color="white"
-              bg="#2E77AE"
-              _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
-              marginRight="8px"
-              onClick={() => goToPrevious()}
-            >
-              Back
-            </Button>
+              )}
+            </>
           )}
-          {activeStep < steps.length - 1 && (
-            <Button color="white" bg="#2E77AE" _hover={{ color: "#0D2137", bg: "#6ba5d1" }} onClick={() => goToNext()}>
-              Next
-            </Button>
+          {activeStep === 3 && (
+            <>
+              <Heading mt="32px" color="#2E77AE" textAlign="center">
+                Assign colleagues
+              </Heading>
+              <Text fontSize="xl" mt="16px" color="#2E77AE">
+                Assignees
+              </Text>
+              <Multiselect
+                options={companyRecruiters.recruiters}
+                selectedValues={formData.assignees}
+                displayValue={`last_name`}
+                placeholder="Select"
+                onSelect={handleAssignees}
+                onRemove={handleAssignees}
+              />
+            </>
           )}
-          {activeStep === steps.length - 1 && (
-            <Button color="white" bg="#FF8E2B" _hover={{ color: "#0D2137", bg: "#fdb16e" }} onClick={handleSubmit}>
-              Finish
-            </Button>
-          )}
-        </Flex>
-      </Box>
-    </Flex>
+
+          <Flex paddingTop="32px" justifyContent="flex-end">
+            {activeStep > 0 && activeStep < steps.length && (
+              <Button
+                color="white"
+                bg="#2E77AE"
+                _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
+                marginRight="8px"
+                onClick={() => goToPrevious()}
+              >
+                Back
+              </Button>
+            )}
+            {activeStep < steps.length - 1 && (
+              <Button
+                color="white"
+                bg="#2E77AE"
+                _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
+                onClick={() => goToNext()}
+              >
+                Next
+              </Button>
+            )}
+            {activeStep === steps.length - 1 && (
+              <Button color="white" bg="#FF8E2B" _hover={{ color: "#0D2137", bg: "#fdb16e" }} onClick={handleSubmit}>
+                Finish
+              </Button>
+            )}
+          </Flex>
+        </Box>
+      </Flex>
+    </Sidenav>
   );
 }

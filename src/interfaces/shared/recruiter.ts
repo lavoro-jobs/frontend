@@ -1,4 +1,4 @@
-export default interface Assignee {
+export default interface Recruiter {
   account_id: string;
   company_id?: string;
   first_name?: string;
