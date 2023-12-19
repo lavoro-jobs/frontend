@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
-import { Box, Button, Flex, Heading, Image, Input } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Image, Input, Tag, TagCloseButton, TagLabel, Wrap } from "@chakra-ui/react";
 import updateCompanyProfile from "@/helpers/updateCompanyProfile";
+import createInvite from "@/helpers/createInvite";
 
 export default function CompanyProfileUpdate({ description, logo }: { description: string; logo: string | null }) {
   const [logoUrl, setLogoUrl] = useState<string>("");
@@ -8,6 +9,32 @@ export default function CompanyProfileUpdate({ description, logo }: { descriptio
     description: description,
     logo: logo,
   });
+
+  const [inputEmail, setInputEmail] = useState<string>("");
+  const [emails, setEmails] = useState<string[]>([]);
+
+  const addEmails = (emailsToAdd: string[]) => {
+    const validatedEmails = emailsToAdd
+      .map((e) => e.trim())
+      .filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && !emails.includes(email));
+
+    setEmails((prevEmails) => [...prevEmails, ...validatedEmails]);
+    setInputEmail("");
+  };
+
+  const removeEmail = (index: number) => {
+    const updatedEmails = [...emails];
+    updatedEmails.splice(index, 1);
+    setEmails(updatedEmails);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (["Enter", "Tab", ",", " "].includes(e.key)) {
+      e.preventDefault();
+
+      addEmails([inputEmail]);
+    }
+  };
 
   const inputRef = useRef<HTMLInputElement>(null);
   const handleLogoUpload = () => {
@@ -56,6 +83,9 @@ export default function CompanyProfileUpdate({ description, logo }: { descriptio
     const postData = await getPostData();
     const response = await updateCompanyProfile(postData);
     if (response == 200) {
+      emails.map((email) => {
+        createInvite(email);
+      });
       window.location.reload();
     }
   };
@@ -114,6 +144,29 @@ export default function CompanyProfileUpdate({ description, logo }: { descriptio
         >
           Upload {companyData.logo ? "new" : ""} company logo
         </Button>
+
+        <Heading fontSize="2xl" mt="16px" color="#2E77AE">
+          Invite colleagues
+        </Heading>
+        <Wrap>
+          {emails.map((email, index) => (
+            <Tag key={index} borderRadius="full" p="8px" pl="16px" variant="solid" colorScheme="blue">
+              <TagLabel>{email}</TagLabel>
+              <TagCloseButton onClick={() => removeEmail(index)} />
+            </Tag>
+          ))}
+        </Wrap>
+        <Input
+          borderColor="#2E77AE"
+          id="email"
+          type="email"
+          placeholder="Enter emails"
+          onKeyDown={handleKeyDown}
+          onChange={(e) => {
+            setInputEmail(e.target.value);
+          }}
+          value={inputEmail}
+        />
       </Flex>
       <Flex paddingTop="32px" justifyContent="flex-end">
         <Button color="white" bg="#FF8E2B" _hover={{ color: "#0D2137", bg: "#fdb16e" }} onClick={handleSubmit}>
