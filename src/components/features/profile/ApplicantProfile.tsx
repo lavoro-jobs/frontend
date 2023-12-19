@@ -132,7 +132,7 @@ export default function ApplicantProfile() {
               <Heading size="2xl" mt="32px" mb="32px">
                 {formData.position.position_name}
               </Heading>
-              <p>
+              <p style={{marginLeft: 24, marginRight: 0}}>
                 {formData.skills &&
                   formData.skills.map((skill, index) => (
                     <Text
