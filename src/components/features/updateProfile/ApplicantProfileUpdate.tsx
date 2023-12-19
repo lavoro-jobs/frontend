@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { Avatar, Box, Button, Divider, Flex, Heading, IconButton, Input, Select, Text } from "@chakra-ui/react";
 import Experience from "@/interfaces/shared/experience";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
@@ -40,6 +40,7 @@ export default function ApplicantProfileUpdate({
   const [skill, setSkill] = useState<Skill[]>(skills);
   const [experience, setExperience] = useState<Experience[]>(experiences ? experiences : []);
   const [initialExperience, setInitialExperience] = useState<Experience[]>(experiences ? experiences : []);
+  const [error, setError] = useState<boolean>(false);
 
   const [formData, setFormData] = useState<Form>({
     first_name: first_name,
@@ -90,7 +91,7 @@ export default function ApplicantProfileUpdate({
     getAllCatalogs().then((resp) => {
       setFormOptions(resp);
     });
-
+    setFileName("cv.pdf")
     setInitialExperience(experiences);
   }, []);
 
@@ -143,7 +144,6 @@ export default function ApplicantProfileUpdate({
     setFormData(newFormData);
   };
 
-  console.log(formOptions)
   const handleExperience = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     index: number,
@@ -164,6 +164,45 @@ export default function ApplicantProfileUpdate({
       const newFormData = { ...formData, experiences: updatedExperience };
       setFormData(newFormData);
     }
+  };
+
+  const [fileUrl, setFileUrl] = useState<string>("");
+  const [fileName, setFileName] = useState<string>("");
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
+
+      if (allowedTypes.includes(file.type)) {
+        setFileUrl(URL.createObjectURL(file));
+        setFileName(file.name);
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          if (event.target) {
+            let base64String = event.target.result as string;
+            base64String = base64String.split(",")[1];
+
+            setFormData({
+              ...formData,
+              cv: base64String,
+            });
+          }
+        };
+
+        reader.readAsDataURL(file);
+        setError(false);
+      } else {
+        setError(true);
+      }
+    }
+
+    e.target.value = "";
   };
 
   const getApplicantPostData = async () => {
@@ -234,7 +273,12 @@ export default function ApplicantProfileUpdate({
     4: "Advanced",
     5: "Expert",
   };
-
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleLogoUpload = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
   return (
     <>
       <Flex gap="32px">
@@ -353,7 +397,45 @@ export default function ApplicantProfileUpdate({
             onSelect={handleSkills}
             onRemove={handleSkills}
           />
+          <Flex direction="column" justify="center" mt="24px" align="center" gap="0px">
+            <Input id="logo" type="file" ref={inputRef} style={{ display: "none" }} onChange={handleFileChange} />
+
+            <Button
+              color="white"
+              bg="#2E77AE"
+              _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
+              value={formData.cv}
+              onClick={handleLogoUpload}
+            >
+              Upload {formData.cv ? "new" : ""} CV
+            </Button>
+            {error && <Text color="red">Please upload a PDF or DOC file!</Text>}
+
+            {formData.cv && (
+              <>
+                <Flex align="center">
+                  <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+                    {fileName}
+                  </a>
+                  <Button
+                    color="#2E77AE"
+                    bg="transparent"
+                    _hover={{ color: "#0D2137" }}
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        cv: "",
+                      });
+                    }}
+                  >
+                    ✖
+                  </Button>
+                </Flex>
+              </>
+            )}
+          </Flex>
         </Box>
+
 
         <Box flex="1">
           <Flex gap="8px" justify="space-between">
