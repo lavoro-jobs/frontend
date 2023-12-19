@@ -3,35 +3,34 @@
 import InfoBox from "@/components/features/signUpIn/InfoBox";
 import Header from "@/components/shared/Header";
 import useAuth from "@/hooks/useAuth";
-import {Avatar, AvatarGroup, Flex, Heading, Stack, Text} from "@chakra-ui/react";
-import {useRouter} from "next/navigation";
-import {useEffect} from "react";
-import {Role} from "@/types/Auth";
+import { Avatar, AvatarGroup, Flex, Heading, Stack, Text } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { Role } from "@/types/Auth";
 import getCurrentRecruiterProfile from "@/helpers/getCurrentRecruiterProfile";
 import getApplicantProfile from "@/helpers/getApplicantProfile";
-
 
 export default function AuthLayout({ children }: any) {
   const avatars = [
     {
-      name: "Apis IT",
-      url: "https://yt3.googleusercontent.com/pa5MTr_cgxmjKRVcvLGlSa1IAD1uYrm-nX796LeEQaLRdzIpDIX7XYRJITB9l7Lk7Je6mb0VLg=s900-c-k-c0x00ffffff-no-rj",
+      name: "Google",
+      url: "https://blog.hubspot.com/hs-fs/hubfs/image8-2.jpg?width=600&name=image8-2.jpg",
     },
     {
-      name: "Steve Jobs",
-      url: "https://atlantico-media.s3.eu-west-3.amazonaws.com/jobs_4a171b2e6b.jpg",
+      name: "Apple",
+      url: "https://www.tailorbrands.com/wp-content/uploads/2021/01/apple_logo_1988.jpg",
     },
     {
-      name: "Infinum",
-      url: "https://wp-assets.infinum.com/uploads/2022/03/infinum-mark-organization-big.jpg",
+      name: "Microsoft",
+      url: "https://developer.microsoft.com/_devcom/images/logo-ms-social.png",
     },
     {
-      name: "Bill Gates",
-      url: "https://cdn.britannica.com/47/188747-050-1D34E743/Bill-Gates-2011.jpg",
+      name: "Dell",
+      url: "https://static.vecteezy.com/system/resources/previews/020/336/113/original/dell-logo-dell-icon-free-free-vector.jpg",
     },
     {
-      name: "Eminem",
-      url: "https://ntvb.tmsimg.com/assets/assets/182420_v9_bc.jpg",
+      name: "Nvidia",
+      url: "https://www.nvidia.com/content/dam/en-zz/Solutions/about-nvidia/logo-and-brand/02-nvidia-logo-color-grn-500x200-4c25-p@2x.png",
     },
   ];
 
@@ -60,7 +59,7 @@ export default function AuthLayout({ children }: any) {
         navigateTo(path);
       } catch (error) {
         // Navigating to profile-setup if the applicant is not in the db
-        navigateTo("/profile-setup")
+        navigateTo("/profile-setup");
       }
     };
 
@@ -82,10 +81,11 @@ export default function AuthLayout({ children }: any) {
         <InfoBox>
           <div>
             <Heading fontSize={{ base: "2xl", sm: "3xl", md: "4xl", lg: "5xl" }}>
-              We're looking for job recruiters and applicants.
+              Welcome to LAVORO, where opportunities meet talent!
             </Heading>
-            <Text fontSize={{ base: "sm", md: "md", lg: "lg" }} paddingTop="16px" paddingBottom="16px">
-              Create an account and something something.
+            <Text fontSize={{ base: "8px", md: "md", lg: "lg" }} paddingTop="16px" paddingBottom="16px">
+              Whether you're seeking exceptional candidates or aiming to advance your career, our platform is your
+              ultimate destination. Join a thriving community of professionals today.
             </Text>
             <Flex>
               <Stack paddingTop="16px" paddingBottom="16px">
@@ -96,7 +96,7 @@ export default function AuthLayout({ children }: any) {
                 </AvatarGroup>
               </Stack>
               <Text alignSelf="center" paddingLeft="16px" fontSize={{ base: "sm", lg: "md" }}>
-                Join 5+ users
+                Join 10.000+ users
               </Text>
             </Flex>
           </div>
