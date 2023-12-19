@@ -282,7 +282,7 @@ export default function ApplicantProfileUpdate({
   return (
     <>
       <Flex gap="32px">
-        <Box flex="1" pr="32px" borderRight="solid #2E77AE 1px">
+        <Box flex="1" pr="32px">
           <Flex gap="8px" justify="space-between">
             <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
@@ -397,43 +397,6 @@ export default function ApplicantProfileUpdate({
             onSelect={handleSkills}
             onRemove={handleSkills}
           />
-          <Flex direction="column" justify="center" mt="24px" align="center" gap="0px">
-            <Input id="logo" type="file" ref={inputRef} style={{ display: "none" }} onChange={handleFileChange} />
-
-            <Button
-              color="white"
-              bg="#2E77AE"
-              _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
-              value={formData.cv}
-              onClick={handleLogoUpload}
-            >
-              Upload {formData.cv ? "new" : ""} CV
-            </Button>
-            {error && <Text color="red">Please upload a PDF or DOC file!</Text>}
-
-            {formData.cv && (
-              <>
-                <Flex align="center">
-                  <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-                    {fileName}
-                  </a>
-                  <Button
-                    color="#2E77AE"
-                    bg="transparent"
-                    _hover={{ color: "#0D2137" }}
-                    onClick={() => {
-                      setFormData({
-                        ...formData,
-                        cv: "",
-                      });
-                    }}
-                  >
-                    ✖
-                  </Button>
-                </Flex>
-              </>
-            )}
-          </Flex>
         </Box>
 
         <Box flex="1">
@@ -549,10 +512,6 @@ export default function ApplicantProfileUpdate({
             style={{
               height: "400px",
               width: "100%",
-              paddingTop: "16px",
-              paddingBottom: "16px",
-              marginTop: "16px",
-              marginBottom: "8px",
             }}
           >
             <MapContainer center={[0, 0]} zoom={2} style={{ height: "350px", width: "100%" }}>
@@ -564,6 +523,37 @@ export default function ApplicantProfileUpdate({
       </Flex>
       <Box borderTop="solid #2E77AE 1px" />
       <Box>
+        <Flex direction="column" justify="center" mt="48px" align="center" gap="0px">
+          <Input id="logo" type="file" ref={inputRef} style={{ display: "none" }} onChange={handleFileChange} />
+
+          <Button colorScheme="blue" value={formData.cv} onClick={handleLogoUpload}>
+            Upload {formData.cv ? "new" : ""} CV
+          </Button>
+          {error && <Text color="red">Please upload a PDF or DOC file!</Text>}
+
+          {formData.cv && (
+            <>
+              <Flex align="center">
+                <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+                  {fileName}
+                </a>
+                <Button
+                  color="#2E77AE"
+                  bg="transparent"
+                  _hover={{ color: "#0D2137" }}
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      cv: "",
+                    });
+                  }}
+                >
+                  ✖
+                </Button>
+              </Flex>
+            </>
+          )}
+        </Flex>
         <Flex flexFlow={"column"} align="center">
           {experience.map((input, index) => (
             <div key={index} className="experience-wrapper">
@@ -631,9 +621,11 @@ export default function ApplicantProfileUpdate({
             Add company
           </Button>
         </Flex>
-        <Button mt="32px" colorScheme="blue" onClick={handleSubmit}>
-          Submit
-        </Button>
+        <Flex justify="flex-end">
+          <Button mt="32px" bgColor="#FF8E2B" _hover={{ bgColor: "#fdb16e" }} color="#0D2137" onClick={handleSubmit}>
+            Finish
+          </Button>
+        </Flex>
       </Box>
     </>
   );
