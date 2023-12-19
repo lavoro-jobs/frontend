@@ -7,6 +7,7 @@ import getRecruitersAndCompany from "@/helpers/getRecruitersAndCompany";
 import updateJobPost from "@/helpers/updateJobPost";
 import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import CompanyRecruitersState from "@/interfaces/company/form-state-get-company-with-recruiters.interface";
+import CurrentUserState from "@/interfaces/current-user/form-state.interface";
 import FormState from "@/interfaces/job-posts/form-state.interface";
 import FormOptions from "@/interfaces/shared/formOptions";
 import Recruiter from "@/interfaces/shared/recruiter";
@@ -34,12 +35,15 @@ import { FaLocationDot } from "react-icons/fa6";
 import { IoBriefcaseSharp } from "react-icons/io5";
 import { LiaCertificateSolid } from "react-icons/lia";
 import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
+import getCurrentUser from "@/helpers/getCurrentUser";
+import assignJobPost from "@/helpers/assignJobPost";
 
 export default function PostUpdate({ params }: { params: { id: string } }) {
   const router = useRouter();
 
   const [formOptions, setFormOptions] = useState<FormOptions>({});
   const [companyRecruiters, setCompanyRecruiters] = useState<CompanyRecruitersState>({});
+  const [user, setUser] = useState<CurrentUserState>({});
 
   const [jobPosts, setJobPosts] = useState<FormState[]>([]);
   const [selectedJobPost, setSelectedJobPost] = useState<FormState>();
@@ -84,6 +88,12 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
       setEndDate(post.end_date?.substring(0, 16));
     }
   }, [jobPosts, params.id]);
+
+  useEffect(() => {
+    getCurrentUser().then((resp) => {
+      setUser(resp);
+    });
+  }, []);
 
   const getNameById = (id: number | number[] | undefined, category: keyof FormOptions): string => {
     if (id) {
@@ -178,8 +188,22 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
       salary_min: selectedJobPost?.salary_min,
       salary_max: selectedJobPost?.salary_max,
       end_date: endDate ? endDate + ":00.000Z" : "2025-06-07T23:59:59.000Z",
-      assignees: selectedJobPost?.assignees,
     };
+  };
+
+  const assigneePostData = async () => {
+    let data;
+    if (selectedJobPost?.id && selectedJobPost?.assignees) {
+      data = {
+        id: selectedJobPost?.id,
+        assignees: {
+          assignees: selectedJobPost.assignees
+            .filter((assignee) => assignee.account_id !== user?.account_id)
+            .map((assignee) => assignee.account_id),
+        },
+      };
+    }
+    return data;
   };
 
   const handleSubmit = async () => {
@@ -187,6 +211,10 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
       const postData = await createPostData();
       const res = await updateJobPost(postData);
       if (res == 200) {
+        const data = await assigneePostData();
+        if (data) {
+          const res2 = await assignJobPost(data);
+        }
         router.push("/job-posts");
       }
     }
