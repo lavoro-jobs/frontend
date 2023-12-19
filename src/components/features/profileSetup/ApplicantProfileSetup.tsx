@@ -2,7 +2,7 @@ import { Box, Button, Flex, Heading, IconButton, Input, Select, Text } from "@ch
 import MultiSelect from "multiselect-react-dropdown";
 import React, { useEffect, useState, useRef } from "react";
 import FormState from "@/interfaces/applicant/form-state.interface";
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import createApplicantProfile from "@/helpers/createApplicantProfile";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
@@ -13,7 +13,7 @@ import { IoHappyOutline } from "react-icons/io5";
 import { IoArrowRedo, IoArrowUndo } from "react-icons/io5";
 import { FiXCircle } from "react-icons/fi";
 import Slider from "rc-slider";
-import { useMapEvents } from 'react-leaflet/hooks'
+import { useMapEvents } from "react-leaflet/hooks";
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -131,24 +131,24 @@ export default function ApplicantProfileSetup() {
     }
   };
 
-    const [clickedLatLng, setClickedLatLng] = useState(null);
+  const [clickedLatLng, setClickedLatLng] = useState(null);
 
-    const LocationFinderDummy = () => {
-        const map = useMapEvents({
-            click(e: any) {
-                setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
-                const newFormData = {
-                  ...formData,
-                  home_location: {
-                    longitude: e.latlng.lng,
-                    latitude: e.latlng.lat,
-                  },
-                };
-                setFormData(newFormData);
-            },
-        });
-        return null;
-    };
+  const LocationFinderDummy = () => {
+    const map = useMapEvents({
+      click(e: any) {
+        setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
+        const newFormData = {
+          ...formData,
+          home_location: {
+            longitude: e.latlng.lng,
+            latitude: e.latlng.lat,
+          },
+        };
+        setFormData(newFormData);
+      },
+    });
+    return null;
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -251,7 +251,7 @@ export default function ApplicantProfileSetup() {
       </Heading>
 
       <Button
-        borderRadius="50%"
+        borderRadius="20px"
         display={idArticle !== 4 && btn ? "" : "none"}
         position="absolute"
         top="50%"
@@ -267,7 +267,7 @@ export default function ApplicantProfileSetup() {
         <IoArrowRedo />
       </Button>
       <Button
-        borderRadius="50%"
+        borderRadius="20px"
         display={idArticle !== 1 && btn ? "" : "none"}
         position="absolute"
         top="50%"
@@ -640,10 +640,23 @@ export default function ApplicantProfileSetup() {
                     ))}
                 </Select>
 
-                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
-                  Minimum salary
+                <Heading fontSize="xl" pt="24px" color="#2E77AE">
+                  Min salary (€)
                 </Heading>
+                {formData.contract_type_id == 4 && (
+                  <Text color="#2E77AE" pl="2px">
+                    by month
+                  </Text>
+                )}
+                {(formData.contract_type_id == 1 ||
+                  formData.contract_type_id == 2 ||
+                  formData.contract_type_id == 3) && (
+                  <Text color="#2E77AE" pl="2px">
+                    by hour
+                  </Text>
+                )}
                 <Input
+                  mt="8px"
                   borderColor="#2E77AE"
                   id="min_salary"
                   type="number"
@@ -708,22 +721,19 @@ export default function ApplicantProfileSetup() {
                   Click location on map to get Latitude/Longitude
                 </Heading>
                 <div style={{ height: "400px", width: "100%", paddingTop: "32px", marginBottom: "32px" }}>
-                  <MapContainer
-                      center={[0, 0]}
-                      zoom={2}
-                      style={{ height: '400px', width: '100%' }}
-                    >
-                      <LocationFinderDummy />
-                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                      {clickedLatLng && (
-                        <Marker position={clickedLatLng}>
-                          <Popup>
-                            Latitude: {clickedLatLng.lat}<br />
-                            Longitude: {clickedLatLng.lng}
-                          </Popup>
-                        </Marker>
-                      )}
-                    </MapContainer>
+                  <MapContainer center={[0, 0]} zoom={2} style={{ height: "400px", width: "100%" }}>
+                    <LocationFinderDummy />
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                    {clickedLatLng && (
+                      <Marker position={clickedLatLng}>
+                        <Popup>
+                          Latitude: {clickedLatLng.lat}
+                          <br />
+                          Longitude: {clickedLatLng.lng}
+                        </Popup>
+                      </Marker>
+                    )}
+                  </MapContainer>
                 </div>
                 <Flex paddingTop="32px" justifyContent="flex-end">
                   <Button
