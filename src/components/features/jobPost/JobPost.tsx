@@ -20,6 +20,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaGraduationCap } from "react-icons/fa";
 import { LiaCertificateSolid } from "react-icons/lia";
 import { useRouter } from "next/navigation";
+import archiveJobPost from "@/helpers/archiveJobPost";
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -61,6 +62,13 @@ export default function JobPost({
 
     setArchived(isArchived(end_date));
   }, []);
+
+  const handleArchive = async () => {
+    const response = await archiveJobPost(id);
+    if (response == 200) {
+      window.location.reload();
+    }
+  }
 
   function isArchived(endDateStr: any): boolean {
     const endDate = new Date(endDateStr);
@@ -156,7 +164,7 @@ export default function JobPost({
           <ButtonGroup spacing="2">
             {!archived && (
               <>
-                <Button variant="ghost" colorScheme="blue">
+                <Button variant="ghost" colorScheme="blue" onClick={handleArchive}>
                   Archive
                 </Button>
                 <Button variant="solid" colorScheme="blue" onClick={() => router.push(`/update-job-post/${id}`)}>
