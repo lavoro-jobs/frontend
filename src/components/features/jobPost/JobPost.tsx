@@ -1,6 +1,18 @@
 import getAllCatalogs from "@/helpers/getAllCatalogs";
 import FormState from "@/interfaces/job-posts/form-state.interface";
-import { Button, ButtonGroup, Card, CardBody, CardFooter, Divider, Flex, Heading, Icon, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Button,
+  ButtonGroup,
+  Card,
+  CardBody,
+  CardFooter,
+  Divider,
+  Flex,
+  Heading,
+  Icon,
+  Text,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { IoBriefcaseSharp } from "react-icons/io5";
@@ -52,10 +64,10 @@ export default function JobPost({
           </Text>
           <Heading>{position?.position_name}</Heading>
           <Text fontSize="sm" color="gray.500" mt="2px" mb="8px">
-            Address: {address ? address : `${work_location?.latitude} ${work_location?.longitude}`}
+            Address: {address ? address : `${work_location?.latitude}, ${work_location?.longitude}`}
           </Text>
           <Text mb="8px">{description}</Text>
-          <Flex>
+          <Flex flexWrap="wrap">
             {skills &&
               skills.map((skill) => (
                 <Text
@@ -99,7 +111,32 @@ export default function JobPost({
                 : salary_max !== undefined
                 ? `Up to $${salary_max}`
                 : "Salary not specified"}
+              {(contract_type?.id == 1 || contract_type?.id == 2 || contract_type?.id == 3) && <span>, hourly</span>}
+              {contract_type?.id == 4 && <span>, monthly</span>}
             </Text>
+          </Flex>
+
+          <Text mt="16px" fontSize="xl">
+            Assignees:
+          </Text>
+          <Flex flexWrap="wrap">
+            {assignees &&
+              assignees.map((assignee) => (
+                <Flex key={assignee.account_id}>
+                  <Avatar size="sm" />
+                  <Text
+                    display="inline-block"
+                    px="2"
+                    py="1"
+                    mr="2"
+                    mb="2"
+                    borderRadius="md"
+                    color="black"
+                  >
+                    {assignee.first_name} {assignee.last_name}
+                  </Text>
+                </Flex>
+              ))}
           </Flex>
         </CardBody>
         <Divider color="#2E77AE" />
