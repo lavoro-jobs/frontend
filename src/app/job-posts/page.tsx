@@ -161,8 +161,13 @@ export default function JobPosts() {
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent >
-            <ModalHeader>Restore Job Post</ModalHeader>
-            <ModalCloseButton />
+            <Box>
+              <Text fontSize="lg" paddingTop="16px" paddingLeft="16px" textAlign="left">
+                Restore Job Post
+              </Text>
+              <ModalCloseButton zIndex="1" position="absolute" top="3" right="3"/>
+            </Box>
+
             <ModalBody mt="4vw">
               <Text fontSize="lg" paddingTop="16px" textAlign="center">
                 End Date
