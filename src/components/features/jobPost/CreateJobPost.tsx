@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import createJobPost from "@/helpers/createJobPost";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useMapEvents } from "react-leaflet/hooks";
+import Skill from "@/interfaces/shared/skill";
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -21,7 +22,7 @@ export default function CreateJobPost() {
   const router = useRouter();
 
   const [formOptions, setFormOptions] = useState<FormOptions>({});
-  const [skills, setSkills] = useState<{ id: number; skill_name: string }[]>([]);
+  const [skill, setSkill] = useState<Skill[]>([]);
 
   const [marker, setMarker] = useState({ lat: 0, lng: 0 });
 
@@ -36,7 +37,7 @@ export default function CreateJobPost() {
     },
     salary_min: undefined,
     salary_max: undefined,
-    end_date: "2024-12-13T19:38:10.767Z",
+    end_date: undefined,
     assignees: undefined,
     education_level_id: undefined,
     position_id: undefined,
@@ -68,7 +69,6 @@ export default function CreateJobPost() {
     });
     return null;
   };
-  
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const newFormData = { ...formData, [e.target.id]: e.target.value };
@@ -89,8 +89,8 @@ export default function CreateJobPost() {
 
   const handleSkills = (selectedList: [{ id: number; skill_name: string }]) => {
     const skillIdArray = selectedList.map((item) => item.id);
-    const newFormData = { ...formData, skill_ids: skillIdArray };
-    setSkills(selectedList);
+    const newFormData = { ...formData, skills: selectedList };
+    setSkill(selectedList);
     setFormData(newFormData);
   };
 
@@ -109,10 +109,10 @@ export default function CreateJobPost() {
       contract_type_id: formData.contract_type_id,
       salary_min: formData.salary_min,
       salary_max: formData.salary_max,
-      end_date: formData.end_date,
+      end_date: formData.end_date ? formData.end_date + ":00.000Z" : "2025-06-07T23:59:59.000Z",
       assignees: formData.assignees,
     };
-  }
+  };
 
   const handleSubmit = async () => {
     const postData = await createPostData();
@@ -207,9 +207,8 @@ export default function CreateJobPost() {
               Skills
             </Text>
             <Multiselect
-              id="skills"
               options={formOptions.skills}
-              selectedValues={skills}
+              selectedValues={skill}
               displayValue="skill_name"
               placeholder="Select"
               onSelect={handleSkills}
@@ -280,7 +279,7 @@ export default function CreateJobPost() {
               Click location on map to get Latitude/Longitude
             </Text>
 
-            <div style={{ height: "400px", width: "100%", paddingTop: "32px" }}>
+            <div style={{ height: "400px", width: "100%", paddingTop: "32px", marginBottom: "32px" }}>
               <MapContainer center={[0, 0]} zoom={2} style={{ height: "400px", width: "100%" }}>
                 <LocationFinderDummy />
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -320,6 +319,12 @@ export default function CreateJobPost() {
               Description
             </Text>
             <Textarea id="description" value={formData.description} onChange={handleFormChange} />
+            <Text fontSize="lg" paddingTop="16px" textAlign="center">
+              End Date
+            </Text>
+            <div className="inputs-wrapper-center">
+              <Input id="end_date" type="datetime-local" value={formData.end_date} onChange={handleFormChange} />
+            </div>
           </>
         )}
         {activeStep === 3 && (
