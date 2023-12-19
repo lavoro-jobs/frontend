@@ -22,6 +22,7 @@ import getJobPostsByRecruiter from "@/helpers/getJobPosts";
 import FormState from "@/interfaces/job-posts/form-state.interface";
 import JobPost from "@/components/features/jobPost/JobPost";
 import updateJobPost from "@/helpers/updateJobPost";
+import RadioCard from "@/components/features/jobPost/RadioCard";
 
 
 export default function JobPosts() {
@@ -52,13 +53,14 @@ export default function JobPosts() {
   const handleChange = (prop: any) => {
     setOption(prop);
   }
+
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'option',
     defaultValue: option,
     onChange: handleChange,
   })
-  const group = getRootProps()
 
+  const group = getRootProps()
 
   useEffect(() => {
     const fetchJobPosts = async () => {
@@ -94,38 +96,6 @@ export default function JobPosts() {
     const endDate = new Date(endDateStr);
     const now = new Date();
     return endDate < now;
-  }
-
-  function RadioCard(props: any) {
-    const { getInputProps, getRadioProps } = useRadio(props)
-
-    const input = getInputProps()
-    const checkbox = getRadioProps()
-
-    return (
-      <Box as='label'>
-        <input {...input} />
-        <Box
-          {...checkbox}
-          cursor='pointer'
-          borderWidth='1px'
-          borderRadius='md'
-          boxShadow='md'
-          _checked={{
-            bg: '#3182CE',
-            color: 'white',
-            borderColor: 'teal.600',
-          }}
-          _focus={{
-            boxShadow: 'outline',
-          }}
-          px={5}
-          py={3}
-        >
-          {props.children}
-        </Box>
-      </Box>
-    )
   }
 
   if (auth?.role == Role.RECRUITER) {
