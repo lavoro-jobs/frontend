@@ -47,6 +47,10 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
   const [endDate, setEndDate] = useState<string>();
   const [marker, setMarker] = useState({ lat: 0, lng: 0 });
   const [skill, setSkill] = useState<Skill[]>();
+  const [error, setError] = useState({
+    end_date: false,
+    salary: false,
+  });
 
   useEffect(() => {
     getAllCatalogs().then((resp) => {
@@ -96,6 +100,32 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
       return foundOption ? (foundOption[dynamicProperty] as string) || "" : "";
     }
     return "";
+  };
+
+  const validateDate = () => {
+    if (selectedJobPost?.end_date) {
+      const today = new Date();
+      const end_date = new Date(endDate ? endDate + ":00.000Z" : "2025-06-07T23:59:59.000Z");
+      if (end_date < today) {
+        setError({ ...error, end_date: true });
+        return true;
+      }
+    }
+    setError({ ...error, end_date: false });
+    return false;
+  };
+
+  const validateSalary = () => {
+    if (
+      selectedJobPost?.salary_max &&
+      selectedJobPost?.salary_min &&
+      selectedJobPost.salary_max < selectedJobPost.salary_min
+    ) {
+      setError({ ...error, salary: true });
+      return true;
+    }
+    setError({ ...error, salary: false });
+    return false;
   };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -153,10 +183,12 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
   };
 
   const handleSubmit = async () => {
-    const postData = await createPostData();
-    const res = await updateJobPost(postData);
-    if (res == 200) {
-      router.push("/job-posts");
+    if (!validateDate() && !validateSalary()) {
+      const postData = await createPostData();
+      const res = await updateJobPost(postData);
+      if (res == 200) {
+        router.push("/job-posts");
+      }
     }
   };
 
@@ -189,6 +221,12 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
                 onChange={(e) => setEndDate(e.target.value)}
               />
 
+              {error.end_date && (
+                <Text mt="4px" color="red">
+                  The end date should be ahead of today's date.
+                </Text>
+              )}
+
               <Heading mt="16px">{getNameById(selectedJobPost?.position?.id, "positions")}</Heading>
               <Text fontSize="xl" mt="16px" color="#2E77AE">
                 Position
@@ -220,6 +258,7 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
                 Description
               </Text>
               <Textarea
+                maxLength={150}
                 borderColor="#2E77AE"
                 id="description"
                 value={selectedJobPost?.description}
@@ -371,7 +410,7 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
               )}
 
               <Text fontSize="xl" mt="4px" color="#2E77AE">
-                Min salary
+                Min salary (€)
               </Text>
               <Input
                 borderColor="#2E77AE"
@@ -382,7 +421,7 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
               />
 
               <Text fontSize="xl" mt="16px" color="#2E77AE">
-                Max salary
+                Max salary (€)
               </Text>
               <Input
                 borderColor="#2E77AE"
@@ -391,6 +430,12 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
                 value={selectedJobPost?.salary_max}
                 onChange={handleFormChange}
               />
+
+              {error.salary && (
+                <Text mt="4px" color="red">
+                  Max salary should be greater than min salary.
+                </Text>
+              )}
             </Box>
 
             <Box>
