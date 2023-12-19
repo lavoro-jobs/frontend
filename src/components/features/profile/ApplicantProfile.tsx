@@ -20,7 +20,7 @@ export default function ApplicantProfile() {
   const [update, setUpdate] = useState<boolean>(false);
   const Address = dynamic(() => import('../../shared/Address'), { ssr: false });
   const [email, setEmail] = useState("");
-
+  const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
   const [formData, setFormData] = useState<Form>({
     first_name: "",
     last_name: "",
@@ -63,7 +63,6 @@ export default function ApplicantProfile() {
     })
   }, []);
 
-  const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
   const downloadFile = () => {
     const linkSource = `data:application/pdf;base64,${formData.cv}`;
     if (downloadLinkRef.current) {
