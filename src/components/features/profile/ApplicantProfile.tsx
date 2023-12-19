@@ -12,12 +12,14 @@ import Form from "@/interfaces/applicant/form-state-get-applicant.interface";
 import { GrLocation } from "react-icons/gr";
 import { FaFileDownload } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
+import dynamic from "next/dynamic";
+import getCurrentUser from "@/helpers/getCurrentUser";
 
 export default function ApplicantProfile() {
-  /* TODO - geocode */
-  const [address, setAddress] = useState<string>("");
   const [update, setUpdate] = useState<boolean>(false);
-
+  const Address = dynamic(() => import("../../shared/Address"), { ssr: false });
+  const [email, setEmail] = useState("");
+  const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
   const [formData, setFormData] = useState<Form>({
     first_name: "",
     last_name: "",
@@ -55,9 +57,11 @@ export default function ApplicantProfile() {
     getApplicantProfile().then((resp) => {
       setFormData(resp);
     });
+    getCurrentUser().then((response) => {
+      setEmail(response.data.email);
+    });
   }, []);
 
-  const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
   const downloadFile = () => {
     const linkSource = `data:application/pdf;base64,${formData.cv}`;
     if (downloadLinkRef.current) {
@@ -111,12 +115,9 @@ export default function ApplicantProfile() {
                 )}
                 <Flex mt="16px" align="center" gap="8px">
                   <MdOutlineMail size="32px" />
-                  <Text>email@gmail.com</Text>
+                  <Text>{email}</Text>
                 </Flex>
-                <Flex mt="16px" gap="8px" align="center">
-                  <GrLocation size="32px" />
-                  <Text>{address}</Text>
-                </Flex>
+                <Address lat={formData.home_location.latitude} long={formData.home_location.longitude}></Address>
 
                 <Box mt="32px" mb="32px" border="1px solid #2E77AE" width="100%" />
                 <Flex color="#2E77AE" mt="16px" align="center" gap="8px">
@@ -132,7 +133,7 @@ export default function ApplicantProfile() {
               <Heading size="2xl" mt="32px" mb="32px">
                 {formData.position.position_name}
               </Heading>
-              <p>
+              <p style={{ marginLeft: 24, marginRight: 0 }}>
                 {formData.skills &&
                   formData.skills.map((skill, index) => (
                     <Text
@@ -167,10 +168,13 @@ export default function ApplicantProfile() {
                 <Text>{formData.contract_type.contract_type}</Text>
               </Flex>
 
-              <Box mt="32px" mb="32px" border="1px solid #2E77AE" width="60%" />
-              <Heading fontSize="3xl" pb="16px" color="#2E77AE">
-                WORK EXPERIENCE
-              </Heading>
+              {formData.experiences.length > 0 && <Box mt="32px" mb="32px" border="1px solid #2E77AE" width="60%" />}
+              
+              {formData.experiences.length > 0 && (
+                <Heading fontSize="3xl" pb="16px" color="#2E77AE">
+                  WORK EXPERIENCE
+                </Heading>
+              )}
 
               {formData.experiences.map((experience, index) => (
                 <>
@@ -178,7 +182,7 @@ export default function ApplicantProfile() {
                     Company name - {experience.company_name}
                   </Text>
                   <Text mb="8px" key={index}>
-                    Position - {experience.position_id}
+                    Position - {experience.position?.position_name}
                   </Text>
                   <Text mb="32px" key={index}>
                     Years - {experience.years}
@@ -186,7 +190,7 @@ export default function ApplicantProfile() {
                 </>
               ))}
 
-              <Box border="1px solid #2E77AE" width="60%" />
+              {formData.experiences.length > 0 && <Box border="1px solid #2E77AE" width="60%" />}
               <Button mt="32px" mb="32px" colorScheme="blue" onClick={() => setUpdate(!update)}>
                 Edit
               </Button>
