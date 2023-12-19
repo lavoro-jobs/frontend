@@ -48,16 +48,25 @@ export default function JobPost({
 
   const [formOptions, setFormOptions] = useState<FormOptions>({});
   const [address, setAddress] = useState<string>("");
+  const [archived, setArchived] = useState<boolean>(false);
 
   useEffect(() => {
     getAllCatalogs().then((resp) => {
       setFormOptions(resp);
     });
+
+    setArchived(isArchived(end_date));
   }, []);
+
+  function isArchived(endDateStr: any): boolean {
+    const endDate = new Date(endDateStr);
+    const now = new Date();
+    return endDate < now;
+  }
 
   return (
     <Flex direction="column" h="100%">
-      <Card w="sm" h="100%" display="flex" flexDirection="column">
+      <Card w="sm" h="100%" display="flex" color={isArchived(end_date) ? "gray" : "black"} backgroundColor={isArchived(end_date) ? "lightgray" : "white"} flexDirection="column">
         <CardBody flex="1" display="flex" flexDirection="column">
           <Text fontSize="sm" color="gray" mb="8px">
             End date: {end_date?.substring(0, 10)}, {end_date?.substring(11, 16)}
@@ -131,7 +140,7 @@ export default function JobPost({
                     mr="2"
                     mb="2"
                     borderRadius="md"
-                    color="black"
+                    color={archived ? "gray" : "black"}
                   >
                     {assignee.first_name} {assignee.last_name}
                   </Text>
@@ -142,12 +151,23 @@ export default function JobPost({
         <Divider color="#2E77AE" />
         <CardFooter alignSelf="flex-end">
           <ButtonGroup spacing="2">
-            <Button variant="ghost" colorScheme="blue">
-              Archive
-            </Button>
-            <Button variant="solid" colorScheme="blue" onClick={() => router.push(`/update-job-post/${id}`)}>
-              Update
-            </Button>
+            {!archived && (
+              <>
+                <Button variant="ghost" colorScheme="blue">
+                  Archive
+                </Button>
+                <Button variant="solid" colorScheme="blue" onClick={() => router.push(`/update-job-post/${id}`)}>
+                  Update
+                </Button>
+              </>
+            )}
+            {archived && (
+              <>
+                <Button variant="ghost" colorScheme="blue">
+                  Restore
+                </Button>
+              </>
+            )}
           </ButtonGroup>
         </CardFooter>
       </Card>
