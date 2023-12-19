@@ -13,12 +13,13 @@ import { GrLocation } from "react-icons/gr";
 import { FaFileDownload } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
 import dynamic from "next/dynamic";
+import getCurrentUser from "@/helpers/getCurrentUser";
 
 
 export default function ApplicantProfile() {
   const [update, setUpdate] = useState<boolean>(false);
   const Address = dynamic(() => import('../../shared/Address'), { ssr: false });
-
+  const [email, setEmail] = useState("");
 
   const [formData, setFormData] = useState<Form>({
     first_name: "",
@@ -57,6 +58,9 @@ export default function ApplicantProfile() {
     getApplicantProfile().then((resp) => {
       setFormData(resp);
     });
+    getCurrentUser().then((response) => {
+      setEmail(response.data.email);
+    })
   }, []);
 
   const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
@@ -113,7 +117,7 @@ export default function ApplicantProfile() {
                 )}
                 <Flex mt="16px" align="center" gap="8px">
                   <MdOutlineMail size="32px" />
-                  <Text>email@gmail.com</Text>
+                  <Text>{email}</Text>
                 </Flex>
                 <Address
                   lat={formData.home_location.latitude}
