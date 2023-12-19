@@ -11,7 +11,7 @@ import {
   Flex,
   Heading,
   Icon,
-  Text,
+  Text, useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { FaMoneyBillWave } from "react-icons/fa";
@@ -29,6 +29,10 @@ interface FormOptions {
   work_types?: [{ id: number; work_type: string }];
 }
 
+interface JobPostProps extends FormState {
+  openRestoreModal: () => void;
+}
+
 export default function JobPost({
   id,
   position,
@@ -43,9 +47,9 @@ export default function JobPost({
   salary_max,
   end_date,
   assignees,
-}: FormState) {
+  openRestoreModal
+}: JobPostProps) {
   const router = useRouter();
-
   const [formOptions, setFormOptions] = useState<FormOptions>({});
   const [address, setAddress] = useState<string>("");
   const [archived, setArchived] = useState<boolean>(false);
@@ -63,7 +67,6 @@ export default function JobPost({
     const now = new Date();
     return endDate < now;
   }
-
   return (
     <Flex direction="column" h="100%">
       <Card w="sm" h="100%" display="flex" color={isArchived(end_date) ? "gray" : "black"} backgroundColor={isArchived(end_date) ? "lightgray" : "white"} flexDirection="column">
@@ -162,11 +165,9 @@ export default function JobPost({
               </>
             )}
             {archived && (
-              <>
-                <Button variant="ghost" colorScheme="blue">
-                  Restore
-                </Button>
-              </>
+              <Button variant="ghost" colorScheme="blue" onClick={openRestoreModal}>
+                Restore
+              </Button>
             )}
           </ButtonGroup>
         </CardFooter>

@@ -7,10 +7,10 @@ import {
   Box,
   Button,
   Flex,
-  HStack,
+  HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay,
   Radio,
   RadioGroup,
-  Stack,
+  Stack, Text, useDisclosure,
   useRadio,
   useRadioGroup,
   Wrap,
@@ -21,14 +21,34 @@ import React, { useEffect, useState } from "react";
 import getJobPostsByRecruiter from "@/helpers/getJobPosts";
 import FormState from "@/interfaces/job-posts/form-state.interface";
 import JobPost from "@/components/features/jobPost/JobPost";
+import updateJobPost from "@/helpers/updateJobPost";
 
 
 export default function JobPosts() {
   const { auth } = useProtectedRoute([Role.APPLICANT, Role.RECRUITER]);
+
   const [jobPosts, setJobPosts] = useState<FormState[]>([]);
   const [filteredJobPosts, setFilteredJobPosts] = useState<FormState[]>([]);
   const [option, setOption] = useState("Show All")
   const options = ['Show All', 'Show Archived', 'Show Active']
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [newEndDate, setNewEndDate] = useState('');
+  const [selectedPostId, setSelectedPostId] = useState(null);
+
+  const openModalForPost = (postId: any) => {
+    setSelectedPostId(postId);
+    onOpen();
+  };
+
+  const handleSubmit = () => {
+    const postData = {
+      id: selectedPostId,
+      end_date: newEndDate + ":00.000Z"
+    }
+    updateJobPost(postData);
+    window.location.reload();
+    onClose();
+  };
   const handleChange = (prop: any) => {
     setOption(prop);
   }
@@ -131,24 +151,31 @@ export default function JobPosts() {
             {filteredJobPosts.map((post) => (
               <WrapItem key={post.id}>
                 <JobPost
-                  id={post.id}
-                  position={post.position}
-                  description={post.description}
-                  education_level={post.education_level}
-                  skills={post.skills}
-                  work_type={post.work_type}
-                  seniority_level={post.seniority_level}
-                  work_location={post.work_location}
-                  contract_type={post.contract_type}
-                  salary_min={post.salary_min}
-                  salary_max={post.salary_max}
-                  end_date={post.end_date}
-                  assignees={post.assignees}
+                  {...post}
+                  openRestoreModal={() => openModalForPost(post.id)}
                 />
               </WrapItem>
             ))}
           </Wrap>
         </Flex>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent >
+            <ModalHeader>Restore Job Post</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody mt="4vw">
+              <Text fontSize="lg" paddingTop="16px" textAlign="center">
+                End Date
+              </Text>
+              <div className="inputs-wrapper-center">
+                <Input id="end_date" type="datetime-local" value={newEndDate} onChange={(e) => setNewEndDate(e.target.value)} />
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button onClick={handleSubmit}>Submit</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Sidenav>
     );
   }
