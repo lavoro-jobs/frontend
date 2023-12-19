@@ -32,7 +32,7 @@ export default function CompanyProfile() {
                   ? `data:image/jpeg;base64,${companyData.logo}`
                   : "https://uxwing.com/wp-content/themes/uxwing/download/business-professional-services/company-enterprise-icon.png"
               }
-              w="200px"
+              w="300px"
               borderRadius="50%"
             ></Image>
             <Heading mt="16px">{companyData.name}</Heading>
