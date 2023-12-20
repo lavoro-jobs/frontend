@@ -42,7 +42,7 @@ export default function Header({ currentRoute }: { currentRoute?: string }) {
                 Home
               </Text>
             </Link>
-            <Link href="/job-posts">
+            <Link href="/jobs">
               <Text fontSize="lg" as={currentRoute === "/job-posts" ? "b" : "p"} color="#fff">
                 Job posts
               </Text>
@@ -93,7 +93,7 @@ export default function Header({ currentRoute }: { currentRoute?: string }) {
                     Home
                   </Text>
                 </Link>
-                <Link href="/job-posts">
+                <Link href="/jobs">
                   <Text fontSize="3xl" as={currentRoute === "/job-posts" ? "b" : "p"} color="#0071c6">
                     Job posts
                   </Text>
