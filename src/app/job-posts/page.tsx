@@ -107,7 +107,7 @@ export default function JobPosts() {
               Create new job post
             </Button>
           </Link>
-          <HStack ml="4vw" mb="2vw" alignSelf="start" {...group}>
+          <HStack mb="32px" alignSelf="center" {...group}>
             {options.map((value) => {
               const radio = getRadioProps({ value, onChange: handleOptionChange })
               return (

@@ -164,9 +164,7 @@ export default function ApplicantProfileSetup() {
     const file = e.target.files?.[0];
     if (file) {
       const allowedTypes = [
-        "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/pdf",,
       ];
 
       if (allowedTypes.includes(file.type)) {
@@ -503,7 +501,7 @@ export default function ApplicantProfileSetup() {
                 >
                   Upload {formData.cv ? "new" : ""} CV
                 </Button>
-                {error && <Text color="red">Please upload a PDF or DOC file!</Text>}
+                {error && <Text color="red">Please upload a PDF file!</Text>}
 
                 {formData.cv && (
                   <>
