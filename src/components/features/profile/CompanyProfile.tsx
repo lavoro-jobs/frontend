@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import CompanyState from "@/interfaces/company/company-state.interface";
+import CompanyState, { Recruiter } from "@/interfaces/company/company-state.interface";
 import getCompanyWIthRecruiters from "@/helpers/getCompanyWIthRecruiters";
 import Sidenav from "@/components/features/dashboard/Sidenav";
 import { Box, Button, Flex, Heading, Image, Table, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import CompanyProfileUpdate from "@/components/features/updateProfile/CompanyProfileUpdate";
+import getRecruiterProfile from "@/helpers/getRecruiterProfile";
 
 export default function CompanyProfile() {
   const [update, setUpdate] = useState<boolean>(false);
+  const [user, setUser] = useState<Recruiter>();
   const [companyData, setFormData] = useState<CompanyState>({
     id: "",
     name: "",
@@ -18,6 +20,12 @@ export default function CompanyProfile() {
   useEffect(() => {
     getCompanyWIthRecruiters().then((resp) => {
       setFormData(resp);
+    });
+  }, []);
+
+  useEffect(() => {
+    getRecruiterProfile().then((resp) => {
+      setUser(resp);
     });
   }, []);
 
@@ -65,9 +73,9 @@ export default function CompanyProfile() {
                 ))}
               </Tbody>
             </Table>
-            <Button mt="16px" colorScheme="blue" onClick={() => setUpdate(!update)}>
+            {user?.recruiter_role == "admin" && <Button mt="16px" colorScheme="blue" onClick={() => setUpdate(!update)}>
               Edit
-            </Button>
+            </Button>}
           </Box>
         </Box>
       )}

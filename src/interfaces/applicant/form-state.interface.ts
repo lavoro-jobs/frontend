@@ -1,4 +1,4 @@
-import Experience from "@/interfaces/shared/experience";
+import Experience from "@/interfaces/shared/experience.interface";
 
 export default interface FormState {
   first_name?: string;

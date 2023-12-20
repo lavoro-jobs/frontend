@@ -3,10 +3,10 @@ import MultiSelect from "multiselect-react-dropdown";
 import React, {useEffect, useState, useRef} from "react";
 import FormState from "@/interfaces/applicant/form-state.interface";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import MapClickEvent from "@/interfaces/applicant/map-click-event";
+import MapClickEvent from "@/interfaces/applicant/map-click-event.interface";
 import createApplicantProfile from "@/helpers/createApplicantProfile";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
-import Experience from "@/interfaces/shared/experience";
+import Experience from "@/interfaces/shared/experience.interface";
 import {useRouter} from "next/navigation";
 import {CgBoy, CgGirl} from "react-icons/cg";
 import {IoHappyOutline} from "react-icons/io5";
@@ -89,7 +89,7 @@ export default function ApplicantProfileSetup() {
 
   const handleSliderChange = (value: number | number[]) => {
     if (typeof value === "number") {
-      const newFormData = {...formData, seniority_level: value - 1};
+      const newFormData = {...formData, seniority_level: value};
       setFormData(newFormData);
     }
   };
@@ -164,9 +164,7 @@ export default function ApplicantProfileSetup() {
     const file = e.target.files?.[0];
     if (file) {
       const allowedTypes = [
-        "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/pdf",,
       ];
 
       if (allowedTypes.includes(file.type)) {
@@ -503,7 +501,7 @@ export default function ApplicantProfileSetup() {
                 >
                   Upload {formData.cv ? "new" : ""} CV
                 </Button>
-                {error && <Text color="red">Please upload a PDF or DOC file!</Text>}
+                {error && <Text color="red">Please upload a PDF file!</Text>}
 
                 {formData.cv && (
                   <>
