@@ -5,12 +5,13 @@ import getAllCatalogs from "@/helpers/getAllCatalogs";
 import getJobPostsByRecruiter from "@/helpers/getJobPosts";
 import getRecruitersAndCompany from "@/helpers/getRecruitersAndCompany";
 import updateJobPost from "@/helpers/updateJobPost";
+import MapClickEvent from "@/interfaces/applicant/map-click-event.interface";
 import CompanyRecruitersState from "@/interfaces/company/form-state-get-company-with-recruiters.interface";
 import CurrentUserState from "@/interfaces/current-user/form-state.interface";
 import FormState from "@/interfaces/job-posts/form-state.interface";
-import FormOptions from "@/interfaces/shared/formOptions";
-import Recruiter from "@/interfaces/shared/recruiter";
-import Skill from "@/interfaces/shared/skill";
+import FormOptions from "@/interfaces/shared/formOptions.interface";
+import Recruiter from "@/interfaces/shared/recruiter.interface";
+import Skill from "@/interfaces/shared/skill.interface";
 import {
   Box,
   Button,
@@ -26,14 +27,14 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import Multiselect from "multiselect-react-dropdown";
-import { useRouter } from "next/navigation";
+import {useRouter} from "next/navigation";
 import Slider from "rc-slider";
-import React, { useEffect, useState } from "react";
-import { FaGraduationCap, FaMoneyBillWave } from "react-icons/fa";
-import { FaLocationDot } from "react-icons/fa6";
-import { IoBriefcaseSharp } from "react-icons/io5";
-import { LiaCertificateSolid } from "react-icons/lia";
-import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
+import React, {useEffect, useState} from "react";
+import {FaGraduationCap, FaMoneyBillWave} from "react-icons/fa";
+import {FaLocationDot} from "react-icons/fa6";
+import {IoBriefcaseSharp} from "react-icons/io5";
+import {LiaCertificateSolid} from "react-icons/lia";
+import {MapContainer, TileLayer, useMapEvents} from "react-leaflet";
 import getCurrentUser from "@/helpers/getCurrentUser";
 import assignJobPost from "@/helpers/assignJobPost";
 import dynamic from "next/dynamic";
@@ -45,6 +46,7 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
   const [user, setUser] = useState<CurrentUserState>({});
   const [jobPosts, setJobPosts] = useState<FormState[]>([]);
   const [selectedJobPost, setSelectedJobPost] = useState<FormState>();
+  const [selectedRecruiters, setSelectedRecruiters] = useState([]);
   const Address = dynamic(() => import("../../../components/shared/Address"), { ssr: false });
   const [endDate, setEndDate] = useState<string>();
   const [marker, setMarker] = useState({ lat: 0, lng: 0 });
@@ -188,19 +190,11 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
     };
   };
 
-  const assigneePostData = async () => {
-    let data;
-    if (selectedJobPost?.id && selectedJobPost?.assignees) {
-      data = {
-        id: selectedJobPost?.id,
-        assignees: {
-          assignees: selectedJobPost.assignees
-            .filter((assignee) => assignee.account_id !== user?.account_id)
-            .map((assignee) => assignee.account_id),
-        },
-      };
-    }
-    return data;
+  const getAssigneesPostData = async () => {
+    const existingAssigneeIds = new Set((selectedJobPost?.assignees || []).map(assignee => assignee.account_id));
+    return selectedRecruiters
+      .filter((assignee: any) => !existingAssigneeIds.has(assignee.account_id))
+      .map((assignee: any) => assignee.account_id);
   };
 
   const handleSubmit = async () => {
@@ -208,9 +202,12 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
       const postData = await createPostData();
       const res = await updateJobPost(postData);
       if (res == 200) {
-        const data = await assigneePostData();
-        if (data) {
-          const res2 = await assignJobPost(data);
+        const newAssigneesIds = await getAssigneesPostData();
+        if (newAssigneesIds) {
+          const data = {
+            assignees: newAssigneesIds
+          }
+          await assignJobPost(selectedJobPost?.id, data);
         }
         router.push("/job-posts");
       }
@@ -546,8 +543,8 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
                 selectedValues={selectedJobPost?.assignees}
                 displayValue={`last_name`}
                 placeholder="Select"
-                onSelect={handleAssignees}
-                onRemove={handleAssignees}
+                onSelect={setSelectedRecruiters}
+                onRemove={setSelectedRecruiters}
               />
             </Box>
           </Flex>

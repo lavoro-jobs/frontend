@@ -1,5 +1,5 @@
-import Assignee from "../shared/assignee";
-import Skill from "../shared/skill";
+import Assignee from "../shared/assignee.interface";
+import Skill from "../shared/skill.interface";
 
 export default interface FormState {
   id?: string;

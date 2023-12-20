@@ -11,7 +11,8 @@ import {
   Flex,
   Heading,
   Icon,
-  Text, useDisclosure,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { FaMoneyBillWave } from "react-icons/fa";
@@ -49,7 +50,7 @@ export default function JobPost({
   salary_max,
   end_date,
   assignees,
-  openRestoreModal
+  openRestoreModal,
 }: JobPostProps) {
   const router = useRouter();
   const [formOptions, setFormOptions] = useState<FormOptions>({});
@@ -70,7 +71,7 @@ export default function JobPost({
     if (response == 200) {
       window.location.reload();
     }
-  }
+  };
 
   function isArchived(endDateStr: any): boolean {
     const endDate = new Date(endDateStr);
@@ -79,7 +80,14 @@ export default function JobPost({
   }
   return (
     <Flex direction="column" h="100%">
-      <Card w="sm" h="100%" display="flex" color={isArchived(end_date) ? "gray" : "black"} backgroundColor={isArchived(end_date) ? "lightgray" : "white"} flexDirection="column">
+      <Card
+        w="sm"
+        h="100%"
+        display="flex"
+        color={isArchived(end_date) ? "gray.500" : "black"}
+        backgroundColor={isArchived(end_date) ? "gray.200" : "white"}
+        flexDirection="column"
+      >
         <CardBody flex="1" display="flex" flexDirection="column">
           <Text fontSize="sm" color="gray" mb="8px">
             End date: {end_date?.substring(0, 10)}, {end_date?.substring(11, 16)}
@@ -98,7 +106,7 @@ export default function JobPost({
                   mr="2"
                   mb="2"
                   borderRadius="md"
-                  backgroundColor="blue.500"
+                  backgroundColor={isArchived(end_date) ? "gray.500" : "blue.500"}
                   color="white"
                 >
                   {skill.skill_name}
@@ -143,7 +151,11 @@ export default function JobPost({
             {assignees &&
               assignees.map((assignee) => (
                 <Flex key={assignee.account_id}>
-                  <Avatar size="sm" />
+                  <Avatar
+                    size="sm"
+                    style={{ filter: archived ? "blur(1px) grayscale(100%)" : "none" }}
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ3ztWTGwSgvZJvsA49k950OqfYRhhssQqaw&usqp=CAU"
+                  />
                   <Text
                     display="inline-block"
                     px="2"
@@ -151,7 +163,7 @@ export default function JobPost({
                     mr="2"
                     mb="2"
                     borderRadius="md"
-                    color={archived ? "gray" : "black"}
+                    color={archived ? "gray.500" : "black"}
                   >
                     {assignee.first_name} {assignee.last_name}
                   </Text>

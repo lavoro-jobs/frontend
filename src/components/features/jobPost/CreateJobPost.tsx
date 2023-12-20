@@ -8,11 +8,11 @@ import { useRouter } from "next/navigation";
 import createJobPost from "@/helpers/createJobPost";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useMapEvents } from "react-leaflet/hooks";
-import Skill from "@/interfaces/shared/skill";
+import Skill from "@/interfaces/shared/skill.interface";
 import Sidenav from "../dashboard/Sidenav";
 import CompanyRecruitersState from "@/interfaces/company/form-state-get-company-with-recruiters.interface";
 import getRecruitersAndCompany from "@/helpers/getRecruitersAndCompany";
-import Recruiter from "@/interfaces/shared/recruiter";
+import Recruiter from "@/interfaces/shared/recruiter.interface";
 import getCurrentUser from "@/helpers/getCurrentUser";
 import CurrentUserState from "@/interfaces/current-user/form-state.interface";
 
@@ -29,6 +29,7 @@ export default function CreateJobPost() {
 
   const [formOptions, setFormOptions] = useState<FormOptions>({});
   const [companyRecruiters, setCompanyRecruiters] = useState<CompanyRecruitersState>({});
+  const [selectedRecruiters, setSelectedRecruiters] = useState([]);
   const [user, setUser] = useState<CurrentUserState>({});
 
   const [skill, setSkill] = useState<Skill[]>([]);
@@ -137,17 +138,6 @@ export default function CreateJobPost() {
     setFormData(newFormData);
   };
 
-  const handleAssignees = (selectedList: Recruiter[]) => {
-    setCompanyRecruiters({
-      ...companyRecruiters,
-      recruiters: selectedList.filter((assignee) => assignee.account_id !== user?.account_id),
-    });
-    setFormData({
-      ...formData,
-      assignees: selectedList.filter((assignee) => assignee.account_id !== user?.account_id),
-    });
-  };
-
   const createPostData = async () => {
     return {
       position_id: formData.position_id,
@@ -164,9 +154,8 @@ export default function CreateJobPost() {
       salary_min: formData.salary_min,
       salary_max: formData.salary_max,
       end_date: formData.end_date ? formData.end_date + ":00.000Z" : "2025-06-07T23:59:59.000Z",
-      assignees: formData.assignees
-        ?.filter((assignee) => assignee.account_id !== user?.account_id)
-        .map((assignee) => assignee.account_id),
+      assignees: selectedRecruiters
+        ?.map((recruiter: Recruiter) => recruiter.account_id),
     };
   };
 
@@ -455,8 +444,8 @@ export default function CreateJobPost() {
                 selectedValues={formData.assignees}
                 displayValue={`last_name`}
                 placeholder="Select"
-                onSelect={handleAssignees}
-                onRemove={handleAssignees}
+                onSelect={setSelectedRecruiters}
+                onRemove={setSelectedRecruiters}
               />
             </>
           )}
