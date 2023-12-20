@@ -89,6 +89,58 @@
     color: #0071c6;
   }
 }
+.homepage-jobs-wrapper {
+  display: flex;
+  width: 100%;
+  background-color: transparent;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+  padding-top: 96px;
+
+
+  > h2 {
+    font-size: 64px;
+    font-family: "Goldman", sans-serif;
+    color: #0071c6;
+  }
+
+
+    @media screen and (max-width: 1600px) {
+        .job-post-wrapper {
+            > div:last-of-type {
+                display: none
+            }
+        }
+    }
+
+    @media screen and (max-width: 1280px) {
+        .job-post-wrapper {
+
+            > div:nth-of-type(3) {
+                display: none
+            }
+        }
+    }
+
+
+    @media screen and (max-width: 800px) {
+        .job-post-wrapper {
+            > div {
+                width: 100%;
+            }
+        }
+    }
+}
+@media screen and (max-width: 800px) {
+    .homepage-jobs-wrapper {
+        > h2 {
+            font-size: 9vw;
+            text-align: center;
+            padding: 0 24px;
+        }
+    }
+}
 
 .homepage-highlights-container {
   padding: 64px 32px 180px;
@@ -264,8 +316,10 @@
         }
     }
 
-    .homepage-highlights-wrapper h2 {
-        font-size: 9vw;
+    .homepage-highlights-wrapper{
+        h2 {
+            font-size: 9vw;
+        }
     }
     .homepage-highlights-container {
         padding: 64px 32px;

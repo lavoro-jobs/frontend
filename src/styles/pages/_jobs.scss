@@ -1,0 +1,72 @@
+.job-post-wrapper {
+    > div {
+        width: 23%;
+        margin-bottom: 3%;
+
+        > div {
+            width: 100%;
+        }
+    }
+
+    .chakra-card {
+        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.3),0 2px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+}
+.modal-heading {
+    padding: 0;
+}
+
+.job-post-description h3 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.chakra-modal__content {
+    max-width: 60%;
+    width: fit-content;
+}
+
+@media screen and (min-width: 2000px) {
+    .job-post-wrapper {
+        > div {
+            width: 19%;
+            margin-bottom: 2%;
+        }
+    }
+}
+
+@media screen and (max-width: 1600px) {
+    .job-post-wrapper {
+        > div {
+            width: 31%;
+        }
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .job-post-wrapper {
+        > div {
+            width: 48%;
+        margin-bottom: 5%;
+
+            h2 {
+                padding: 0;
+            }
+        }
+    }
+}
+
+
+@media screen and (max-width: 800px) {
+    .job-post-wrapper {
+        > div {
+            width: 100%;
+        }
+    }
+
+    .chakra-modal__content {
+        max-width: 94%;
+        width: 94%;
+    }
+}
