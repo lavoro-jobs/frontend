@@ -21,6 +21,7 @@ import { FaGraduationCap } from "react-icons/fa";
 import { LiaCertificateSolid } from "react-icons/lia";
 import { useRouter } from "next/navigation";
 import archiveJobPost from "@/helpers/archiveJobPost";
+import dynamic from "next/dynamic";
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -54,6 +55,7 @@ export default function JobPost({
   const [formOptions, setFormOptions] = useState<FormOptions>({});
   const [address, setAddress] = useState<string>("");
   const [archived, setArchived] = useState<boolean>(false);
+  const Address = dynamic(() => import("../../shared/Address"), { ssr: false });
 
   useEffect(() => {
     getAllCatalogs().then((resp) => {
@@ -83,9 +85,7 @@ export default function JobPost({
             End date: {end_date?.substring(0, 10)}, {end_date?.substring(11, 16)}
           </Text>
           <Heading>{position?.position_name}</Heading>
-          <Text fontSize="sm" color="gray.500" mt="2px" mb="8px">
-            Address: {address ? address : `${work_location?.latitude}, ${work_location?.longitude}`}
-          </Text>
+          <Address lat={work_location?.latitude} long={work_location?.longitude}></Address>
           <Text mb="8px">{description}</Text>
           <Flex flexWrap="wrap">
             {skills &&

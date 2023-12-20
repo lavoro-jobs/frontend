@@ -5,7 +5,6 @@ import getAllCatalogs from "@/helpers/getAllCatalogs";
 import getJobPostsByRecruiter from "@/helpers/getJobPosts";
 import getRecruitersAndCompany from "@/helpers/getRecruitersAndCompany";
 import updateJobPost from "@/helpers/updateJobPost";
-import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import CompanyRecruitersState from "@/interfaces/company/form-state-get-company-with-recruiters.interface";
 import CurrentUserState from "@/interfaces/current-user/form-state.interface";
 import FormState from "@/interfaces/job-posts/form-state.interface";
@@ -37,17 +36,16 @@ import { LiaCertificateSolid } from "react-icons/lia";
 import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
 import getCurrentUser from "@/helpers/getCurrentUser";
 import assignJobPost from "@/helpers/assignJobPost";
+import dynamic from "next/dynamic";
 
 export default function PostUpdate({ params }: { params: { id: string } }) {
   const router = useRouter();
-
   const [formOptions, setFormOptions] = useState<FormOptions>({});
   const [companyRecruiters, setCompanyRecruiters] = useState<CompanyRecruitersState>({});
   const [user, setUser] = useState<CurrentUserState>({});
-
   const [jobPosts, setJobPosts] = useState<FormState[]>([]);
   const [selectedJobPost, setSelectedJobPost] = useState<FormState>();
-
+  const Address = dynamic(() => import("../../../components/shared/Address"), { ssr: false });
   const [endDate, setEndDate] = useState<string>();
   const [marker, setMarker] = useState({ lat: 0, lng: 0 });
   const [skill, setSkill] = useState<Skill[]>();
@@ -466,9 +464,7 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
             </Box>
 
             <Box>
-              <Text fontSize="sm" color="gray.500">
-                Address: {selectedJobPost?.work_location?.latitude}, {selectedJobPost?.work_location?.longitude}
-              </Text>
+              <Address lat={selectedJobPost?.work_location?.latitude} long={selectedJobPost?.work_location?.longitude}></Address>
               <Flex gap="8px" justify="space-between">
                 <Box w="50%">
                   <Text fontSize="xl" mt="16px" color="#2E77AE">
