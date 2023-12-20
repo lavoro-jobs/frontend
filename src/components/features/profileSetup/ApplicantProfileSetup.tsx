@@ -2,7 +2,7 @@ import {Box, Button, Flex, Heading, IconButton, Input, Select, Text} from "@chak
 import MultiSelect from "multiselect-react-dropdown";
 import React, {useEffect, useState, useRef} from "react";
 import FormState from "@/interfaces/applicant/form-state.interface";
-import {MapContainer, TileLayer, Marker, Popup} from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import createApplicantProfile from "@/helpers/createApplicantProfile";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
@@ -13,7 +13,7 @@ import {IoHappyOutline} from "react-icons/io5";
 import {IoArrowRedo, IoArrowUndo} from "react-icons/io5";
 import {FiXCircle} from "react-icons/fi";
 import Slider from "rc-slider";
-import {useMapEvents} from 'react-leaflet/hooks'
+import { useMapEvents } from "react-leaflet/hooks";
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -240,7 +240,7 @@ export default function ApplicantProfileSetup() {
       </Heading>
 
       <Button
-        borderRadius="50%"
+        borderRadius="20px"
         display={idArticle !== 4 && btn ? "" : "none"}
         position="absolute"
         top="50%"
@@ -256,7 +256,7 @@ export default function ApplicantProfileSetup() {
         <IoArrowRedo/>
       </Button>
       <Button
-        borderRadius="50%"
+        borderRadius="20px"
         display={idArticle !== 1 && btn ? "" : "none"}
         position="absolute"
         top="50%"
@@ -629,10 +629,23 @@ export default function ApplicantProfileSetup() {
                     ))}
                 </Select>
 
-                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
-                  Minimum salary
+                <Heading fontSize="xl" pt="24px" color="#2E77AE">
+                  Min salary (€)
                 </Heading>
+                {formData.contract_type_id == 4 && (
+                  <Text color="#2E77AE" pl="2px">
+                    by month
+                  </Text>
+                )}
+                {(formData.contract_type_id == 1 ||
+                  formData.contract_type_id == 2 ||
+                  formData.contract_type_id == 3) && (
+                  <Text color="#2E77AE" pl="2px">
+                    by hour
+                  </Text>
+                )}
                 <Input
+                  mt="8px"
                   borderColor="#2E77AE"
                   id="min_salary"
                   type="number"

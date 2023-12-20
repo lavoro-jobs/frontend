@@ -169,7 +169,7 @@ export default function RecruiterProfileSetup() {
       </Heading>
 
       <Button
-        borderRadius="50%"
+        borderRadius="20px"
         display={idArticle !== 3 && btn ? "" : "none"}
         position="absolute"
         top="50%"
@@ -185,7 +185,7 @@ export default function RecruiterProfileSetup() {
         <IoArrowRedo />
       </Button>
       <Button
-        borderRadius="50%"
+        borderRadius="20px"
         display={idArticle !== 1 && btn ? "" : "none"}
         position="absolute"
         top="50%"
@@ -296,7 +296,7 @@ export default function RecruiterProfileSetup() {
                 </Button>
 
                 {formDataCompany.logo && (
-                  <Box w="96%" border="#2E77AE solid 2px" borderRadius="16px" overflow="hidden" position="relative">
+                  <Box w="300px" border="#2E77AE solid 2px" borderRadius="16px" overflow="hidden" position="relative">
                     <Image w="100%" src={logoUrl} alt="Company logo" />
                     <Button
                       position="absolute"
@@ -328,6 +328,7 @@ export default function RecruiterProfileSetup() {
               Description
             </Heading>
             <Textarea
+              maxLength={150}
               borderColor="#2E77AE"
               id="description"
               value={formDataCompany.description}
@@ -347,7 +348,7 @@ export default function RecruiterProfileSetup() {
             </Heading>
             <Wrap>
               {emails.map((email, index) => (
-                <Tag key={index} borderRadius="full" variant="solid" colorScheme="blue">
+                <Tag key={index} borderRadius="full" variant="solid" colorScheme="blue" p="8px" pl="16px">
                   <TagLabel>{email}</TagLabel>
                   <TagCloseButton onClick={() => removeEmail(index)} />
                 </Tag>
