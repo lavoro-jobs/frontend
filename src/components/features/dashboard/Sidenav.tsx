@@ -34,7 +34,7 @@ interface LinkItemProps {
 const ApplicantLinks: Array<LinkItemProps> = [
   { name: "Home", icon: FiHome, url: "/" },
   { name: "Profile", icon: FiSettings, url: "/profile" },
-  { name: "Matches", icon: FiUserCheck, url: "" },
+  { name: "Matches", icon: FiUserCheck, url: "/matches" },
   { name: "Chats", icon: FiSend, url: "" },
 ];
 
@@ -43,7 +43,7 @@ const RecruiterLinks: Array<LinkItemProps> = [
   { name: "Profile", icon: FiSettings, url: "/profile" },
   { name: "Company", icon: FiLayers, url: "/company" },
   { name: "Job Posts", icon: FiCrosshair, url: "/job-posts" },
-  { name: "Matches", icon: FiUserCheck, url: "" },
+  { name: "Matches", icon: FiUserCheck, url: "/matches" },
   { name: "Chats", icon: FiSend, url: "" },
 ];
 
