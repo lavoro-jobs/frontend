@@ -174,8 +174,6 @@ export default function ApplicantProfileUpdate({
     if (file) {
       const allowedTypes = [
         "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       ];
 
       if (allowedTypes.includes(file.type)) {
@@ -529,7 +527,7 @@ export default function ApplicantProfileUpdate({
           <Button colorScheme="blue" value={formData.cv} onClick={handleLogoUpload}>
             Upload {formData.cv ? "new" : ""} CV
           </Button>
-          {error && <Text color="red">Please upload a PDF or DOC file!</Text>}
+          {error && <Text color="red">Please upload a PDF file!</Text>}
 
           {formData.cv && (
             <>
