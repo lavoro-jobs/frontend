@@ -1,5 +1,5 @@
-import Experience from "../shared/experience";
-import Skill from "../shared/skill";
+import Experience from "../shared/experience.interface";
+import Skill from "../shared/skill.interface";
 
 export default interface Form {
   first_name: string;

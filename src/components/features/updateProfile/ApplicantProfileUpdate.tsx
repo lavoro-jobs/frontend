@@ -1,19 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Avatar, Box, Button, Divider, Flex, Heading, IconButton, Input, Select, Text } from "@chakra-ui/react";
-import Experience from "@/interfaces/shared/experience";
+import Experience from "@/interfaces/shared/experience.interface";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
-import MapClickEvent from "@/interfaces/applicant/map-click-event";
+import MapClickEvent from "@/interfaces/applicant/map-click-event.interface";
 import updateApplicantProfile from "@/helpers/updateApplicantProfile";
 import { useRouter } from "next/navigation";
 import Multiselect from "multiselect-react-dropdown";
 import Slider from "rc-slider";
 import { FiXCircle } from "react-icons/fi";
-import FormOptions from "@/interfaces/shared/formOptions";
+import FormOptions from "@/interfaces/shared/formOptions.interface";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useMapEvents } from "react-leaflet/hooks";
 import Form from "@/interfaces/applicant/form-state-get-applicant.interface";
 import FormState from "@/interfaces/applicant/form-state.interface";
-import Skill from "@/interfaces/shared/skill";
+import Skill from "@/interfaces/shared/skill.interface";
 import deleteExperience from "@/helpers/deleteExperience";
 import createExperiences from "@/helpers/createExperiences";
 
