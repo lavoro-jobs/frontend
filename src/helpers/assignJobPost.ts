@@ -2,11 +2,11 @@
 import FormState from "@/interfaces/job-posts/post-state-assignees.interface";
 import axiosInstance from ".";
 
-const assignJobPost = async (formData: FormState) => {
+const assignJobPost = async (id: any, formData: any) => {
   try {
     const response = await axiosInstance.post(
-      `/company/assign-job-post/${encodeURIComponent(formData.id)}`,
-      JSON.stringify(formData.assignees),
+      `/company/assign-job-post/${encodeURIComponent(id)}`,
+      formData,
       {
         headers: {
           "Content-Type": "application/json",
