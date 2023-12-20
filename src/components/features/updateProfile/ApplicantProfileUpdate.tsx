@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Avatar, Box, Button, Divider, Flex, Heading, IconButton, Input, Select, Text } from "@chakra-ui/react";
 import Experience from "@/interfaces/shared/experience";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
@@ -9,8 +9,8 @@ import Multiselect from "multiselect-react-dropdown";
 import Slider from "rc-slider";
 import { FiXCircle } from "react-icons/fi";
 import FormOptions from "@/interfaces/shared/formOptions";
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { useMapEvents } from 'react-leaflet/hooks'
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useMapEvents } from "react-leaflet/hooks";
 import Form from "@/interfaces/applicant/form-state-get-applicant.interface";
 import FormState from "@/interfaces/applicant/form-state.interface";
 import Skill from "@/interfaces/shared/skill";
@@ -82,11 +82,11 @@ export default function ApplicantProfileUpdate({
 
   useEffect(() => {
     const newFormData = {
-    ...formData,
-    education_level_id: education_level.id,
-    position_id: position.id,
-    contract_type_id: contract_type.id,
-    work_type_id: work_type.id
+      ...formData,
+      education_level_id: education_level.id,
+      position_id: position.id,
+      contract_type_id: contract_type.id,
+      work_type_id: work_type.id,
     };
     setFormData(newFormData);
     getAllCatalogs().then((resp) => {
@@ -108,7 +108,7 @@ export default function ApplicantProfileUpdate({
 
   const handleSliderChange = (value: number | number[]) => {
     if (typeof value === "number") {
-      const newFormData = { ...formData, seniority_level: value - 1 };
+      const newFormData = { ...formData, seniority_level: value };
       setFormData(newFormData);
     }
   };
@@ -206,7 +206,7 @@ export default function ApplicantProfileUpdate({
   };
 
   const getApplicantPostData = async () => {
-    return ({
+    return {
       first_name: formData.first_name,
       last_name: formData.last_name,
       education_level_id: formData.education_level_id,
@@ -224,8 +224,8 @@ export default function ApplicantProfileUpdate({
       work_location_max_distance: formData.work_location_max_distance,
       contract_type_id: formData.contract_type_id,
       min_salary: formData.min_salary,
-    });
-  }
+    };
+  };
 
     const LocationFinderDummy = () => {
         const map = useMapEvents({
@@ -309,7 +309,7 @@ export default function ApplicantProfileUpdate({
   return (
     <>
       <Flex gap="32px">
-        <Box flex="1" pr="32px" borderRight="solid #2E77AE 1px">
+        <Box flex="1" pr="32px">
           <Flex gap="8px" justify="space-between">
             <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
@@ -411,7 +411,7 @@ export default function ApplicantProfileUpdate({
           <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
             Seniority level
           </Heading>
-          <Slider min={0} max={4} step={1} defaultValue={seniority_level} marks={marks} onChange={handleSliderChange} />
+          <Slider min={1} max={5} step={1} defaultValue={seniority_level} marks={marks} onChange={handleSliderChange} />
 
           <Heading fontSize="xl" pt="32px" pb="8px" color="#2E77AE">
             Skills
@@ -424,45 +424,7 @@ export default function ApplicantProfileUpdate({
             onSelect={handleSkills}
             onRemove={handleSkills}
           />
-          <Flex direction="column" justify="center" mt="24px" align="center" gap="0px">
-            <Input id="logo" type="file" ref={inputRef} style={{ display: "none" }} onChange={handleFileChange} />
-
-            <Button
-              color="white"
-              bg="#2E77AE"
-              _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
-              value={formData.cv}
-              onClick={handleLogoUpload}
-            >
-              Upload {formData.cv ? "new" : ""} CV
-            </Button>
-            {error && <Text color="red">Please upload a PDF or DOC file!</Text>}
-
-            {formData.cv && (
-              <>
-                <Flex align="center">
-                  <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-                    {fileName}
-                  </a>
-                  <Button
-                    color="#2E77AE"
-                    bg="transparent"
-                    _hover={{ color: "#0D2137" }}
-                    onClick={() => {
-                      setFormData({
-                        ...formData,
-                        cv: "",
-                      });
-                    }}
-                  >
-                    ✖
-                  </Button>
-                </Flex>
-              </>
-            )}
-          </Flex>
         </Box>
-
 
         <Box flex="1">
           <Flex gap="8px" justify="space-between">
@@ -511,8 +473,12 @@ export default function ApplicantProfileUpdate({
           <Flex gap="8px" justify="space-between">
             <Box w="49%">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-                Minimum salary
+                Min salary (€) {formData.contract_type_id == 4 && <span>by month</span>}
+                {(formData.contract_type_id == 1 ||
+                  formData.contract_type_id == 2 ||
+                  formData.contract_type_id == 3) && <span>by hour</span>}
               </Heading>
+
               <Input
                 w="100%"
                 borderColor="#2E77AE"
@@ -569,12 +535,13 @@ export default function ApplicantProfileUpdate({
           <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE" textAlign="center">
             Click location on map to get Latitude/Longitude
           </Heading>
-          <div style={{ height: "400px", width: "100%", paddingTop: "16px", paddingBottom: "16px", marginTop: "16px", marginBottom: "8px" }}>
-            <MapContainer
-              center={[0, 0]}
-              zoom={2}
-              style={{ height: '350px', width: '100%' }}
-            >
+          <div
+            style={{
+              height: "400px",
+              width: "100%",
+            }}
+          >
+            <MapContainer center={[0, 0]} zoom={2} style={{ height: "350px", width: "100%" }}>
               <LocationFinderDummy />
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             </MapContainer>
@@ -583,6 +550,37 @@ export default function ApplicantProfileUpdate({
       </Flex>
       <Box borderTop="solid #2E77AE 1px" />
       <Box>
+        <Flex direction="column" justify="center" mt="48px" align="center" gap="0px">
+          <Input id="logo" type="file" ref={inputRef} style={{ display: "none" }} onChange={handleFileChange} />
+
+          <Button colorScheme="blue" value={formData.cv} onClick={handleLogoUpload}>
+            Upload {formData.cv ? "new" : ""} CV
+          </Button>
+          {error && <Text color="red">Please upload a PDF or DOC file!</Text>}
+
+          {formData.cv && (
+            <>
+              <Flex align="center">
+                <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+                  {fileName}
+                </a>
+                <Button
+                  color="#2E77AE"
+                  bg="transparent"
+                  _hover={{ color: "#0D2137" }}
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      cv: "",
+                    });
+                  }}
+                >
+                  ✖
+                </Button>
+              </Flex>
+            </>
+          )}
+        </Flex>
         <Flex flexFlow={"column"} align="center">
           {experience.map((input, index) => (
             <div key={index} className="experience-wrapper">
@@ -650,9 +648,11 @@ export default function ApplicantProfileUpdate({
             Add company
           </Button>
         </Flex>
-        <Button mt="32px" colorScheme="blue" onClick={handleSubmit}>
-          Submit
-        </Button>
+        <Flex justify="flex-end">
+          <Button mt="32px" bgColor="#FF8E2B" _hover={{ bgColor: "#fdb16e" }} color="#0D2137" onClick={handleSubmit}>
+            Finish
+          </Button>
+        </Flex>
       </Box>
     </>
   );
