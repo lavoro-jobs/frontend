@@ -8,11 +8,11 @@ import { useRouter } from "next/navigation";
 import createJobPost from "@/helpers/createJobPost";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useMapEvents } from "react-leaflet/hooks";
-import Skill from "@/interfaces/shared/skill";
+import Skill from "@/interfaces/shared/skill.interface";
 import Sidenav from "../dashboard/Sidenav";
 import CompanyRecruitersState from "@/interfaces/company/form-state-get-company-with-recruiters.interface";
 import getRecruitersAndCompany from "@/helpers/getRecruitersAndCompany";
-import Recruiter from "@/interfaces/shared/recruiter";
+import Recruiter from "@/interfaces/shared/recruiter.interface";
 import getCurrentUser from "@/helpers/getCurrentUser";
 import CurrentUserState from "@/interfaces/current-user/form-state.interface";
 
