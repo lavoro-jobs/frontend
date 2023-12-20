@@ -16,6 +16,7 @@ import FormState from "@/interfaces/applicant/form-state.interface";
 import Skill from "@/interfaces/shared/skill";
 import deleteExperience from "@/helpers/deleteExperience";
 import createExperiences from "@/helpers/createExperiences";
+import updateExperience from "@/helpers/updateExperience";
 
 export default function ApplicantProfileUpdate({
   first_name,
@@ -39,7 +40,7 @@ export default function ApplicantProfileUpdate({
   const [marker, setMarker] = useState({ lat: 0, lng: 0 });
   const [skill, setSkill] = useState<Skill[]>(skills);
   const [experience, setExperience] = useState<Experience[]>(experiences ? experiences : []);
-  const [initialExperience, setInitialExperience] = useState<Experience[]>(experiences ? experiences : []);
+  const [initialExperiences, setInitialExperiences] = useState<Experience[]>(experiences ? experiences : []);
   const [error, setError] = useState<boolean>(false);
 
   const [formData, setFormData] = useState<Form>({
@@ -92,7 +93,7 @@ export default function ApplicantProfileUpdate({
       setFormOptions(resp);
     });
     setFileName("cv.pdf")
-    setInitialExperience(experiences);
+    setInitialExperiences(experiences);
   }, []);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -244,22 +245,49 @@ export default function ApplicantProfileUpdate({
         return null;
     };
 
+  const findUpdatedExperiences = (initialExperiences: Experience[], currentExperiences: Experience[]) => {
+    const updatedExperiences = currentExperiences.filter((currentExp) => {
+      const initialExp = initialExperiences.find((exp) => exp.id === currentExp.id);
+      if (!initialExp) return false;
+      return (
+        initialExp.position_id !== currentExp.position_id ||
+        initialExp.years !== currentExp.years ||
+        initialExp.company_name !== currentExp.company_name
+      );
+    });
+
+    return updatedExperiences;
+  };
+
   const handleSubmit = async () => {
     const applicantPostData = await getApplicantPostData();
     const applicantResponse = await updateApplicantProfile(applicantPostData);
 
     const currentExperienceIds = new Set(formData.experiences.map(exp => exp.id));
-    for (const exp of initialExperience) {
+    for (const exp of initialExperiences) {
       if (!currentExperienceIds.has(exp.id)) {
         await deleteExperience(exp.id);
       }
     }
 
-    const initialExperienceIds = new Set(initialExperience.map(exp => exp.id));
+    const initialExperienceIds = new Set(initialExperiences.map(exp => exp.id));
     const newExperiences = formData.experiences.filter(exp => !initialExperienceIds.has(exp.id));
     if (newExperiences.length > 0) {
-      const createExperiencesResponse = await createExperiences(newExperiences);
+      await createExperiences(newExperiences);
     }
+
+    const updatedExperiences = findUpdatedExperiences(initialExperiences, formData.experiences);
+     for (const exp of updatedExperiences) {
+       const data = {
+         id: exp.id,
+         company_name: exp.company_name,
+         position_id: exp.position?.id,
+         years: exp.years
+       }
+       await updateExperience(data);
+     }
+
+
 
     if (applicantResponse == 200) {
       window.location.reload();
