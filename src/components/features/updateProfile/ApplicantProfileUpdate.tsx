@@ -151,7 +151,6 @@ export default function ApplicantProfileUpdate({
     property: string
   ) => {
     const value = e.target.value;
-
     const updatedExperience = [...experience];
 
     if (updatedExperience[index]) {
@@ -281,7 +280,7 @@ export default function ApplicantProfileUpdate({
        const data = {
          id: exp.id,
          company_name: exp.company_name,
-         position_id: exp.position?.id,
+         position_id: exp.position_id,
          years: exp.years
        }
        await updateExperience(data);
