@@ -7,14 +7,24 @@ import {
   Box,
   Button,
   Flex,
-  HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay,
+  HStack,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Radio,
   RadioGroup,
-  Stack, Text, useDisclosure,
+  Stack,
+  Text,
+  useDisclosure,
   useRadio,
   useRadioGroup,
   Wrap,
-  WrapItem
+  WrapItem,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -24,17 +34,33 @@ import JobPost from "@/components/features/jobPost/JobPost";
 import updateJobPost from "@/helpers/updateJobPost";
 import RadioCard from "@/components/features/jobPost/RadioCard";
 
-
 export default function JobPosts() {
   const { auth } = useProtectedRoute([Role.APPLICANT, Role.RECRUITER]);
 
   const [jobPosts, setJobPosts] = useState<FormState[]>([]);
   const [filteredJobPosts, setFilteredJobPosts] = useState<FormState[]>([]);
-  const [option, setOption] = useState("Show All")
-  const options = ['Show All', 'Show Archived', 'Show Active']
+  const [option, setOption] = useState("Show All");
+
+  const options = ["Show All", "Show Archived", "Show Active"];
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [newEndDate, setNewEndDate] = useState('');
+
+  const [newEndDate, setNewEndDate] = useState("");
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (newEndDate) {
+      const end_date = new Date(newEndDate);
+      const today = new Date();
+      if (end_date < today) {
+        setError(true);
+      } else {
+        setError(false);
+      }
+    } else {
+      setError(false);
+    }
+  }, [newEndDate]);
 
   const openModalForPost = (postId: any) => {
     setSelectedPostId(postId);
@@ -42,25 +68,28 @@ export default function JobPosts() {
   };
 
   const handleSubmit = () => {
-    const postData = {
-      id: selectedPostId,
-      end_date: newEndDate + ":00.000Z"
+    if (!error) {
+      const postData = {
+        id: selectedPostId,
+        end_date: newEndDate + ":00.000Z",
+      };
+      updateJobPost(postData);
+      window.location.reload();
+      onClose();
     }
-    updateJobPost(postData);
-    window.location.reload();
-    onClose();
   };
+
   const handleChange = (prop: any) => {
     setOption(prop);
-  }
+  };
 
   const { getRootProps, getRadioProps } = useRadioGroup({
-    name: 'option',
+    name: "option",
     defaultValue: option,
     onChange: handleChange,
-  })
+  });
 
-  const group = getRootProps()
+  const group = getRootProps();
 
   useEffect(() => {
     const fetchJobPosts = async () => {
@@ -107,47 +136,57 @@ export default function JobPosts() {
               Create new job post
             </Button>
           </Link>
-          <HStack ml="4vw" mb="2vw" alignSelf="start" {...group}>
+          <HStack mb="32px" alignSelf="center" {...group}>
             {options.map((value) => {
-              const radio = getRadioProps({ value, onChange: handleOptionChange })
+              const radio = getRadioProps({ value, onChange: handleOptionChange });
               return (
                 <RadioCard key={value} {...radio}>
                   {value}
                 </RadioCard>
-              )
+              );
             })}
           </HStack>
           <Wrap spacing="32px" justify="center" align="stretch">
             {filteredJobPosts.map((post) => (
               <WrapItem key={post.id}>
-                <JobPost
-                  {...post}
-                  openRestoreModal={() => openModalForPost(post.id)}
-                />
+                <JobPost {...post} openRestoreModal={() => openModalForPost(post.id)} />
               </WrapItem>
             ))}
           </Wrap>
         </Flex>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
-          <ModalContent >
+          <ModalContent>
             <Box>
-              <Text fontSize="lg" paddingTop="16px" paddingLeft="16px" textAlign="left">
+              <Text fontSize="xl" pt="16px" pl="24px" textAlign="left" color="#2E77AE">
                 Restore Job Post
               </Text>
-              <ModalCloseButton zIndex="1" position="absolute" top="3" right="3"/>
+              <ModalCloseButton zIndex="1" position="absolute" top="3" right="3" />
             </Box>
 
-            <ModalBody mt="4vw">
-              <Text fontSize="lg" paddingTop="16px" textAlign="center">
+            <ModalBody>
+              <Text fontSize="lg" pt="16px" color="#2E77AE">
                 End Date
               </Text>
               <div className="inputs-wrapper-center">
-                <Input id="end_date" type="datetime-local" value={newEndDate} onChange={(e) => setNewEndDate(e.target.value)} />
+                <Input
+                  borderColor="#2E77AE"
+                  id="end_date"
+                  type="datetime-local"
+                  value={newEndDate}
+                  onChange={(e) => setNewEndDate(e.target.value)}
+                />
               </div>
+              {error && (
+                <Text mt="4px" color="red">
+                  The end date should be ahead of today's date.
+                </Text>
+              )}
             </ModalBody>
             <ModalFooter>
-              <Button onClick={handleSubmit}>Submit</Button>
+              <Button colorScheme="blue" onClick={handleSubmit}>
+                Submit
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

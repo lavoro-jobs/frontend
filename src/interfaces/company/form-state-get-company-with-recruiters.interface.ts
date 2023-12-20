@@ -1,4 +1,4 @@
-import Recruiter from "../shared/recruiter";
+import Recruiter from "../shared/recruiter.interface";
 
 export default interface CompanyRecruitersState {
   id?: string;

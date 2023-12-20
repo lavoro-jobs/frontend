@@ -5,12 +5,13 @@ import getAllCatalogs from "@/helpers/getAllCatalogs";
 import getJobPostsByRecruiter from "@/helpers/getJobPosts";
 import getRecruitersAndCompany from "@/helpers/getRecruitersAndCompany";
 import updateJobPost from "@/helpers/updateJobPost";
+import MapClickEvent from "@/interfaces/applicant/map-click-event.interface";
 import CompanyRecruitersState from "@/interfaces/company/form-state-get-company-with-recruiters.interface";
 import CurrentUserState from "@/interfaces/current-user/form-state.interface";
 import FormState from "@/interfaces/job-posts/form-state.interface";
-import FormOptions from "@/interfaces/shared/formOptions";
-import Recruiter from "@/interfaces/shared/recruiter";
-import Skill from "@/interfaces/shared/skill";
+import FormOptions from "@/interfaces/shared/formOptions.interface";
+import Recruiter from "@/interfaces/shared/recruiter.interface";
+import Skill from "@/interfaces/shared/skill.interface";
 import {
   Box,
   Button,
