@@ -5,7 +5,6 @@ import getAllCatalogs from "@/helpers/getAllCatalogs";
 import getJobPostsByRecruiter from "@/helpers/getJobPosts";
 import getRecruitersAndCompany from "@/helpers/getRecruitersAndCompany";
 import updateJobPost from "@/helpers/updateJobPost";
-import MapClickEvent from "@/interfaces/applicant/map-click-event";
 import CompanyRecruitersState from "@/interfaces/company/form-state-get-company-with-recruiters.interface";
 import CurrentUserState from "@/interfaces/current-user/form-state.interface";
 import FormState from "@/interfaces/job-posts/form-state.interface";
@@ -27,14 +26,14 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import Multiselect from "multiselect-react-dropdown";
-import { useRouter } from "next/navigation";
+import {useRouter} from "next/navigation";
 import Slider from "rc-slider";
-import React, { useEffect, useState } from "react";
-import { FaGraduationCap, FaMoneyBillWave } from "react-icons/fa";
-import { FaLocationDot } from "react-icons/fa6";
-import { IoBriefcaseSharp } from "react-icons/io5";
-import { LiaCertificateSolid } from "react-icons/lia";
-import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
+import React, {useEffect, useState} from "react";
+import {FaGraduationCap, FaMoneyBillWave} from "react-icons/fa";
+import {FaLocationDot} from "react-icons/fa6";
+import {IoBriefcaseSharp} from "react-icons/io5";
+import {LiaCertificateSolid} from "react-icons/lia";
+import {MapContainer, TileLayer, useMapEvents} from "react-leaflet";
 import getCurrentUser from "@/helpers/getCurrentUser";
 import assignJobPost from "@/helpers/assignJobPost";
 
@@ -47,7 +46,7 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
 
   const [jobPosts, setJobPosts] = useState<FormState[]>([]);
   const [selectedJobPost, setSelectedJobPost] = useState<FormState>();
-
+  const [selectedRecruiters, setSelectedRecruiters] = useState([]);
   const [endDate, setEndDate] = useState<string>();
   const [marker, setMarker] = useState({ lat: 0, lng: 0 });
   const [skill, setSkill] = useState<Skill[]>();
@@ -190,19 +189,11 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
     };
   };
 
-  const assigneePostData = async () => {
-    let data;
-    if (selectedJobPost?.id && selectedJobPost?.assignees) {
-      data = {
-        id: selectedJobPost?.id,
-        assignees: {
-          assignees: selectedJobPost.assignees
-            .filter((assignee) => assignee.account_id !== user?.account_id)
-            .map((assignee) => assignee.account_id),
-        },
-      };
-    }
-    return data;
+  const getAssigneesPostData = async () => {
+    const existingAssigneeIds = new Set((selectedJobPost?.assignees || []).map(assignee => assignee.account_id));
+    return selectedRecruiters
+      .filter((assignee: any) => !existingAssigneeIds.has(assignee.account_id))
+      .map((assignee: any) => assignee.account_id);
   };
 
   const handleSubmit = async () => {
@@ -210,9 +201,12 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
       const postData = await createPostData();
       const res = await updateJobPost(postData);
       if (res == 200) {
-        const data = await assigneePostData();
-        if (data) {
-          const res2 = await assignJobPost(data);
+        const newAssigneesIds = await getAssigneesPostData();
+        if (newAssigneesIds) {
+          const data = {
+            assignees: newAssigneesIds
+          }
+          await assignJobPost(selectedJobPost?.id, data);
         }
         router.push("/job-posts");
       }
@@ -550,8 +544,8 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
                 selectedValues={selectedJobPost?.assignees}
                 displayValue={`last_name`}
                 placeholder="Select"
-                onSelect={handleAssignees}
-                onRemove={handleAssignees}
+                onSelect={setSelectedRecruiters}
+                onRemove={setSelectedRecruiters}
               />
             </Box>
           </Flex>
