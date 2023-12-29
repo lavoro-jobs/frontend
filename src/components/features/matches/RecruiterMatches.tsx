@@ -144,7 +144,7 @@ export default function RecruiterMatches() {
       <Flex direction="column" align="center" gap="32px">
         {jobPosts.map(
           (jobPost, index) =>
-            allApplications.filter((application) => application.job_post_id === jobPost.id && application.approved_by_company == false).length > 0 && (
+            allApplications.filter((application) => application.job_post_id === jobPost.id && application.approved_by_company == null).length > 0 && (
               <Card w="800px" key={index}>
                 <CardHeader w="100%" bg="#2E77AE">
                   <Heading textAlign="center" color="white">
