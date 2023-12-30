@@ -105,10 +105,23 @@
     color: #0071c6;
   }
 
+  > h3 {
+    font-size: 32px;
+    font-family: "Goldman", sans-serif;
+    color: #000;
+    padding-top: 16px;
+  }
 
+    @media screen and (max-width: 2000px) {
+        .job-post-wrapper {
+            > div:nth-of-type(5) {
+                display: none
+            }
+        }
+    }
     @media screen and (max-width: 1600px) {
         .job-post-wrapper {
-            > div:last-of-type {
+            > div:nth-of-type(4) {
                 display: none
             }
         }
@@ -138,6 +151,11 @@
             font-size: 9vw;
             text-align: center;
             padding: 0 24px;
+        }
+        > h3 {
+          font-size: 7vw;
+          text-align: center;
+          padding: 0 24px;
         }
     }
 }
