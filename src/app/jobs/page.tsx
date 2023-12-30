@@ -42,7 +42,6 @@ export default function Jobs() {
       const fetchJobPosts = async () => {
         try {
           const data = await getAllJobPosts(30);
-          console.log(data)
           setJobPosts(data);
         } catch (error) {
           console.error("Failed to fetch job posts", error);
