@@ -206,14 +206,12 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
   };
 
   const handleSubmit = async () => {
-    console.log(selectedRecruiters)
     if (!error.salary && !error.end_date) {
       const postData = await createPostData();
       const res = await updateJobPost(postData);
       if (res == 200) {
 
         const newAssigneesIds = await getNewAssigneesPostData();
-        console.log(newAssigneesIds);
         if (newAssigneesIds) {
           const data = {
             assignees: newAssigneesIds
@@ -221,7 +219,6 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
           await assignJobPost(selectedJobPost?.id, data);
         }
         const deletedAssigneesIds = await getDeletedAssigneesPostData();
-        console.log(deletedAssigneesIds);
         for (const id of deletedAssigneesIds) {
           await unassignJobPost(selectedJobPost?.id, id)
         }
