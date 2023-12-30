@@ -14,14 +14,9 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalFooter,
-  ModalHeader,
   ModalOverlay,
-  Radio,
-  RadioGroup,
-  Stack,
   Text,
   useDisclosure,
-  useRadio,
   useRadioGroup,
   Wrap,
   WrapItem,
@@ -33,6 +28,7 @@ import FormState from "@/interfaces/job-posts/form-state.interface";
 import JobPost from "@/components/features/jobPost/JobPost";
 import updateJobPost from "@/helpers/updateJobPost";
 import RadioCard from "@/components/features/jobPost/RadioCard";
+import deleteJobPost from "@/helpers/deleteJobPost";
 
 export default function JobPosts() {
   const { auth } = useProtectedRoute([Role.APPLICANT, Role.RECRUITER]);
@@ -42,7 +38,8 @@ export default function JobPosts() {
   const [option, setOption] = useState("Show All");
 
   const options = ["Show All", "Show Archived", "Show Active"];
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
 
   const [newEndDate, setNewEndDate] = useState("");
   const [selectedPostId, setSelectedPostId] = useState(null);
@@ -62,9 +59,14 @@ export default function JobPosts() {
     }
   }, [newEndDate]);
 
-  const openModalForPost = (postId: any) => {
+  const openArchiveModal = (postId: any) => {
     setSelectedPostId(postId);
     onOpen();
+  };
+
+  const openDeleteModal = (postId: any) => {
+    setSelectedPostId(postId);
+    onOpenDelete();
   };
 
   const handleSubmit = () => {
@@ -78,6 +80,14 @@ export default function JobPosts() {
       onClose();
     }
   };
+
+  const handleDelete = async () => {
+    const response = await deleteJobPost(selectedPostId);
+    if (response == 200) {
+      window.location.reload();
+    }
+    onCloseDelete();
+  }
 
   const handleChange = (prop: any) => {
     setOption(prop);
@@ -149,7 +159,7 @@ export default function JobPosts() {
           <Wrap spacing="32px" justify="center" align="stretch">
             {filteredJobPosts.map((post) => (
               <WrapItem key={post.id}>
-                <JobPost {...post} openRestoreModal={() => openModalForPost(post.id)} />
+                <JobPost {...post} openDeleteModal={() => openDeleteModal(post.id)} openRestoreModal={() => openArchiveModal(post.id)} />
               </WrapItem>
             ))}
           </Wrap>
@@ -187,6 +197,23 @@ export default function JobPosts() {
               <Button colorScheme="blue" onClick={handleSubmit}>
                 Submit
               </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+        <Modal isOpen={isOpenDelete} onClose={onCloseDelete}>
+          <ModalOverlay />
+          <ModalContent>
+            <Box>
+              <Text fontSize="xl" pt="16px" pl="24px" pr="24px" textAlign="left" color="#2E77AE">
+                Are you sure you want to delete?
+              </Text>
+            </Box>
+            <ModalFooter mt="16px">
+              <Flex gap="8px">
+                <Button colorScheme="red" onClick={handleDelete}>Delete</Button>
+                <Button colorScheme="blue" onClick={onCloseDelete}>Cancel</Button>
+              </Flex>
+
             </ModalFooter>
           </ModalContent>
         </Modal>
