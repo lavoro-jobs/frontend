@@ -58,7 +58,7 @@ export default function ApplicantMatches() {
               There was an error processing your request
             </Alert>
           )}
-          <Box bg="#E0EAF5" p="64px" flex="1" display="flex">
+          <Box bg="#E0EAF5" p="64px" flex="1" display="flex" justifyContent="center">
             <Flex flexWrap="wrap" gap="48px" justify="center">
               {formData?.map((match, index) => (
                 <Card w="800px" key={index}>
