@@ -35,6 +35,7 @@ interface FormOptions {
 
 interface JobPostProps extends FormState {
   openRestoreModal: () => void;
+  openDeleteModal: () => void;
 }
 
 export default function JobPost({
@@ -52,6 +53,7 @@ export default function JobPost({
   end_date,
   assignees,
   openRestoreModal,
+  openDeleteModal,
 }: JobPostProps) {
   const router = useRouter();
   const [formOptions, setFormOptions] = useState<FormOptions>({});
@@ -73,13 +75,6 @@ export default function JobPost({
       window.location.reload();
     }
   };
-
-  const handleDelete = async () => {
-    const response = await deleteJobPost(id);
-    if (response == 200) {
-      window.location.reload();
-    }
-  }
 
   function isArchived(endDateStr: any): boolean {
     const endDate = new Date(endDateStr);
@@ -182,13 +177,13 @@ export default function JobPost({
         <Divider color="#2E77AE" />
         <CardFooter alignSelf="flex-end">
           <ButtonGroup spacing="2">
-            <Button variant="solid" colorScheme="red" onClick={handleDelete}>
-              Delete
-            </Button>
             {!archived && (
               <>
                 <Button variant="ghost" colorScheme="blue" onClick={handleArchive}>
                   Archive
+                </Button>
+                <Button variant="solid" colorScheme="red" onClick={openDeleteModal}>
+                  Delete
                 </Button>
                 <Button variant="solid" colorScheme="blue" onClick={() => router.push(`/update-job-post/${id}`)}>
                   Update
@@ -196,9 +191,14 @@ export default function JobPost({
               </>
             )}
             {archived && (
-              <Button variant="ghost" colorScheme="blue" onClick={openRestoreModal}>
-                Restore
-              </Button>
+              <>
+                <Button variant="solid" colorScheme="red" onClick={openDeleteModal}>
+                  Delete
+                </Button>
+                <Button variant="ghost" colorScheme="blue" onClick={openRestoreModal}>
+                  Restore
+                </Button>
+              </>
             )}
           </ButtonGroup>
         </CardFooter>
