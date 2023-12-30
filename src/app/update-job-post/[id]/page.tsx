@@ -38,6 +38,7 @@ import {MapContainer, TileLayer, useMapEvents} from "react-leaflet";
 import getCurrentUser from "@/helpers/getCurrentUser";
 import assignJobPost from "@/helpers/assignJobPost";
 import dynamic from "next/dynamic";
+import unassignJobPost from "@/helpers/unassignJobPost";
 
 export default function PostUpdate({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
   const [user, setUser] = useState<CurrentUserState>({});
   const [jobPosts, setJobPosts] = useState<FormState[]>([]);
   const [selectedJobPost, setSelectedJobPost] = useState<FormState>();
-  const [selectedRecruiters, setSelectedRecruiters] = useState([]);
+  const [selectedRecruiters, setSelectedRecruiters] = useState<Recruiter[]>([]);
   const Address = dynamic(() => import("../../../components/shared/Address"), { ssr: false });
   const [endDate, setEndDate] = useState<string>();
   const [marker, setMarker] = useState({ lat: 0, lng: 0 });
@@ -84,6 +85,7 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
   useEffect(() => {
     const post = jobPosts.find((jobPost) => jobPost.id === params.id);
     if (post) {
+      setSelectedRecruiters(post.assignees || []);
       setSelectedJobPost(post);
       setEndDate(post.end_date?.substring(0, 16));
     }
@@ -190,25 +192,40 @@ export default function PostUpdate({ params }: { params: { id: string } }) {
     };
   };
 
-  const getAssigneesPostData = async () => {
+  const getNewAssigneesPostData = async () => {
     const existingAssigneeIds = new Set((selectedJobPost?.assignees || []).map(assignee => assignee.account_id));
     return selectedRecruiters
       .filter((assignee: any) => !existingAssigneeIds.has(assignee.account_id))
       .map((assignee: any) => assignee.account_id);
   };
 
+  const getDeletedAssigneesPostData = async () => {
+    const existingAssigneeIds = new Set((selectedJobPost?.assignees || []).map(assignee => assignee.account_id));
+    const selectedAssigneeIds = new Set(selectedRecruiters.map(assignee => assignee.account_id));
+    return Array.from(existingAssigneeIds).filter(id => !selectedAssigneeIds.has(id));
+  };
+
   const handleSubmit = async () => {
+    console.log(selectedRecruiters)
     if (!error.salary && !error.end_date) {
       const postData = await createPostData();
       const res = await updateJobPost(postData);
       if (res == 200) {
-        const newAssigneesIds = await getAssigneesPostData();
+
+        const newAssigneesIds = await getNewAssigneesPostData();
+        console.log(newAssigneesIds);
         if (newAssigneesIds) {
           const data = {
             assignees: newAssigneesIds
           }
           await assignJobPost(selectedJobPost?.id, data);
         }
+        const deletedAssigneesIds = await getDeletedAssigneesPostData();
+        console.log(deletedAssigneesIds);
+        for (const id of deletedAssigneesIds) {
+          await unassignJobPost(selectedJobPost?.id, id)
+        }
+
         router.push("/job-posts");
       }
     }
