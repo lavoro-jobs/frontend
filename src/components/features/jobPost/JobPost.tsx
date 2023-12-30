@@ -23,6 +23,7 @@ import { LiaCertificateSolid } from "react-icons/lia";
 import { useRouter } from "next/navigation";
 import archiveJobPost from "@/helpers/archiveJobPost";
 import dynamic from "next/dynamic";
+import deleteJobPost from "@/helpers/deleteJobPost";
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -72,6 +73,13 @@ export default function JobPost({
       window.location.reload();
     }
   };
+
+  const handleDelete = async () => {
+    const response = await deleteJobPost(id);
+    if (response == 200) {
+      window.location.reload();
+    }
+  }
 
   function isArchived(endDateStr: any): boolean {
     const endDate = new Date(endDateStr);
@@ -174,6 +182,9 @@ export default function JobPost({
         <Divider color="#2E77AE" />
         <CardFooter alignSelf="flex-end">
           <ButtonGroup spacing="2">
+            <Button variant="solid" colorScheme="red" onClick={handleDelete}>
+              Delete
+            </Button>
             {!archived && (
               <>
                 <Button variant="ghost" colorScheme="blue" onClick={handleArchive}>
