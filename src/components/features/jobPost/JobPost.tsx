@@ -23,6 +23,7 @@ import { LiaCertificateSolid } from "react-icons/lia";
 import { useRouter } from "next/navigation";
 import archiveJobPost from "@/helpers/archiveJobPost";
 import dynamic from "next/dynamic";
+import deleteJobPost from "@/helpers/deleteJobPost";
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -34,6 +35,7 @@ interface FormOptions {
 
 interface JobPostProps extends FormState {
   openRestoreModal: () => void;
+  openDeleteModal: () => void;
 }
 
 export default function JobPost({
@@ -51,6 +53,7 @@ export default function JobPost({
   end_date,
   assignees,
   openRestoreModal,
+  openDeleteModal,
 }: JobPostProps) {
   const router = useRouter();
   const [formOptions, setFormOptions] = useState<FormOptions>({});
@@ -179,15 +182,23 @@ export default function JobPost({
                 <Button variant="ghost" colorScheme="blue" onClick={handleArchive}>
                   Archive
                 </Button>
+                <Button variant="solid" colorScheme="red" onClick={openDeleteModal}>
+                  Delete
+                </Button>
                 <Button variant="solid" colorScheme="blue" onClick={() => router.push(`/update-job-post/${id}`)}>
                   Update
                 </Button>
               </>
             )}
             {archived && (
-              <Button variant="ghost" colorScheme="blue" onClick={openRestoreModal}>
-                Restore
-              </Button>
+              <>
+                <Button variant="solid" colorScheme="red" onClick={openDeleteModal}>
+                  Delete
+                </Button>
+                <Button variant="ghost" colorScheme="blue" onClick={openRestoreModal}>
+                  Restore
+                </Button>
+              </>
             )}
           </ButtonGroup>
         </CardFooter>
