@@ -16,3 +16,36 @@
     z-index: -1;
   }
 }
+@media screen and (max-width: 1120px){
+  .profile-update {
+    h2 {
+      font-size: 24px;
+    }
+  }
+  .applicant-profile-update {
+    flex-flow: column;
+    gap: 0;
+  }
+}
+@media screen and (max-width: 820px){
+  .applicant-profile {
+    flex-flow: column;
+  }
+}
+@media screen and (max-width: 560px){
+  .rc-slider-mark-text {
+    font-size: 12px;
+  }
+  .applicant-profile-update {
+    >div {
+      padding-right: 0;
+    }
+    > div > div:not(.chakra-select__wrapper, .rc-slider) {
+      flex-wrap: wrap;
+
+      >div {
+        width: 100%
+      }
+    }
+  }
+}

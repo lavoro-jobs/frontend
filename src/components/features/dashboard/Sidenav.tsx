@@ -51,7 +51,7 @@ export default function Sidenav({ children }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box className="sidenav" minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-      <SidebarContent onClose={() => onClose} display={{ base: "none", md: "block" }} />
+      <SidebarContent className="desktop-sidenav" onClose={() => onClose} display={{ base: "none", md: "block" }} />
       <Drawer
         isOpen={isOpen}
         placement="left"
@@ -64,7 +64,7 @@ export default function Sidenav({ children }: any) {
           <SidebarContent onClose={onClose} />
         </DrawerContent>
       </Drawer>
-      <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
+      <MobileNav className="mobile-sidenav" display={{ base: "flex", md: "none" }} onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="16px">
         {children}
       </Box>
@@ -126,6 +126,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           <NavItem icon={link.icon}>{ link.name }</NavItem>
         </Link>
       ))}
+      <Flex flex="1"></Flex>
       <Button className="sign-out" onClick={handleSignOut}>Sign out</Button>
     </Box>
   );
@@ -181,13 +182,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue("gray.200", "gray.700")}
       justifyContent="flex-start"
+      paddingLeft="56px"
       {...rest}
     >
+      <Link className="title-link" href="/">
+        <h1 className="header-title">Lavoro</h1>
+      </Link>
       <IconButton variant="outline" onClick={onOpen} aria-label="open menu" icon={<FiMenu />} />
-
-      <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
-        Logo
-      </Text>
     </Flex>
   );
 };
