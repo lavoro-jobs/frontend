@@ -190,8 +190,8 @@ export default function CreateJobPost() {
 
   return (
     <Sidenav>
-      <Flex minH="100vh" align="center" padding="100px 0" justify="center" direction="column" bg="#E0EAF5">
-        <Box maxW="800px" minW="650px" border="solid" borderRadius="16px" borderColor="#E0EAF5" p="64px" bg="white">
+      <Flex className="create-job-post" minH="100vh" align="center" padding="100px 0" justify="center" direction="column" bg="#E0EAF5">
+        <Box border="solid" borderRadius="16px" borderColor="#E0EAF5" bg="white">
           <Progress value={progressPercent} w="100%" height="4px" />
           {activeStep === 0 && (
             <>
