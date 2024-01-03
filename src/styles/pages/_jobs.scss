@@ -2,6 +2,7 @@
     > div {
         width: 23%;
         margin-bottom: 3%;
+    height: auto;
 
         > div {
             width: 100%;
@@ -14,6 +15,10 @@
 }
 .modal-heading {
     padding: 0;
+}
+
+.modalCard {
+  min-width: 550px;
 }
 
 .job-post-description h3 {
@@ -72,6 +77,9 @@
       padding: 32px;
      }
     }
+    .chakra-modal__content .chakra-heading {
+      padding: 0;
+    }
 }
 
 
@@ -93,4 +101,12 @@
         width: 100%;
       }
     }
+
+    .job-post-description h3 {
+    font-size: 18px;
+    }
+
+  .modalCard {
+    min-width: unset;
+  }
 }
