@@ -32,6 +32,14 @@
     width: fit-content;
 }
 
+.create-job-post {
+ > div {
+  min-width: 650px;
+  max-width: 800px;
+  padding: 64px;
+ }
+}
+
 @media screen and (min-width: 2000px) {
     .job-post-wrapper {
         > div {
@@ -60,6 +68,15 @@
             }
         }
     }
+
+    .create-job-post {
+     > div {
+      min-width: unset;
+      max-width: unset;
+      width: 96%;
+      padding: 32px;
+     }
+    }
     .chakra-modal__content .chakra-heading {
       padding: 0;
     }
@@ -76,6 +93,13 @@
     .chakra-modal__content {
         max-width: 94%;
         width: 94%;
+    }
+
+    .inputs-wrapper {
+      flex-wrap: wrap;
+      > .input-box.w-50 {
+        width: 100%;
+      }
     }
 
     .job-post-description h3 {
