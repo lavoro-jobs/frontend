@@ -50,6 +50,9 @@ export default function RecruiterMatches() {
   const [comment, setComment] = useState({ comment_body: "" });
   const [recruiter, setRecruiter] = useState<RecruiterState>();
 
+  const [postId, setPostId] = useState<string>("");
+  const [accId, setAccId] = useState<string>("");
+
   const { isOpen: isCommentsModalOpen, onOpen: onCommentsModalOpen, onClose: onCommentsModalClose } = useDisclosure();
   const { isOpen: isMoreModalOpen, onOpen: onMoreModalOpen, onClose: onMoreModalClose } = useDisclosure();
   const SmallAddress = dynamic(() => import("../../shared/SmallAddress"), { ssr: false });
@@ -95,14 +98,12 @@ export default function RecruiterMatches() {
   };
 
   const deleteComm = async (
-    jobPostId: string | undefined,
-    applicantId: string | undefined,
     commentId: string | undefined
   ) => {
-    if (jobPostId && commentId) {
+    if (postId && commentId) {
       try {
-        const comments = await deleteComment(jobPostId, commentId);
-        fetchComments(jobPostId, applicantId);
+        const comments = await deleteComment(postId, commentId);
+        fetchComments(postId, accId);
       } catch (error) {
         console.error("Failed to delete comment", error);
       }
@@ -129,12 +130,13 @@ export default function RecruiterMatches() {
     }
   };
 
-  const handleKeyDown = (e: any, jobPostId: string | undefined, applicantId: string | undefined) => {
-    if (e.key === "Enter" && jobPostId && applicantId) {
+  const handleKeyDown = (e: any) => {
+    if (e.key === "Enter" && postId && accId) {
       e.preventDefault();
-      commentApplication(comment, jobPostId, applicantId);
+      commentApplication(comment, postId, accId);
       setComment({ ...comment, comment_body: "" });
-      fetchComments(jobPostId, applicantId);
+      fetchComments(postId, accId);
+      fetchComments(postId, accId);
     }
   };
 
@@ -227,6 +229,8 @@ export default function RecruiterMatches() {
                                 <Button
                                   onClick={() => {
                                     onCommentsModalOpen();
+                                    setAccId(application.applicant_account_id || "");
+                                    setPostId(jobPost.id || "");
                                     fetchComments(jobPost.id, application.applicant_account_id);
                                   }}
                                   variant="ghost"
@@ -297,8 +301,7 @@ export default function RecruiterMatches() {
                                       value={comment.comment_body}
                                       onChange={(e) => setComment({ ...comment, comment_body: e.target.value })}
                                       onKeyDown={(e) => {
-                                        handleKeyDown(e, jobPost.id, application.applicant_account_id);
-                                        fetchComments(jobPost.id, application.applicant_account_id);
+                                        handleKeyDown(e);
                                       }}
                                       placeholder="Add a comment..."
                                     />
@@ -329,7 +332,7 @@ export default function RecruiterMatches() {
                                           variant="ghost"
                                           _hover={{ color: "red", bg: "#E0EAF5" }}
                                           onClick={() =>
-                                            deleteComm(jobPost.id, application.applicant_account_id, comment.id)
+                                            deleteComm(comment.id)
                                           }
                                         >
                                           X
