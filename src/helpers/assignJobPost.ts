@@ -1,5 +1,3 @@
-
-import FormState from "@/interfaces/job-posts/post-state-assignees.interface";
 import axiosInstance from ".";
 
 const assignJobPost = async (id: any, formData: any) => {

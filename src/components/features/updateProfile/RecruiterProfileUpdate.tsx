@@ -41,7 +41,7 @@ export default function RecruiterProfileUpdate({
 
   return (
     <>
-      <Flex direction="column">
+      <Flex className="profile-update" direction="column">
         <Heading fontSize="2xl" mt="32px" color="#2E77AE">
           First name
         </Heading>

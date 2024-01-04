@@ -92,7 +92,7 @@ export default function CompanyProfileUpdate({ description, logo }: { descriptio
 
   return (
     <>
-      <Flex gap="8px" direction="column">
+      <Flex className="profile-update" gap="8px" direction="column">
         <Heading fontSize="2xl" mt="16px" color="#2E77AE">
           Description
         </Heading>
