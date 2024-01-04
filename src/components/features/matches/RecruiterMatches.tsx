@@ -281,7 +281,7 @@ export default function RecruiterMatches() {
                               <ModalContent>
                                 <ModalHeader>
                                   <Heading w="484px" size="lg">
-                                    {recruiter?.first_name} {recruiter?.last_name}
+                                    {application.applicant.first_name} {application.applicant.last_name}
                                   </Heading>
                                   <Text fontSize="sm" color="gray.500">
                                     {comments?.length} comments
@@ -317,7 +317,7 @@ export default function RecruiterMatches() {
                                         <Flex gap="8px" align="center">
                                           <Avatar size="sm" />
                                           <Flex direction="column">
-                                            <Text fontSize="lg"><strong>Name Surname</strong></Text>
+                                            <Text fontSize="lg"><strong>{comment.recruiter?.first_name} {comment.recruiter?.last_name}</strong></Text>
                                             <Text fontSize="sm" color="gray.500">
                                               {comment.created_on_date?.split("T")[0] +
                                                 " " +
@@ -325,7 +325,7 @@ export default function RecruiterMatches() {
                                             </Text>
                                           </Flex>
                                         </Flex>
-                                        <Button
+                                        {recruiter?.account_id == comment.recruiter?.account_id && <Button
                                           variant="ghost"
                                           _hover={{ color: "red", bg: "#E0EAF5" }}
                                           onClick={() =>
@@ -333,7 +333,7 @@ export default function RecruiterMatches() {
                                           }
                                         >
                                           X
-                                        </Button>
+                                        </Button>}
                                       </Flex>
                                       <Text w="464px">{comment.comment_body}</Text>
                                     </Flex>
