@@ -1,17 +1,17 @@
-import {Box, Button, Flex, Heading, IconButton, Input, Select, Text} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, IconButton, Input, Select, Text } from "@chakra-ui/react";
 import MultiSelect from "multiselect-react-dropdown";
-import React, {useEffect, useState, useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import FormState from "@/interfaces/applicant/form-state.interface";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import MapClickEvent from "@/interfaces/applicant/map-click-event.interface";
 import createApplicantProfile from "@/helpers/createApplicantProfile";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
 import Experience from "@/interfaces/shared/experience.interface";
-import {useRouter} from "next/navigation";
-import {CgBoy, CgGirl} from "react-icons/cg";
-import {IoHappyOutline} from "react-icons/io5";
-import {IoArrowRedo, IoArrowUndo} from "react-icons/io5";
-import {FiXCircle} from "react-icons/fi";
+import { useRouter } from "next/navigation";
+import { CgBoy, CgGirl } from "react-icons/cg";
+import { IoHappyOutline } from "react-icons/io5";
+import { IoArrowRedo, IoArrowUndo } from "react-icons/io5";
+import { FiXCircle } from "react-icons/fi";
 import Slider from "rc-slider";
 import { useMapEvents } from "react-leaflet/hooks";
 
@@ -26,7 +26,7 @@ interface FormOptions {
 export default function ApplicantProfileSetup() {
   const router = useRouter();
   const [formOptions, setFormOptions] = useState<FormOptions>({});
-  const [marker, setMarker] = useState({lat: 0, lng: 0});
+  const [marker, setMarker] = useState({ lat: 0, lng: 0 });
   const [skills, setSkills] = useState<{ id: number; skill_name: string }[]>([]);
   const [experience, setExperience] = useState<Experience[]>([]);
   const [fileName, setFileName] = useState<string>("");
@@ -36,7 +36,7 @@ export default function ApplicantProfileSetup() {
   const [clickedLatLng, setClickedLatLng] = useState(null);
   const [idArticle, setIdArticle] = useState(1);
   const [btn, setBtn] = useState(true);
-  const [mousePosition, setMousePosition] = useState({x: 0, y: 0});
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const marks = {
     1: "Novice",
     2: "Apprentice",
@@ -45,10 +45,10 @@ export default function ApplicantProfileSetup() {
     5: "Expert",
   };
   const [articles, setArticles] = useState([
-    {id: 1, isActive: true},
-    {id: 2, isActive: false},
-    {id: 3, isActive: false},
-    {id: 4, isActive: false},
+    { id: 1, isActive: true },
+    { id: 2, isActive: false },
+    { id: 3, isActive: false },
+    { id: 4, isActive: false },
   ]);
   const [formData, setFormData] = useState<FormState>({
     first_name: "",
@@ -78,25 +78,25 @@ export default function ApplicantProfileSetup() {
   }, []);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const newFormData = {...formData, [e.target.id]: e.target.value};
+    const newFormData = { ...formData, [e.target.id]: e.target.value };
     setFormData(newFormData);
   };
 
   const handleNumberFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const newFormData = {...formData, [e.target.id]: +e.target.value};
+    const newFormData = { ...formData, [e.target.id]: +e.target.value };
     setFormData(newFormData);
   };
 
   const handleSliderChange = (value: number | number[]) => {
     if (typeof value === "number") {
-      const newFormData = {...formData, seniority_level: value};
+      const newFormData = { ...formData, seniority_level: value };
       setFormData(newFormData);
     }
   };
 
   const handleSkills = (selectedList: [{ id: number; skill_name: string }]) => {
     const skillIdArray = selectedList.map((item) => item.id);
-    const newFormData = {...formData, skill_ids: skillIdArray};
+    const newFormData = { ...formData, skill_ids: skillIdArray };
     setSkills(selectedList);
     setFormData(newFormData);
   };
@@ -110,7 +110,7 @@ export default function ApplicantProfileSetup() {
     const updatedExperience = experience.filter((item, i) => index !== i);
     setExperience(updatedExperience);
 
-    const newFormData = {...formData, experiences: updatedExperience};
+    const newFormData = { ...formData, experiences: updatedExperience };
     setFormData(newFormData);
   };
 
@@ -131,7 +131,7 @@ export default function ApplicantProfileSetup() {
 
       setExperience(updatedExperience);
 
-      const newFormData = {...formData, experiences: updatedExperience};
+      const newFormData = { ...formData, experiences: updatedExperience };
       setFormData(newFormData);
     }
   };
@@ -142,11 +142,10 @@ export default function ApplicantProfileSetup() {
     }
   };
 
-
   const LocationFinderDummy = () => {
     const map = useMapEvents({
       click(e: any) {
-        setMarker({lat: e.latlng.lat, lng: e.latlng.lng});
+        setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
         const newFormData = {
           ...formData,
           home_location: {
@@ -163,9 +162,7 @@ export default function ApplicantProfileSetup() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const allowedTypes = [
-        "application/pdf",,
-      ];
+      const allowedTypes = ["application/pdf", ,];
 
       if (allowedTypes.includes(file.type)) {
         setFileUrl(URL.createObjectURL(file));
@@ -201,13 +198,13 @@ export default function ApplicantProfileSetup() {
 
     setArticles((prevArticles) =>
       prevArticles.map((article) =>
-        article.id === id ? {...article, isActive: true} : {...article, isActive: false}
+        article.id === id ? { ...article, isActive: true } : { ...article, isActive: false }
       )
     );
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    setMousePosition({x: e.pageX, y: e.pageY});
+    setMousePosition({ x: e.pageX, y: e.pageY });
   };
 
   const mainStyle = {
@@ -234,11 +231,12 @@ export default function ApplicantProfileSetup() {
       direction="column"
     >
       <Heading p="0 32px" marginBottom="32px" maxW="512px" textAlign="center" color="#fff">
-        Welcome! Answer questions to get your job matches.
+        <Text fontSize={{ base: "25px", sm: "30px", md: "40px" }} as="span">
+          Welcome! Answer questions to get your job matches.
+        </Text>
       </Heading>
 
       <Box position="relative" id="card" justifyContent="center">
-
         <Button
           borderRadius="20px"
           display={idArticle !== 4 && btn ? "" : "none"}
@@ -247,12 +245,12 @@ export default function ApplicantProfileSetup() {
           zIndex={3}
           color="white"
           bg="#FF8E2B"
-          _hover={{color: "#0D2137", bg: "#fdb16e"}}
+          _hover={{ color: "#0D2137", bg: "#fdb16e" }}
           onClick={() => {
             handleClick(idArticle + 1);
           }}
         >
-          <IoArrowRedo/>
+          <IoArrowRedo />
         </Button>
         <Button
           borderRadius="20px"
@@ -262,12 +260,12 @@ export default function ApplicantProfileSetup() {
           zIndex={3}
           color="white"
           bg="#FF8E2B"
-          _hover={{color: "#0D2137", bg: "#fdb16e"}}
+          _hover={{ color: "#0D2137", bg: "#fdb16e" }}
           onClick={() => {
             handleClick(idArticle - 1);
           }}
         >
-          <IoArrowUndo/>
+          <IoArrowUndo />
         </Button>
         <section className="backgrounds">
           <Box
@@ -321,23 +319,31 @@ export default function ApplicantProfileSetup() {
             data-active={articles[0].isActive}
             data-id="1"
           >
-            <Heading color="#2E77AE" paddingBottom="16px" textAlign="center">
-              Personal information
+            <Heading color="#2E77AE" textAlign="center">
+              <Text fontSize={{ base: "30px", sm: "30px", md: "40px" }} as="span">
+                Personal information
+              </Text>
             </Heading>
 
-            <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-              First name
+            <Heading fontSize="xl" pt="16px" color="#2E77AE">
+              <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                First name
+              </Text>
             </Heading>
-            <Input borderColor="#2E77AE" id="first_name" value={formData.first_name} onChange={handleFormChange}/>
+            <Input borderColor="#2E77AE" id="first_name" value={formData.first_name} onChange={handleFormChange} />
 
-            <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-              Last name
+            <Heading fontSize="xl" pt="16px" color="#2E77AE">
+              <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                Last name
+              </Text>
             </Heading>
-            <Input borderColor="#2E77AE" id="last_name" value={formData.last_name} onChange={handleFormChange}/>
+            <Input borderColor="#2E77AE" id="last_name" value={formData.last_name} onChange={handleFormChange} />
 
             <Flex direction="column" align="center">
-              <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-                Age
+              <Heading fontSize="xl" pt="16px" color="#2E77AE">
+                <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                  Age
+                </Text>
               </Heading>
               <Input
                 w="300px"
@@ -349,56 +355,64 @@ export default function ApplicantProfileSetup() {
               />
             </Flex>
 
-            <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-              Gender
+            <Heading fontSize="xl" pt="16px" color="#2E77AE">
+              <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                Gender
+              </Text>
             </Heading>
             <Flex justify="center" gap="16px" className="gender-icons">
               <Flex
                 border={formData.gender == "female" ? "#2E77AE 2px solid" : "#E0EAF5 2px solid"}
-                _hover={{cursor: "pointer", border: "#2E77AE 1px solid"}}
+                _hover={{ cursor: "pointer", border: "#2E77AE 1px solid" }}
                 borderRadius="16px"
-                w="180px"
-                h="200px"
+                w={{ base: "100px", md: "180px" }}
+                h={{ base: "100px", md: "200px" }}
                 p="16px"
                 direction="column"
                 align="center"
-                onClick={() => setFormData({...formData, gender: "female"})}
+                onClick={() => setFormData({ ...formData, gender: "female" })}
               >
-                <CgGirl color={formData.gender == "female" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px"/>
+                <CgGirl color={formData.gender == "female" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px" />
                 <Heading size="md" color={formData.gender == "female" ? "#2E77AE" : "#E0EAF5"}>
-                  Female
+                  <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                    Female
+                  </Text>
                 </Heading>
               </Flex>
               <Flex
                 border={formData.gender == "male" ? "#2E77AE 2px solid" : "#E0EAF5 2px solid"}
-                _hover={{cursor: "pointer", border: "#2E77AE 1px solid"}}
+                _hover={{ cursor: "pointer", border: "#2E77AE 1px solid" }}
                 borderRadius="16px"
-                w="180px"
-                h="200px"
+                w={{ base: "100px", md: "180px" }}
+                h={{ base: "100px", md: "200px" }}
                 p="16px"
                 direction="column"
                 align="center"
-                onClick={() => setFormData({...formData, gender: "male"})}
+                onClick={() => setFormData({ ...formData, gender: "male" })}
               >
-                <CgBoy color={formData.gender == "male" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px"/>
+                <CgBoy color={formData.gender == "male" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px" />
                 <Heading size="md" color={formData.gender == "male" ? "#2E77AE" : "#E0EAF5"}>
-                  Male
+                  <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                    Male
+                  </Text>
                 </Heading>
               </Flex>
               <Flex
                 border={formData.gender == "other" ? "#2E77AE 2px solid" : "#E0EAF5 2px solid"}
-                _hover={{cursor: "pointer", border: "#2E77AE 1px solid"}}
+                _hover={{ cursor: "pointer", border: "#2E77AE 1px solid" }}
                 borderRadius="16px"
-                w="180px"
-                h="200px"
+                w={{ base: "100px", md: "180px" }}
+                h={{ base: "100px", md: "200px" }}
                 p="16px"
                 direction="column"
                 align="center"
-                onClick={() => setFormData({...formData, gender: "other"})}
+                onClick={() => setFormData({ ...formData, gender: "other" })}
               >
-                <IoHappyOutline color={formData.gender == "other" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px"/>
+                <IoHappyOutline color={formData.gender == "other" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px" />
                 <Heading size="md" color={formData.gender == "other" ? "#2E77AE" : "#E0EAF5"}>
-                  Other
+                  <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                    Other
+                  </Text>
                 </Heading>
               </Flex>
             </Flex>
@@ -411,17 +425,20 @@ export default function ApplicantProfileSetup() {
             data-active={articles[1].isActive}
             data-id="2"
           >
-            <Heading color="#2E77AE" paddingBottom="16px" textAlign="center">
-              Skills & Experience
+            <Heading color="#2E77AE" textAlign="center">
+              <Text fontSize={{ base: "30px", sm: "30px", md: "40px" }} as="span">
+                Skills & Experience
+              </Text>
             </Heading>
 
             <Heading fontSize="xl" pt="16px" color="#2E77AE">
-              Education level
+              <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                Education level
+              </Text>
             </Heading>
 
             <Select
               borderColor="#2E77AE"
-              paddingTop="16px"
               id="education_level_id"
               value={formData.education_level_id}
               onChange={handleNumberFormChange}
@@ -435,13 +452,14 @@ export default function ApplicantProfileSetup() {
                 ))}
             </Select>
 
-            <Heading fontSize="xl" pt="16px" color="#2E77AE">
-              Position
+            <Heading fontSize="xl" color="#2E77AE">
+              <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                Position
+              </Text>
             </Heading>
 
             <Select
               borderColor="#2E77AE"
-              paddingTop="16px"
               id="position_id"
               value={formData.position_id}
               onChange={handleNumberFormChange}
@@ -455,13 +473,17 @@ export default function ApplicantProfileSetup() {
                 ))}
             </Select>
             <Heading fontSize="xl" pt="32px" pb="8px" color="#2E77AE">
-              Seniority level
+              <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                Seniority level
+              </Text>
             </Heading>
 
-            <Slider min={1} max={5} step={1} marks={marks} onChange={handleSliderChange}/>
+            <Slider min={1} max={5} step={1} marks={marks} onChange={handleSliderChange} />
 
             <Heading fontSize="xl" pt="48px" color="#2E77AE">
-              Skills
+              <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                Skills
+              </Text>
             </Heading>
 
             <MultiSelect
@@ -482,18 +504,20 @@ export default function ApplicantProfileSetup() {
             data-active={articles[2].isActive}
             data-id="3"
           >
-            <Heading color="#2E77AE" paddingBottom="16px" textAlign="center">
-              Work experience
+            <Heading color="#2E77AE" pb="16px" textAlign="center">
+              <Text fontSize={{ base: "30px", sm: "30px", md: "40px" }} as="span">
+                Work experience
+              </Text>
             </Heading>
 
             <div className="inputs-wrapper-center">
               <Flex direction="column" w="500px" justify="center" align="center" gap="16px">
-                <Input id="logo" type="file" ref={inputRef} style={{display: "none"}} onChange={handleFileChange}/>
+                <Input id="logo" type="file" ref={inputRef} style={{ display: "none" }} onChange={handleFileChange} />
 
                 <Button
                   color="white"
                   bg="#2E77AE"
-                  _hover={{color: "#0D2137", bg: "#6ba5d1"}}
+                  _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
                   value={formData.cv}
                   onClick={handleLogoUpload}
                 >
@@ -510,7 +534,7 @@ export default function ApplicantProfileSetup() {
                       <Button
                         color="#2E77AE"
                         bg="transparent"
-                        _hover={{color: "#0D2137"}}
+                        _hover={{ color: "#0D2137" }}
                         onClick={() => {
                           setFormData({
                             ...formData,
@@ -534,11 +558,13 @@ export default function ApplicantProfileSetup() {
                     aria-label="remove"
                     className="remove-btn"
                     onClick={() => removeExperience(index)}
-                    icon={<FiXCircle color="#2E77AE"/>}
+                    icon={<FiXCircle color="#2E77AE" />}
                   />
 
-                  <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-                    Company name
+                  <Heading fontSize="xl" pt="16px" color="#2E77AE">
+                    <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                      Company name
+                    </Text>
                   </Heading>
                   <Input
                     borderColor="#2E77AE"
@@ -552,8 +578,10 @@ export default function ApplicantProfileSetup() {
 
                   <div className="inputs-wrapper">
                     <div className="input-box w-50">
-                      <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-                        Position
+                      <Heading fontSize="xl" pt="16px" color="#2E77AE">
+                        <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                          Position
+                        </Text>
                       </Heading>
 
                       <Select
@@ -573,8 +601,10 @@ export default function ApplicantProfileSetup() {
                     </div>
 
                     <div className="input-box w-50">
-                      <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-                        Years
+                      <Heading fontSize="xl" pt="16px" color="#2E77AE">
+                        <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                          Years
+                        </Text>
                       </Heading>
                       <Input
                         borderColor="#2E77AE"
@@ -600,14 +630,18 @@ export default function ApplicantProfileSetup() {
             data-active={articles[3].isActive}
             data-id="4"
           >
-            <Heading color="#2E77AE" paddingBottom="16px" textAlign="center">
-              Preferences
+            <Heading color="#2E77AE" textAlign="center">
+              <Text fontSize={{ base: "30px", sm: "30px", md: "40px" }} as="span">
+                Preferences
+              </Text>
             </Heading>
 
             <Flex className="map-container" justify="center" align="flex-start" gap="16px">
               <Box>
-                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
-                  Contract type
+                <Heading fontSize="xl" pt="16px" color="#2E77AE">
+                  <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                    Contract type
+                  </Text>
                 </Heading>
 
                 <Select
@@ -625,8 +659,10 @@ export default function ApplicantProfileSetup() {
                     ))}
                 </Select>
 
-                <Heading fontSize="xl" pt="24px" color="#2E77AE">
-                  Min salary (€)
+                <Heading fontSize="xl" pt="16px" color="#2E77AE">
+                  <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                    Min salary (€)
+                  </Text>
                 </Heading>
                 {formData.contract_type_id == 4 && (
                   <Text color="#2E77AE" pl="2px">
@@ -641,7 +677,6 @@ export default function ApplicantProfileSetup() {
                   </Text>
                 )}
                 <Input
-                  mt="8px"
                   borderColor="#2E77AE"
                   id="min_salary"
                   type="number"
@@ -649,8 +684,10 @@ export default function ApplicantProfileSetup() {
                   onChange={handleNumberFormChange}
                 />
 
-                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
-                  Work type
+                <Heading fontSize="xl" pt="16px" color="#2E77AE">
+                  <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                    Work type
+                  </Text>
                 </Heading>
                 <Select
                   borderColor="#2E77AE"
@@ -667,8 +704,10 @@ export default function ApplicantProfileSetup() {
                     ))}
                 </Select>
 
-                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
-                  Max distance
+                <Heading fontSize="xl" pt="16px" color="#2E77AE">
+                  <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                    Max distance
+                  </Text>
                 </Heading>
                 <Input
                   borderColor="#2E77AE"
@@ -678,8 +717,10 @@ export default function ApplicantProfileSetup() {
                   onChange={handleNumberFormChange}
                 />
 
-                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
-                  Latitude
+                <Heading fontSize="xl" pt="16px" color="#2E77AE">
+                  <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                    Latitude
+                  </Text>
                 </Heading>
                 <Input
                   borderColor="#2E77AE"
@@ -689,8 +730,10 @@ export default function ApplicantProfileSetup() {
                   onChange={handleNumberFormChange}
                 />
 
-                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
-                  Longitude
+                <Heading fontSize="xl" pt="16px" color="#2E77AE">
+                  <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                    Longitude
+                  </Text>
                 </Heading>
                 <Input
                   borderColor="#2E77AE"
@@ -702,21 +745,20 @@ export default function ApplicantProfileSetup() {
               </Box>
 
               <Box>
-                <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE" textAlign="center">
-                  Click location on map to get Latitude/Longitude
+                <Heading fontSize="xl" pt="16px" color="#2E77AE" textAlign="center">
+                  <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                    Click location on map to get Latitude/Longitude
+                  </Text>
                 </Heading>
-                <div style={{height: "400px", width: "100%", paddingTop: "32px", marginBottom: "32px"}}>
-                  <MapContainer
-                    center={[0, 0]}
-                    zoom={2}
-                    style={{height: '400px', width: '100%'}}
-                  >
-                    <LocationFinderDummy/>
-                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+                <div style={{ height: "400px", width: "100%", paddingTop: "32px", marginBottom: "32px" }}>
+                  <MapContainer center={[0, 0]} zoom={2} style={{ height: "400px", width: "100%" }}>
+                    <LocationFinderDummy />
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     {clickedLatLng && (
                       <Marker position={clickedLatLng}>
                         <Popup>
-                          Latitude: {clickedLatLng.lat}<br/>
+                          Latitude: {clickedLatLng.lat}
+                          <br />
                           Longitude: {clickedLatLng.lng}
                         </Popup>
                       </Marker>
@@ -727,7 +769,7 @@ export default function ApplicantProfileSetup() {
                   <Button
                     color="white"
                     bg="#FF8E2B"
-                    _hover={{color: "#0D2137", bg: "#fdb16e"}}
+                    _hover={{ color: "#0D2137", bg: "#fdb16e" }}
                     onClick={handleSubmit}
                   >
                     Finish

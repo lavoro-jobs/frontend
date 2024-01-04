@@ -165,25 +165,24 @@ export default function RecruiterProfileSetup() {
       direction="column"
     >
       <Heading p="0 32px" marginBottom="32px" maxW="512px" textAlign="center" color="#fff">
-        Welcome!
+        Welcome! Answer questions.
       </Heading>
 
       <Box position="relative" id="card" justifyContent="center">
-
         <Button
           borderRadius="20px"
-          display={idArticle !== 4 && btn ? "" : "none"}
+          display={idArticle !== 3 && btn ? "" : "none"}
           position="absolute"
           className="nxt-prev-btn prev-btn"
           zIndex={3}
           color="white"
           bg="#FF8E2B"
-          _hover={{color: "#0D2137", bg: "#fdb16e"}}
+          _hover={{ color: "#0D2137", bg: "#fdb16e" }}
           onClick={() => {
             handleClick(idArticle + 1);
           }}
         >
-          <IoArrowRedo/>
+          <IoArrowRedo />
         </Button>
         <Button
           borderRadius="20px"
@@ -193,12 +192,12 @@ export default function RecruiterProfileSetup() {
           zIndex={3}
           color="white"
           bg="#FF8E2B"
-          _hover={{color: "#0D2137", bg: "#fdb16e"}}
+          _hover={{ color: "#0D2137", bg: "#fdb16e" }}
           onClick={() => {
             handleClick(idArticle - 1);
           }}
         >
-          <IoArrowUndo/>
+          <IoArrowUndo />
         </Button>
         <section className="backgrounds">
           <Box
@@ -248,7 +247,9 @@ export default function RecruiterProfileSetup() {
             </Heading>
 
             <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-              First name
+              <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+                First name
+              </Text>
             </Heading>
             <Input
               borderColor="#2E77AE"
@@ -258,7 +259,9 @@ export default function RecruiterProfileSetup() {
             />
 
             <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-              Last name
+            <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+            Last name
+              </Text>
             </Heading>
             <Input
               borderColor="#2E77AE"
@@ -318,12 +321,16 @@ export default function RecruiterProfileSetup() {
             </div>
 
             <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-              Company name
+            <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+            Company name
+              </Text>
             </Heading>
             <Input borderColor="#2E77AE" id="name" value={formDataCompany.name} onChange={handleCompanyFormChange} />
 
             <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
-              Description
+            <Text fontSize={{ base: "18px", sm: "18px", md: "20px" }} as="span">
+            Description
+              </Text>
             </Heading>
             <Textarea
               maxLength={150}
