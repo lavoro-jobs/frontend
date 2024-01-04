@@ -156,7 +156,7 @@ export default function RecruiterMatches() {
             allApplications.filter(
               (application) => application.job_post_id === jobPost.id && application.approved_by_company == null
             ).length > 0 && (
-              <Card w="800px" key={index}>
+              <Card w={{base: "400px", xl: "800px"}} key={index}>
                 <CardHeader w="100%" bg="#2E77AE">
                   <Heading textAlign="center" color="white">
                     {jobPost.position?.position_name}
@@ -317,7 +317,7 @@ export default function RecruiterMatches() {
                                         <Flex gap="8px" align="center">
                                           <Avatar size="sm" />
                                           <Flex direction="column">
-                                            <Heading size="md">Name Surname</Heading>
+                                            <Text fontSize="lg"><strong>Name Surname</strong></Text>
                                             <Text fontSize="sm" color="gray.500">
                                               {comment.created_on_date?.split("T")[0] +
                                                 " " +
@@ -358,7 +358,7 @@ export default function RecruiterMatches() {
                                 </ModalHeader>
 
                                 <ModalBody mt="64px">
-                                  <Flex w="484px" justify="center" mt="4px" gap="8px" align="center">
+                                  <Flex w={{base: "auto", lg:"484px"}} justify="center" mt="4px" gap="8px" align="center">
                                     <LiaBirthdayCakeSolid size="20px" />
                                     <Text>{application.applicant.age} years old, </Text>
                                     {application.applicant.gender == "male" && (
@@ -408,9 +408,9 @@ export default function RecruiterMatches() {
                                   )}
 
                                   {application.applicant.experiences.length > 0 && (
-                                    <Heading textAlign="center" fontSize="xl" pb="16px" color="#2E77AE">
-                                      WORK EXPERIENCES
-                                    </Heading>
+                                    <Text textAlign="center" fontSize="xl" pb="16px" color="#2E77AE">
+                                      <strong>WORK EXPERIENCES</strong>
+                                    </Text>
                                   )}
 
                                   {application.applicant.experiences.map((experience, index) => (
