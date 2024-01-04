@@ -2,7 +2,7 @@ import axiosInstance from ".";
 
 const getApplicationsByJobPost = async (jobPostId: string) => {
   try {
-    const response = await axiosInstance.get(`/matches/get-applications-to-job-post/${encodeURIComponent(jobPostId)}`, {
+    const response = await axiosInstance.get(`/matches/get-applications-by-job-post/${encodeURIComponent(jobPostId)}`, {
       headers: {
         "Content-Type": "application/json",
       },

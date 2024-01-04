@@ -3,5 +3,5 @@ export default interface RecruiterState {
   last_name: string;
   company_name: string,
   recruiter_role: string,
-  email: string
+  email?: string
 }
