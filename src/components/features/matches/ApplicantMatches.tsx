@@ -61,12 +61,12 @@ export default function ApplicantMatches() {
           <Box bg="#E0EAF5" p="64px" flex="1" display="flex" justifyContent="center">
             <Flex flexWrap="wrap" gap="48px" justify="center">
               {formData?.map((match, index) => (
-                <Card w="800px" key={index}>
+                <Card w={{base: "300px", sm: "400px", xl:"800px"}} key={index}>
                   {match.job_post && (
                     <>
-                      <CardHeader backgroundColor="#2E77AE" display="flex" flexDirection="row" gap="32px">
+                      <CardHeader backgroundColor="#2E77AE" display="flex" flexDirection={{base: "column", xl: "row"}} gap="32px">
                         <Image
-                          w="200px"
+                          w="264px"
                           borderRadius="24px"
                           src={
                             match.job_post.company?.logo
