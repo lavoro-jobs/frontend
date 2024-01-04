@@ -74,7 +74,7 @@ export default function ApplicantProfile() {
     <Sidenav>
       {!update && (
         <>
-          <Flex w="100%" justify="space-between" minHeight="calc(100vh - 32px)">
+          <Flex className="applicant-profile" w="100%" justify="space-between" minHeight="calc(100vh - 32px)">
             <Box bg="#E0EAF5" flex="1">
               <Flex direction="column" alignItems="center" className="profile">
                 <Image
@@ -130,7 +130,7 @@ export default function ApplicantProfile() {
             </Box>
 
             <Flex direction="column" alignItems="center" bgColor="white" flex="2">
-              <Heading size="2xl" mt="32px" mb="32px">
+              <Heading className="text-center" size="2xl" mt="32px" mb="32px">
                 {formData.position.position_name}
               </Heading>
               <p style={{ marginLeft: 24, marginRight: 0 }}>

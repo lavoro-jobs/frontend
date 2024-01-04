@@ -164,44 +164,42 @@ export default function RecruiterProfileSetup() {
       justify="center"
       direction="column"
     >
-      <Heading marginBottom="32px" maxW="512px" textAlign="center" color="#fff">
+      <Heading p="0 32px" marginBottom="32px" maxW="512px" textAlign="center" color="#fff">
         Welcome!
       </Heading>
 
-      <Button
-        borderRadius="20px"
-        display={idArticle !== 3 && btn ? "" : "none"}
-        position="absolute"
-        top="50%"
-        left="calc(50% + 330px)"
-        zIndex={3}
-        color="white"
-        bg="#FF8E2B"
-        _hover={{ color: "#0D2137", bg: "#fdb16e" }}
-        onClick={() => {
-          handleClick(idArticle + 1);
-        }}
-      >
-        <IoArrowRedo />
-      </Button>
-      <Button
-        borderRadius="20px"
-        display={idArticle !== 1 && btn ? "" : "none"}
-        position="absolute"
-        top="50%"
-        right="calc(50% + 330px)"
-        zIndex={3}
-        color="white"
-        bg="#FF8E2B"
-        _hover={{ color: "#0D2137", bg: "#fdb16e" }}
-        onClick={() => {
-          handleClick(idArticle - 1);
-        }}
-      >
-        <IoArrowUndo />
-      </Button>
+      <Box position="relative" id="card" justifyContent="center">
 
-      <Box id="card" justifyContent="center">
+        <Button
+          borderRadius="20px"
+          display={idArticle !== 4 && btn ? "" : "none"}
+          position="absolute"
+          className="nxt-prev-btn prev-btn"
+          zIndex={3}
+          color="white"
+          bg="#FF8E2B"
+          _hover={{color: "#0D2137", bg: "#fdb16e"}}
+          onClick={() => {
+            handleClick(idArticle + 1);
+          }}
+        >
+          <IoArrowRedo/>
+        </Button>
+        <Button
+          borderRadius="20px"
+          display={idArticle !== 1 && btn ? "" : "none"}
+          position="absolute"
+          className="nxt-prev-btn next-btn"
+          zIndex={3}
+          color="white"
+          bg="#FF8E2B"
+          _hover={{color: "#0D2137", bg: "#fdb16e"}}
+          onClick={() => {
+            handleClick(idArticle - 1);
+          }}
+        >
+          <IoArrowUndo/>
+        </Button>
         <section className="backgrounds">
           <Box
             onClick={() => {

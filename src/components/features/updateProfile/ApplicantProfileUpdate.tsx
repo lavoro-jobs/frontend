@@ -306,7 +306,7 @@ export default function ApplicantProfileUpdate({
   };
   return (
     <>
-      <Flex gap="32px">
+      <Flex gap="32px" className="applicant-profile-update profile-update">
         <Box flex="1" pr="32px">
           <Flex gap="8px" justify="space-between">
             <Box w="49%">

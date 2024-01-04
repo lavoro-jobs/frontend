@@ -233,44 +233,42 @@ export default function ApplicantProfileSetup() {
       justify="center"
       direction="column"
     >
-      <Heading marginBottom="32px" maxW="512px" textAlign="center" color="#fff">
+      <Heading p="0 32px" marginBottom="32px" maxW="512px" textAlign="center" color="#fff">
         Welcome! Answer questions to get your job matches.
       </Heading>
 
-      <Button
-        borderRadius="20px"
-        display={idArticle !== 4 && btn ? "" : "none"}
-        position="absolute"
-        top="50%"
-        left="calc(50% + 330px)"
-        zIndex={3}
-        color="white"
-        bg="#FF8E2B"
-        _hover={{color: "#0D2137", bg: "#fdb16e"}}
-        onClick={() => {
-          handleClick(idArticle + 1);
-        }}
-      >
-        <IoArrowRedo/>
-      </Button>
-      <Button
-        borderRadius="20px"
-        display={idArticle !== 1 && btn ? "" : "none"}
-        position="absolute"
-        top="50%"
-        right="calc(50% + 330px)"
-        zIndex={3}
-        color="white"
-        bg="#FF8E2B"
-        _hover={{color: "#0D2137", bg: "#fdb16e"}}
-        onClick={() => {
-          handleClick(idArticle - 1);
-        }}
-      >
-        <IoArrowUndo/>
-      </Button>
+      <Box position="relative" id="card" justifyContent="center">
 
-      <Box id="card" justifyContent="center">
+        <Button
+          borderRadius="20px"
+          display={idArticle !== 4 && btn ? "" : "none"}
+          position="absolute"
+          className="nxt-prev-btn prev-btn"
+          zIndex={3}
+          color="white"
+          bg="#FF8E2B"
+          _hover={{color: "#0D2137", bg: "#fdb16e"}}
+          onClick={() => {
+            handleClick(idArticle + 1);
+          }}
+        >
+          <IoArrowRedo/>
+        </Button>
+        <Button
+          borderRadius="20px"
+          display={idArticle !== 1 && btn ? "" : "none"}
+          position="absolute"
+          className="nxt-prev-btn next-btn"
+          zIndex={3}
+          color="white"
+          bg="#FF8E2B"
+          _hover={{color: "#0D2137", bg: "#fdb16e"}}
+          onClick={() => {
+            handleClick(idArticle - 1);
+          }}
+        >
+          <IoArrowUndo/>
+        </Button>
         <section className="backgrounds">
           <Box
             onClick={() => {
@@ -354,7 +352,7 @@ export default function ApplicantProfileSetup() {
             <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
               Gender
             </Heading>
-            <Flex justify="center" gap="16px">
+            <Flex justify="center" gap="16px" className="gender-icons">
               <Flex
                 border={formData.gender == "female" ? "#2E77AE 2px solid" : "#E0EAF5 2px solid"}
                 _hover={{cursor: "pointer", border: "#2E77AE 1px solid"}}
@@ -606,7 +604,7 @@ export default function ApplicantProfileSetup() {
               Preferences
             </Heading>
 
-            <Flex justify="center" align="flex-start" gap="16px">
+            <Flex className="map-container" justify="center" align="flex-start" gap="16px">
               <Box>
                 <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE">
                   Contract type
