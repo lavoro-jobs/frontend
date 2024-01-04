@@ -110,10 +110,13 @@ export default function RecruiterMatches() {
     }
   };
 
-  const reject = (jobPostId: string | undefined, applicantId: string | undefined) => {
+  const reject = async (jobPostId: string | undefined, applicantId: string | undefined) => {
     if (jobPostId && applicantId) {
       try {
-        rejectApplication(jobPostId, applicantId);
+        const response = await rejectApplication(jobPostId, applicantId);
+        if (response == 200) {
+          window.location.reload();
+        }
       } catch (error) {
         console.error("Failed to reject application", error);
       }
