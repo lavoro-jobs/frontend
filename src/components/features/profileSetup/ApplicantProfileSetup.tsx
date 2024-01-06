@@ -218,6 +218,7 @@ export default function ApplicantProfileSetup() {
   const handleSubmit = async () => {
     const response = await createApplicantProfile(formData);
     if (response == 201) {
+      createStreamChatUser()
       router.push("/dashboard");
     }
   };

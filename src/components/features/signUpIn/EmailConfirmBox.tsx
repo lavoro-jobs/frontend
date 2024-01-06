@@ -3,6 +3,7 @@ import axios from "axios";
 import { Flex, Text } from "@chakra-ui/react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import createStreamChatUser from "@/helpers/createStreamChatUser";
 
 interface ConfirmationStatus {
   status: true | false | null;
@@ -35,6 +36,7 @@ export default function EmailConfirmBox() {
   const handleEmailConfirmationResponse = (response: any) => {
     if (response.status === 200) {
       updateConfirmationStatus(true, "Your email address has been confirmed. You will be redirected to the sign in page in 5 seconds.");
+      createStreamChatUser();
       setTimeout(() => router.push("/signin"), 5000);
     } else {
       updateConfirmationStatus(false, "Your email address has NOT been confirmed. This link may have expired.");
