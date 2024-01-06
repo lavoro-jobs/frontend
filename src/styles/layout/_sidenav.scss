@@ -17,8 +17,36 @@
     color: #0071c6;
     line-height: 72px;
   }
+}
 
-  .sign-out {
-    margin: auto 16px 16px;
+.sign-out {
+  margin: auto 16px 16px;
+}
+
+div.desktop-sidenav {
+  display: flex;
+  flex-flow: column;
+}
+
+div.sidenav-menu {
+  display: flex;
+  flex-flow: column;
+
+  .header-title {
+    padding-left: 16px;
+  }
+}
+
+.chakra-slide.chakra-modal__content {
+  max-width: 350px;
+  display: none;
+}
+
+@media screen and (max-width: 680px) {
+  div.desktop-sidenav {
+    display: none
+  }
+  .chakra-slide.chakra-modal__content {
+    display: flex;
   }
 }

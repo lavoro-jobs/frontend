@@ -15,3 +15,74 @@
     right: 0;
   }
 }
+
+.nxt-prev-btn {
+  bottom: 45%;
+
+    &.prev-btn {
+      left: calc(50% + 330px);
+    }
+
+    &.next-btn {
+      right: calc(50% + 330px);
+    }
+}
+@media screen and (max-width: 800px) {
+  article.article {
+    padding: 64px 32px 128px
+  }
+  .nxt-prev-btn {
+    bottom: 5%;
+
+    &.prev-btn {
+      left: 80%;
+    }
+
+    &.next-btn {
+      right: 80%;
+    }
+  }
+  #card {
+    width: 100vw;
+
+    .backgrounds, .content {
+      width: 100vw;
+      overflow: hidden;
+
+      .background {
+        width: 100vw;
+      }
+
+      .article {
+        width: 100vw;
+      }
+    }
+  }
+
+  .main > h2.chakra-heading {
+    padding: 0 16px;
+  }
+
+  .gender-icons > div {
+    width: 30%;
+    height: auto;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    h2 {
+      font-size: 16px;
+    }
+  }
+
+  .map-container {
+    display: flex;
+    flex-flow: column;
+
+    > div {
+      width: 100%;
+    }
+  }
+}
