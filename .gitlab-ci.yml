@@ -25,7 +25,6 @@ deploy:
     script:
         - echo "Deploying to Azure App Service..."
         - az login --service-principal -u $APP_ID -p $SP_PASSWORD --tenant $TENANT_ID
-        - curl -fsSL https://get.docker.com -o get-docker.sh
         - az acr login --name lavorocontainers
         - az webapp config container set --name lavoro-frontend --resource-group lavoro --docker-custom-image-name $IMAGE_NAME:$CI_COMMIT_SHORT_SHA --docker-registry-server-url https://$ACR_SERVER
     only:
