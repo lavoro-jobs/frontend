@@ -1,0 +1,31 @@
+stages:
+    - build
+    - deploy
+
+variables:
+    ACR_SERVER: "lavorocontainers.azurecr.io"
+    IMAGE_NAME: "$ACR_SERVER/lavoro-frontend"
+
+build:
+    stage: build
+    image: docker:24.0.7
+    services:
+        - docker:24.0.7-dind
+    script:
+        - echo "Building Docker image..."
+        - docker login $ACR_SERVER -u $APP_ID -p $SP_PASSWORD
+        - docker build -t $IMAGE_NAME:$CI_COMMIT_SHORT_SHA --target production --build-arg GITLAB_ACCESS_TOKEN=$GITLAB_ACCESS_TOKEN .
+        - docker push $IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+    only:
+        - master
+
+deploy:
+    stage: deploy
+    image: microsoft/azure-cli
+    script:
+        - echo "Deploying to Azure App Service..."
+        - az login --service-principal -u $APP_ID -p $SP_PASSWORD --tenant $TENANT_ID
+        - az acr login --name lavorocontainers
+        - az webapp config container set --name lavoro-frontend --resource-group lavoro --docker-custom-image-name $IMAGE_NAME:$CI_COMMIT_SHORT_SHA --docker-registry-server-url https://$ACR_SERVER
+    only:
+        - master
