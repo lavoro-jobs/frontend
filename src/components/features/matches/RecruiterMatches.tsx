@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Sidenav from "../dashboard/Sidenav";
 import FormState from "@/interfaces/job-posts/form-state.interface";
 import getJobPostsByRecruiter from "@/helpers/getJobPosts";
@@ -23,25 +23,24 @@ import {
 } from "@chakra-ui/react";
 import getApplicationsByJobPost from "@/helpers/getApplicantionsByJobPost";
 import FormStateApplication from "@/interfaces/matches/form-state-application.interface";
-import { FaCheck, FaFileDownload, FaGenderless, FaGraduationCap, FaMoneyBillWave } from "react-icons/fa";
-import { LiaBirthdayCakeSolid, LiaCertificateSolid } from "react-icons/lia";
-import { FaLocationDot } from "react-icons/fa6";
-import { IoBriefcaseSharp, IoFemaleSharp, IoMaleSharp } from "react-icons/io5";
-import { ImCross } from "react-icons/im";
-import { TfiCommentAlt } from "react-icons/tfi";
-import { CgMoreO } from "react-icons/cg";
+import {FaCheck, FaFileDownload, FaGenderless, FaGraduationCap, FaMoneyBillWave} from "react-icons/fa";
+import {LiaBirthdayCakeSolid, LiaCertificateSolid} from "react-icons/lia";
+import {FaLocationDot} from "react-icons/fa6";
+import {IoBriefcaseSharp, IoFemaleSharp, IoMaleSharp} from "react-icons/io5";
+import {ImCross} from "react-icons/im";
+import {TfiCommentAlt} from "react-icons/tfi";
+import {CgMoreO} from "react-icons/cg";
 import FormStateComment from "@/interfaces/matches/form-state-comment.interface";
 import getComments from "@/helpers/getComments";
 import commentApplication from "@/helpers/commentApplication";
-import { MdOutlineMail } from "react-icons/md";
 import SmallAddress from "@/components/shared/Address";
 import dynamic from "next/dynamic";
 import approveApplication from "@/helpers/approveApplication";
 import rejectApplication from "@/helpers/rejectApplication";
-import { relative } from "path";
 import deleteComment from "@/helpers/deleteComment";
 import RecruiterState from "@/interfaces/recruiter/form-state-get-recruiter.interface";
 import getRecruiterProfile from "@/helpers/getRecruiterProfile";
+import createPrivateChat from "@/helpers/createChat";
 
 export default function RecruiterMatches() {
   const [jobPosts, setJobPosts] = useState<FormState[]>([]);
@@ -123,10 +122,11 @@ export default function RecruiterMatches() {
     }
   };
 
-  const approve = (jobPostId: string | undefined, applicantId: string | undefined) => {
+  const approve = (jobPostId: string | undefined, applicantId: string | undefined, applicantChatToken: string | undefined) => {
     if (jobPostId && applicantId) {
       try {
         approveApplication(jobPostId, applicantId);
+        createPrivateChat(applicantChatToken);
       } catch (error) {
         console.error("Failed to approve application", error);
       }
@@ -271,7 +271,7 @@ export default function RecruiterMatches() {
                                   size="lg"
                                   borderRadius="50%"
                                   colorScheme="green"
-                                  onClick={() => approve(jobPost.id, application.applicant_account_id)}
+                                  onClick={() => approve(jobPost.id, application.applicant_account_id, application.applicant_stream_chat_token)}
                                 >
                                   <FaCheck />
                                 </Button>

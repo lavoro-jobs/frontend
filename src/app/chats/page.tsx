@@ -4,10 +4,11 @@ import { Chat, Channel, ChannelList, Window, ChannelHeader, MessageList, Message
 import getCurrentUser from "@/helpers/getCurrentUser";
 import {useEffect, useState} from "react";
 import 'stream-chat-react/dist/css/index.css';
+import Sidenav from "@/components/features/dashboard/Sidenav";
+import hashEmail from "@/helpers/hashEmail";
 
 export default function ChatPage() {
   const [chatClient, setChatClient] = useState<StreamChat>();
-  const [currentChannel, setCurrentChannel] = useState<StreamChannel | null>(null);
 
   useEffect(() => {
     connectToStreamChat()
@@ -18,7 +19,7 @@ export default function ChatPage() {
     let currentUser = response.data;
     let email = currentUser.email;
     let hashedEmail = await hashEmail(email);
-
+    console.log(hashedEmail)
     const client = new StreamChat(process.env.NEXT_PUBLIC_STREAM_CHAT_API_KEY);
 
     await client.connectUser(
@@ -28,23 +29,8 @@ export default function ChatPage() {
       },
       currentUser.stream_chat_token
     )
-    const channels = await client.queryChannels({});
-    const defaultChannel = channels[0];
-
-    setCurrentChannel(defaultChannel);
+    console.log("HERE");
     setChatClient(client);
-  }
-
-  async function hashEmail(email: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(email);
-
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-    return hashHex;
   }
 
   if (!chatClient) {
@@ -52,18 +38,20 @@ export default function ChatPage() {
   }
 
   return (
-    <Chat client={chatClient}>
-      <ChannelList
-        filters={{ members: { $in: [chatClient.user.id] } }}
-        sort={{ last_message_at: -1 }}
-      />
-      <Channel>
-        <Window>
-          <ChannelHeader/>
-          <MessageList/>
-          <MessageInput/>
-        </Window>
-      </Channel>
-    </Chat>
+    <Sidenav>
+      <Chat client={chatClient}>
+        <ChannelList
+          filters={{ members: { $in: [chatClient.user.id] } }}
+          sort={{ last_message_at: -1 }}
+        />
+        <Channel>
+          <Window>
+            <ChannelHeader/>
+            <MessageList/>
+            <MessageInput/>
+          </Window>
+        </Channel>
+      </Chat>
+    </Sidenav>
   );
 }
