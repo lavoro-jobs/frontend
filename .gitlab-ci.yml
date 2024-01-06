@@ -14,7 +14,7 @@ build:
     script:
         - echo "Building Docker image..."
         - docker login $ACR_SERVER -u $APP_ID -p $SP_PASSWORD
-        - docker build -t $IMAGE_NAME:$CI_COMMIT_SHORT_SHA --target production --build-arg GITLAB_ACCESS_TOKEN=$GITLAB_ACCESS_TOKEN .
+        - docker build -t $IMAGE_NAME:$CI_COMMIT_SHORT_SHA --build-arg GITLAB_ACCESS_TOKEN=$GITLAB_ACCESS_TOKEN .
         - docker push $IMAGE_NAME:$CI_COMMIT_SHORT_SHA
     only:
         - master
