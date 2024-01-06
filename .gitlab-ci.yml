@@ -21,7 +21,7 @@ build:
 
 deploy:
     stage: deploy
-    image: microsoft/azure-cli
+    image: mcr.microsoft.com/azure-cli
     script:
         - echo "Deploying to Azure App Service..."
         - az login --service-principal -u $APP_ID -p $SP_PASSWORD --tenant $TENANT_ID
