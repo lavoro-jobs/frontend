@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Sidenav from "../dashboard/Sidenav";
+import Sidenav from "@/components/features/dashboard/Sidenav";
 import FormState from "@/interfaces/job-posts/form-state.interface";
 import getJobPostsByRecruiter from "@/helpers/getJobPosts";
 import {
@@ -26,6 +26,8 @@ import FormStateApplication from "@/interfaces/matches/form-state-application.in
 import { FaCheck, FaFileDownload, FaGenderless, FaGraduationCap, FaMoneyBillWave } from "react-icons/fa";
 import { LiaBirthdayCakeSolid, LiaCertificateSolid } from "react-icons/lia";
 import { FaLocationDot } from "react-icons/fa6";
+import { TfiPlus, TfiMinus } from "react-icons/tfi";
+import { FaPaperclip } from "react-icons/fa";
 import { IoBriefcaseSharp, IoFemaleSharp, IoMaleSharp } from "react-icons/io5";
 import { ImCross } from "react-icons/im";
 import { TfiCommentAlt } from "react-icons/tfi";
@@ -49,12 +51,14 @@ export default function RecruiterMatches() {
   const [comments, setComments] = useState<FormStateComment[]>();
   const [comment, setComment] = useState({ comment_body: "" });
   const [recruiter, setRecruiter] = useState<RecruiterState>();
+  const [comparison, setComparison] = useState<FormStateApplication[]>([]);
 
   const [postId, setPostId] = useState<string>("");
   const [accId, setAccId] = useState<string>("");
 
   const { isOpen: isCommentsModalOpen, onOpen: onCommentsModalOpen, onClose: onCommentsModalClose } = useDisclosure();
   const { isOpen: isMoreModalOpen, onOpen: onMoreModalOpen, onClose: onMoreModalClose } = useDisclosure();
+  const { isOpen: isCompareOpen, onOpen: onCompareOpen, onClose: onCompareClose } = useDisclosure();
   const SmallAddress = dynamic(() => import("../../shared/SmallAddress"), { ssr: false });
   const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
 
@@ -151,17 +155,39 @@ export default function RecruiterMatches() {
     }
   };
 
+  const addToComparison = (applicant: FormStateApplication) => {
+    if(comparison.length !== 2) {
+      setComparison([...comparison, applicant]);
+    }
+  };
+
+  const removeFromComparison = (applicant: FormStateApplication) => {
+    const updatedComparison = comparison.filter(
+      item => item.applicant_account_id !== applicant.applicant_account_id
+    );
+    setComparison(updatedComparison);
+  };
+
   const allApplications = Object.values(applications).flatMap((appArray) => appArray);
 
   return (
     <Sidenav>
       <Flex direction="column" align="center" gap="32px">
+      {!!comparison?.length && (
+        <Button
+          bg="#2E77AE"
+          color="#fff"
+          className="compare-button"
+          _hover={{ bg: "#E0EAF5", color: "#2E77AE" }}
+          onClick={onCompareOpen}
+          >Compare</Button>
+        )}
         {jobPosts.map(
           (jobPost, index) =>
             allApplications.filter(
               (application) => application.job_post_id === jobPost.id && application.approved_by_company == null
             ).length > 0 && (
-              <Card w={{base: "400px", xl: "800px"}} key={index}>
+              <Card w="100%" key={index}>
                 <CardHeader w="100%" bg="#2E77AE">
                   <Heading textAlign="center" color="white">
                     {jobPost.position?.position_name}
@@ -171,8 +197,8 @@ export default function RecruiterMatches() {
                   {allApplications.map(
                     (application, ind) =>
                       application.job_post_id == jobPost.id && (
-                        <>
-                          <Flex direction="column" w="360px" key={ind}>
+                        <div key={ind}>
+                          <Flex direction="column" w="360px">
                             <Flex
                               direction="column"
                               align="center"
@@ -256,6 +282,41 @@ export default function RecruiterMatches() {
                                 </Button>
                               </Flex>
 
+                              <Flex gap="16px">
+                                {(
+                                  comparison.length <= 2 &&
+                                  !(comparison.some(item => item.applicant_account_id === application.applicant_account_id))
+                                ) && (
+                                  <Button
+                                    onClick={() => {
+                                      addToComparison(application);
+                                    }}
+                                    variant="ghost"
+                                    _hover={{ bg: "white", color: "#2E77AE" }}
+                                    className={comparison.length >= 2 ? 'isAdded' : ''}
+                                  >
+                                    <Flex mt="8px" align="center" gap="8px">
+                                      <TfiPlus size="16px" />
+                                      <Text>Add to comparison</Text>
+                                    </Flex>
+                                  </Button>
+                                )}
+                                {comparison.some(item => item.applicant_account_id === application.applicant_account_id) && (
+                                  <Button
+                                    onClick={() => {
+                                      removeFromComparison(application);
+                                    }}
+                                    variant="ghost"
+                                    _hover={{ bg: "white", color: "#2E77AE" }}
+                                  >
+                                    <Flex mt="8px" align="center" gap="8px">
+                                      <TfiMinus size="16px" />
+                                      <Text>Remove from comparison</Text>
+                                    </Flex>
+                                  </Button>
+                                )}
+                              </Flex>
+
                               <Divider mt="8px" />
 
                               <Flex mt="8px" gap="16px">
@@ -310,7 +371,7 @@ export default function RecruiterMatches() {
                                     />
                                   </Flex>
 
-                                  {comments?.map((comment) => (
+                                  {comments?.map((comment, i) => (
                                     <Flex
                                       direction="column"
                                       mt="16px"
@@ -318,6 +379,7 @@ export default function RecruiterMatches() {
                                       bg="#E0EAF5"
                                       borderRadius="8px"
                                       p="8px"
+                                      key={i}
                                     >
                                       <Flex justify="space-between">
                                         <Flex gap="8px" align="center">
@@ -420,17 +482,17 @@ export default function RecruiterMatches() {
                                   )}
 
                                   {application.applicant.experiences.map((experience, index) => (
-                                    <>
-                                      <Text align="center" mb="8px" key={index}>
+                                    <div key={index}>
+                                      <Text align="center" mb="8px">
                                         Company name - {experience.company_name}
                                       </Text>
-                                      <Text align="center" mb="8px" key={index}>
+                                      <Text align="center" mb="8px">
                                         Position - {experience.position?.position_name}
                                       </Text>
-                                      <Text align="center" mb="16px" key={index}>
+                                      <Text align="center" mb="16px">
                                         Years - {experience.years}
                                       </Text>
-                                    </>
+                                    </div>
                                   ))}
 
                                   {application.applicant.experiences.length > 0 && <Box border="1px solid #2E77AE" />}
@@ -444,13 +506,238 @@ export default function RecruiterMatches() {
                               </ModalContent>
                             </Modal>
                           </Flex>
-                        </>
+                        </div>
                       )
                   )}
                 </Flex>
               </Card>
             )
         )}
+        <Modal className="compare-modal" isOpen={isCompareOpen} onClose={onCompareClose} size="xl" isCentered={true}>
+          <ModalOverlay className="compare-modal-container" />
+          <ModalContent className="compare-modal">
+            <ModalHeader>
+              <Heading textAlign="center" size="lg">
+                Compare applicants
+              </Heading>
+            </ModalHeader>
+            <ModalBody mt="64px">
+              <Flex w="100%">
+                <Flex w="24%" p="0 20px">
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text fontSize="24px" fontWeight="bold">{comparison[0]?.applicant.first_name} {comparison[0]?.applicant.last_name}</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text fontSize="24px" fontWeight="bold">{comparison[1]?.applicant.first_name} {comparison[1]?.applicant.last_name}</Text>
+                </Flex>
+              </Flex>
+
+              <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
+
+              <Flex w="100%">
+                <Flex w="24%" p="0 20px">
+                  <LiaBirthdayCakeSolid size="20px"/>
+                  <Text marginLeft="10px">Age</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[0]?.applicant.age} years old</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[1]?.applicant.age} years old</Text>
+                </Flex>
+              </Flex>
+
+              <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
+
+              <Flex w="100%">
+                <Flex w="24%" p="0 20px">
+                </Flex>
+                <Flex w="38%" justify="center">
+                  {comparison[0]?.applicant.gender == "male" && (
+                    <>
+                      <IoMaleSharp size="18px" />
+                      <Text>Male</Text>
+                    </>
+                  )}
+                  {comparison[0]?.applicant.gender == "female" && (
+                    <>
+                      <IoFemaleSharp size="18px" />
+                      <Text>Female</Text>
+                    </>
+                  )}
+                  {comparison[0]?.applicant.gender == "other" && (
+                    <>
+                      <FaGenderless size="18px" />
+                      <Text>Other</Text>
+                    </>
+                  )}
+                </Flex>
+                <Flex w="38%" justify="center">
+                  {comparison[1]?.applicant.gender == "male" && (
+                    <>
+                      <IoMaleSharp size="18px" />
+                      <Text>Male</Text>
+                    </>
+                  )}
+                  {comparison[1]?.applicant.gender == "female" && (
+                    <>
+                      <IoFemaleSharp size="18px" />
+                      <Text>Female</Text>
+                    </>
+                  )}
+                  {comparison[1]?.applicant.gender == "other" && (
+                    <>
+                      <FaGenderless size="18px" />
+                      <Text>Other</Text>
+                    </>
+                  )}
+                </Flex>
+              </Flex>
+
+              <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
+
+              <Flex w="100%">
+                <Flex w="24%" p="0 20px">
+                  <FaGraduationCap size="24px" />
+                  <Text marginLeft="10px">Education</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[0]?.applicant.education_level.education_level}</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[1]?.applicant.education_level.education_level}</Text>
+                </Flex>
+              </Flex>
+
+              <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
+
+              <Flex w="100%">
+                <Flex w="24%" p="0 20px">
+                  <LiaCertificateSolid size="24px" />
+                  <Text marginLeft="10px">Seniority</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[0]?.applicant.seniority_level}</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[1]?.applicant.seniority_level}</Text>
+                </Flex>
+              </Flex>
+
+              <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
+
+              <Flex w="100%">
+                <Flex w="24%" p="0 20px">
+                  <FaLocationDot size="24px" />
+                  <Text marginLeft="10px">Location</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[0]?.applicant.work_type.work_type}</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[1]?.applicant.work_type.work_type}</Text>
+                </Flex>
+              </Flex>
+
+              <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
+
+              <Flex w="100%">
+                <Flex w="24%" p="0 20px">
+                  <IoBriefcaseSharp size="24px" />
+                  <Text marginLeft="10px">Contract type</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[0]?.applicant.contract_type.contract_type}</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[1]?.applicant.contract_type.contract_type}</Text>
+                </Flex>
+              </Flex>
+
+              <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
+
+              <Flex w="100%">
+                <Flex w="24%" p="0 20px">
+                  <FaMoneyBillWave size="24px" />
+                  <Text marginLeft="10px">Min salary</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[0]?.applicant.min_salary}€</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[1]?.applicant.min_salary}€</Text>
+                </Flex>
+              </Flex>
+
+              <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
+
+              <Flex w="100%">
+                <Flex w="24%" p="0 20px">
+                  <FaLocationDot size="24px" />
+                  <Text marginLeft="10px">Max distance</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[0]?.applicant.work_location_max_distance}km</Text>
+                </Flex>
+                <Flex w="38%" justify="center">
+                  <Text>{comparison[1]?.applicant.work_location_max_distance}km</Text>
+                </Flex>
+              </Flex>
+
+              <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
+
+              <Flex w="100%" flexWrap="wrap">
+                <Flex w="24%" p="0 20px">
+                  <FaPaperclip size="24px" />
+                  <Text marginLeft="10px">Experience</Text>
+                </Flex>
+                <Flex w="38%" flexFlow="column">
+                  {comparison[0]?.applicant.experiences.map((experience, index) => (
+                    <div key={index}>
+                      <Text align="center" mb="8px">
+                        Company name - {experience.company_name}
+                      </Text>
+                      <Text align="center" mb="8px">
+                        Position - {experience.position?.position_name}
+                      </Text>
+                      <Text align="center" mb="16px">
+                        Years - {experience.years}
+                      </Text>
+
+                      {index+1 !== comparison[0].applicant.experiences.length && (
+                      <Box m="16px 8px" border="1px solid #2E77AE" />
+                      )}
+                    </div>
+                  ))}
+                </Flex>
+                <Flex w="38%" flexFlow="column">
+                  {comparison[1]?.applicant.experiences.map((experience, index) => (
+                    <div key={index}>
+                      <Text align="center" mb="8px">
+                        {experience.company_name}
+                      </Text>
+                      <Text align="center" mb="8px">
+                        {experience.position?.position_name}
+                      </Text>
+                      <Text align="center" mb="16px">
+                        {experience.years} years
+                      </Text>
+                      {index+1 !== comparison[1].applicant.experiences.length && (
+                      <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
+                      )}
+                    </div>
+                  ))}
+                </Flex>
+              </Flex>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" onClick={onCompareClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Flex>
     </Sidenav>
   );
