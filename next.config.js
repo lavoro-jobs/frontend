@@ -16,7 +16,7 @@ module.exports = {
                 source: "/api/:path*",
                 destination:
                     process.env.NODE_ENV === "production"
-                        ? "https://lavoro-api.azure-api.net/api/:path*"
+                        ? "https://lavorojobs.com/api/:path*"
                         : "http://localhost:8000/api/:path*",
             },
         ]
