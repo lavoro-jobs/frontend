@@ -14,7 +14,7 @@ module.exports = {
         return [
             {
                 source: "/api/:path*",
-                destination: "https://lavoro-api.azure-api.net/:path*",
+                destination: "https://lavoro-api.azure-api.net/api/:path*",
             },
         ]
     },
