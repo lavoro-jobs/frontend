@@ -27,5 +27,6 @@ deploy:
         - az login --service-principal -u $APP_ID -p $SP_PASSWORD --tenant $TENANT_ID
         - TOKEN=$(az acr login --name lavorocontainers --expose-token --output tsv --query accessToken)
         - az webapp config container set --name lavoro-frontend --resource-group lavoro --docker-custom-image-name $IMAGE_NAME:$CI_COMMIT_SHORT_SHA --docker-registry-server-url https://$ACR_SERVER --docker-registry-server-user 00000000-0000-0000-0000-000000000000 --docker-registry-server-password $TOKEN
+        - echo "NEXT_PUBLIC_API_URL=https://lavoro-api.azure-api.net" > .env.production
     only:
         - master
