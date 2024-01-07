@@ -10,4 +10,12 @@ module.exports = {
     eslint: {
         ignoreDuringBuilds: true,
     },
+    async rewrites() {
+        return [
+            {
+                source: "/api/:path*",
+                destination: "https://lavoro-api.azure-api.net/api/:path*",
+            },
+        ]
+    },
 }
