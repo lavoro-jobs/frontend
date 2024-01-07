@@ -14,5 +14,8 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=https://lavoro-api.azure-api.net
+
 EXPOSE 3000
 CMD ["npm", "start"]
