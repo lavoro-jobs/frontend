@@ -1,0 +1,31 @@
+.compare-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  font-size: 40px;
+  padding: 10px 40px;
+  z-index: 3;
+  height: auto;
+}
+
+@media screen and (max-width: 580px) {
+.compare-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  font-size: 24px;
+  padding: 6px 20px;
+  z-index: 3;
+  height: auto;
+}
+}
+
+.compare-modal {
+  width: 800px;
+  min-width: 800px
+}
+.compare-modal-container {
+  ~ div .chakra-modal__content-container {
+    justify-content: flex-start;
+  }
+}
