@@ -161,10 +161,13 @@ export default function RecruiterMatches() {
     }
   };
 
-  const approve = (jobPostId: string | undefined, applicantId: string | undefined) => {
+  const approve = async (jobPostId: string | undefined, applicantId: string | undefined) => {
     if (jobPostId && applicantId) {
       try {
-        approveApplication(jobPostId, applicantId);
+        const response = await approveApplication(jobPostId, applicantId);
+        if (response == 200) {
+          window.location.reload();
+        }
       } catch (error) {
         console.error("Failed to approve application", error);
       }
@@ -230,7 +233,7 @@ export default function RecruiterMatches() {
                 <Flex w="100%" justify="center" wrap="wrap" p="32px" gap="16px">
                   {allApplications.map(
                     (application, ind) =>
-                      application.job_post_id == jobPost.id && (
+                      application.job_post_id == jobPost.id && !application.approved_by_company && (
                         <div key={ind}>
                           <Flex direction="column" w="360px">
                             <Flex

@@ -2,7 +2,7 @@ import axiosInstance from ".";
 
 const approveApplication = async (jobPostId: string, applicantId: string) => {
   try {
-    const response = await axiosInstance.post(`/matches/approve-application/${encodeURIComponent(jobPostId)}/${encodeURIComponent(applicantId)}`, {
+    const response = await axiosInstance.patch(`/matches/approve-application/${encodeURIComponent(jobPostId)}/${encodeURIComponent(applicantId)}`, {
       headers: {
         "Content-Type": "application/json",
       },
