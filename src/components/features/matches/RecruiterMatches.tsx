@@ -44,6 +44,7 @@ import { relative } from "path";
 import deleteComment from "@/helpers/deleteComment";
 import RecruiterState from "@/interfaces/recruiter/form-state-get-recruiter.interface";
 import getRecruiterProfile from "@/helpers/getRecruiterProfile";
+import Form from "@/interfaces/applicant/form-state-get-applicant.interface";
 
 export default function RecruiterMatches() {
   const [jobPosts, setJobPosts] = useState<FormState[]>([]);
@@ -55,6 +56,42 @@ export default function RecruiterMatches() {
 
   const [postId, setPostId] = useState<string>("");
   const [accId, setAccId] = useState<string>("");
+  const [appl, setAppl] = useState<Form>({
+    first_name: "",
+    last_name: "",
+    education_level: {
+      id: 0,
+      education_level: "",
+    },
+    age: 0,
+    gender: "",
+    skills: [],
+    experiences: [],
+    cv: "",
+    work_type: {
+      id: 0,
+      work_type: "",
+    },
+    seniority_level: 0,
+    position: {
+      id: 0,
+      position_name: "",
+    },
+    home_location: {
+      longitude: 0,
+      latitude: 0,
+    },
+    work_location_max_distance: 0,
+    contract_type: {
+      id: 0,
+      contract_type: "",
+    },
+    min_salary: 0,
+    education_level_id: 0,
+    position_id: 0,
+    contract_type_id: 0,
+    work_type_id: 0,
+  });
 
   const { isOpen: isCommentsModalOpen, onOpen: onCommentsModalOpen, onClose: onCommentsModalClose } = useDisclosure();
   const { isOpen: isMoreModalOpen, onOpen: onMoreModalOpen, onClose: onMoreModalClose } = useDisclosure();
@@ -77,11 +114,10 @@ export default function RecruiterMatches() {
           applicationsByJobPost[id] = applicationsData[index];
         });
 
-        setApplications(applicationsByJobPost); 
+        setApplications(applicationsByJobPost);
 
         const recruiterProfile = await getRecruiterProfile();
         setRecruiter(recruiterProfile);
-
       } catch (error) {
         console.error("Failed to fetch data", error);
       }
@@ -101,9 +137,7 @@ export default function RecruiterMatches() {
     }
   };
 
-  const deleteComm = async (
-    commentId: string | undefined
-  ) => {
+  const deleteComm = async (commentId: string | undefined) => {
     if (postId && commentId) {
       try {
         const comments = await deleteComment(postId, commentId);
@@ -156,15 +190,13 @@ export default function RecruiterMatches() {
   };
 
   const addToComparison = (applicant: FormStateApplication) => {
-    if(comparison.length !== 2) {
+    if (comparison.length !== 2) {
       setComparison([...comparison, applicant]);
     }
   };
 
   const removeFromComparison = (applicant: FormStateApplication) => {
-    const updatedComparison = comparison.filter(
-      item => item.applicant_account_id !== applicant.applicant_account_id
-    );
+    const updatedComparison = comparison.filter((item) => item.applicant_account_id !== applicant.applicant_account_id);
     setComparison(updatedComparison);
   };
 
@@ -173,14 +205,16 @@ export default function RecruiterMatches() {
   return (
     <Sidenav>
       <Flex direction="column" align="center" gap="32px">
-      {!!comparison?.length && (
-        <Button
-          bg="#2E77AE"
-          color="#fff"
-          className="compare-button"
-          _hover={{ bg: "#E0EAF5", color: "#2E77AE" }}
-          onClick={onCompareOpen}
-          >Compare</Button>
+        {!!comparison?.length && (
+          <Button
+            bg="#2E77AE"
+            color="#fff"
+            className="compare-button"
+            _hover={{ bg: "#E0EAF5", color: "#2E77AE" }}
+            onClick={onCompareOpen}
+          >
+            Compare
+          </Button>
         )}
         {jobPosts.map(
           (jobPost, index) =>
@@ -258,6 +292,11 @@ export default function RecruiterMatches() {
                                 <Button
                                   onClick={() => {
                                     onCommentsModalOpen();
+                                    setAppl({
+                                      ...appl,
+                                      first_name: application.applicant.first_name,
+                                      last_name: application.applicant.last_name,
+                                    });
                                     setAccId(application.applicant_account_id || "");
                                     setPostId(jobPost.id || "");
                                     fetchComments(jobPost.id, application.applicant_account_id);
@@ -271,7 +310,24 @@ export default function RecruiterMatches() {
                                   </Flex>
                                 </Button>
                                 <Button
-                                  onClick={onMoreModalOpen}
+                                  onClick={() => {
+                                    onMoreModalOpen();
+                                    setAppl({
+                                      ...appl,
+                                      first_name: application.applicant.first_name,
+                                      last_name: application.applicant.last_name,
+                                      age: application.applicant.age,
+                                      gender: application.applicant.gender,
+                                      home_location: {
+                                        latitude: application.applicant.home_location.latitude,
+                                        longitude: application.applicant.home_location.longitude,
+                                      },
+                                      work_location_max_distance: application.applicant.work_location_max_distance,
+                                      cv: application.applicant.cv,
+                                      min_salary: application.applicant.min_salary,
+                                      experiences: application.applicant.experiences,
+                                    });
+                                  }}
                                   variant="ghost"
                                   _hover={{ bg: "white", color: "#2E77AE" }}
                                 >
@@ -283,25 +339,27 @@ export default function RecruiterMatches() {
                               </Flex>
 
                               <Flex gap="16px">
-                                {(
-                                  comparison.length <= 2 &&
-                                  !(comparison.some(item => item.applicant_account_id === application.applicant_account_id))
+                                {comparison.length <= 2 &&
+                                  !comparison.some(
+                                    (item) => item.applicant_account_id === application.applicant_account_id
+                                  ) && (
+                                    <Button
+                                      onClick={() => {
+                                        addToComparison(application);
+                                      }}
+                                      variant="ghost"
+                                      _hover={{ bg: "white", color: "#2E77AE" }}
+                                      className={comparison.length >= 2 ? "isAdded" : ""}
+                                    >
+                                      <Flex mt="8px" align="center" gap="8px">
+                                        <TfiPlus size="16px" />
+                                        <Text>Add to comparison</Text>
+                                      </Flex>
+                                    </Button>
+                                  )}
+                                {comparison.some(
+                                  (item) => item.applicant_account_id === application.applicant_account_id
                                 ) && (
-                                  <Button
-                                    onClick={() => {
-                                      addToComparison(application);
-                                    }}
-                                    variant="ghost"
-                                    _hover={{ bg: "white", color: "#2E77AE" }}
-                                    className={comparison.length >= 2 ? 'isAdded' : ''}
-                                  >
-                                    <Flex mt="8px" align="center" gap="8px">
-                                      <TfiPlus size="16px" />
-                                      <Text>Add to comparison</Text>
-                                    </Flex>
-                                  </Button>
-                                )}
-                                {comparison.some(item => item.applicant_account_id === application.applicant_account_id) && (
                                   <Button
                                     onClick={() => {
                                       removeFromComparison(application);
@@ -349,7 +407,7 @@ export default function RecruiterMatches() {
                               <ModalContent>
                                 <ModalHeader>
                                   <Heading w="484px" size="lg">
-                                    {application.applicant.first_name} {application.applicant.last_name}
+                                    {appl.first_name} {appl.last_name}
                                   </Heading>
                                   <Text fontSize="sm" color="gray.500">
                                     {comments?.length} comments
@@ -385,7 +443,11 @@ export default function RecruiterMatches() {
                                         <Flex gap="8px" align="center">
                                           <Avatar size="sm" />
                                           <Flex direction="column">
-                                            <Text fontSize="lg"><strong>{comment.recruiter?.first_name} {comment.recruiter?.last_name}</strong></Text>
+                                            <Text fontSize="lg">
+                                              <strong>
+                                                {comment.recruiter?.first_name} {comment.recruiter?.last_name}
+                                              </strong>
+                                            </Text>
                                             <Text fontSize="sm" color="gray.500">
                                               {comment.created_on_date?.split("T")[0] +
                                                 " " +
@@ -393,15 +455,15 @@ export default function RecruiterMatches() {
                                             </Text>
                                           </Flex>
                                         </Flex>
-                                        {recruiter?.account_id == comment.recruiter?.account_id && <Button
-                                          variant="ghost"
-                                          _hover={{ color: "red", bg: "#E0EAF5" }}
-                                          onClick={() =>
-                                            deleteComm(comment.id)
-                                          }
-                                        >
-                                          X
-                                        </Button>}
+                                        {recruiter?.account_id == comment.recruiter?.account_id && (
+                                          <Button
+                                            variant="ghost"
+                                            _hover={{ color: "red", bg: "#E0EAF5" }}
+                                            onClick={() => deleteComm(comment.id)}
+                                          >
+                                            X
+                                          </Button>
+                                        )}
                                       </Flex>
                                       <Text w="464px">{comment.comment_body}</Text>
                                     </Flex>
@@ -421,27 +483,33 @@ export default function RecruiterMatches() {
                               <ModalContent>
                                 <ModalHeader>
                                   <Heading textAlign="center" size="lg">
-                                    {application.applicant.first_name} {application.applicant.last_name}
+                                    {appl.first_name} {appl.last_name}
                                   </Heading>
                                 </ModalHeader>
 
                                 <ModalBody mt="64px">
-                                  <Flex w={{base: "auto", lg:"484px"}} justify="center" mt="4px" gap="8px" align="center">
+                                  <Flex
+                                    w={{ base: "auto", lg: "484px" }}
+                                    justify="center"
+                                    mt="4px"
+                                    gap="8px"
+                                    align="center"
+                                  >
                                     <LiaBirthdayCakeSolid size="20px" />
-                                    <Text>{application.applicant.age} years old, </Text>
-                                    {application.applicant.gender == "male" && (
+                                    <Text>{appl.age} years old, </Text>
+                                    {appl.gender == "male" && (
                                       <>
                                         <IoMaleSharp size="18px" />
                                         <Text>Male</Text>
                                       </>
                                     )}
-                                    {application.applicant.gender == "female" && (
+                                    {appl.gender == "female" && (
                                       <>
                                         <IoFemaleSharp size="18px" />
                                         <Text>Female</Text>
                                       </>
                                     )}
-                                    {application.applicant.gender == "other" && (
+                                    {appl.gender == "other" && (
                                       <>
                                         <FaGenderless size="18px" />
                                         <Text>Other</Text>
@@ -451,37 +519,35 @@ export default function RecruiterMatches() {
 
                                   <Flex justify="center">
                                     <SmallAddress
-                                      lat={application.applicant.home_location.latitude}
-                                      long={application.applicant.home_location.longitude}
+                                      lat={appl.home_location.latitude}
+                                      long={appl.home_location.longitude}
                                     ></SmallAddress>
-                                    <Text mt="8px">
-                                      , max distance: {application.applicant.work_location_max_distance}km
-                                    </Text>
+                                    <Text mt="8px">, max distance: {appl.work_location_max_distance}km</Text>
                                   </Flex>
 
                                   <Flex justify="center" color="#2E77AE" mt="16px" align="center" gap="8px">
                                     <FaFileDownload size="24px" />
-                                    <a ref={downloadLinkRef} onClick={() => downloadFile(application.applicant.cv)}>
+                                    <a ref={downloadLinkRef} onClick={() => downloadFile(appl.cv || "")}>
                                       Download CV
                                     </a>
                                   </Flex>
 
                                   <Flex justify="center" mt="16px" gap="8px" align="center">
                                     <FaMoneyBillWave size="18px" />
-                                    <Text>Min salary: {application.applicant.min_salary}€</Text>
+                                    <Text>Min salary: {appl.min_salary}€</Text>
                                   </Flex>
 
-                                  {application.applicant.experiences.length > 0 && (
+                                  {appl.experiences.length > 0 && (
                                     <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
                                   )}
 
-                                  {application.applicant.experiences.length > 0 && (
+                                  {appl.experiences.length > 0 && (
                                     <Text textAlign="center" fontSize="xl" pb="16px" color="#2E77AE">
                                       <strong>WORK EXPERIENCES</strong>
                                     </Text>
                                   )}
 
-                                  {application.applicant.experiences.map((experience, index) => (
+                                  {appl.experiences.map((experience, index) => (
                                     <div key={index}>
                                       <Text align="center" mb="8px">
                                         Company name - {experience.company_name}
@@ -495,7 +561,7 @@ export default function RecruiterMatches() {
                                     </div>
                                   ))}
 
-                                  {application.applicant.experiences.length > 0 && <Box border="1px solid #2E77AE" />}
+                                  {appl.experiences.length > 0 && <Box border="1px solid #2E77AE" />}
                                 </ModalBody>
 
                                 <ModalFooter>
@@ -523,13 +589,16 @@ export default function RecruiterMatches() {
             </ModalHeader>
             <ModalBody mt="64px">
               <Flex w="100%">
-                <Flex w="24%" p="0 20px">
+                <Flex w="24%" p="0 20px"></Flex>
+                <Flex w="38%" justify="center">
+                  <Text fontSize="24px" fontWeight="bold">
+                    {comparison[0]?.applicant.first_name} {comparison[0]?.applicant.last_name}
+                  </Text>
                 </Flex>
                 <Flex w="38%" justify="center">
-                  <Text fontSize="24px" fontWeight="bold">{comparison[0]?.applicant.first_name} {comparison[0]?.applicant.last_name}</Text>
-                </Flex>
-                <Flex w="38%" justify="center">
-                  <Text fontSize="24px" fontWeight="bold">{comparison[1]?.applicant.first_name} {comparison[1]?.applicant.last_name}</Text>
+                  <Text fontSize="24px" fontWeight="bold">
+                    {comparison[1]?.applicant.first_name} {comparison[1]?.applicant.last_name}
+                  </Text>
                 </Flex>
               </Flex>
 
@@ -537,7 +606,7 @@ export default function RecruiterMatches() {
 
               <Flex w="100%">
                 <Flex w="24%" p="0 20px">
-                  <LiaBirthdayCakeSolid size="20px"/>
+                  <LiaBirthdayCakeSolid size="20px" />
                   <Text marginLeft="10px">Age</Text>
                 </Flex>
                 <Flex w="38%" justify="center">
@@ -551,8 +620,7 @@ export default function RecruiterMatches() {
               <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
 
               <Flex w="100%">
-                <Flex w="24%" p="0 20px">
-                </Flex>
+                <Flex w="24%" p="0 20px"></Flex>
                 <Flex w="38%" justify="center">
                   {comparison[0]?.applicant.gender == "male" && (
                     <>
@@ -705,8 +773,8 @@ export default function RecruiterMatches() {
                         Years - {experience.years}
                       </Text>
 
-                      {index+1 !== comparison[0].applicant.experiences.length && (
-                      <Box m="16px 8px" border="1px solid #2E77AE" />
+                      {index + 1 !== comparison[0].applicant.experiences.length && (
+                        <Box m="16px 8px" border="1px solid #2E77AE" />
                       )}
                     </div>
                   ))}
@@ -723,8 +791,8 @@ export default function RecruiterMatches() {
                       <Text align="center" mb="16px">
                         {experience.years} years
                       </Text>
-                      {index+1 !== comparison[1].applicant.experiences.length && (
-                      <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
+                      {index + 1 !== comparison[1].applicant.experiences.length && (
+                        <Box mt="16px" mb="16px" border="1px solid #2E77AE" />
                       )}
                     </div>
                   ))}

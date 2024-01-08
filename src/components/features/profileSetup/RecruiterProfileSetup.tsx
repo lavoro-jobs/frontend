@@ -172,7 +172,7 @@ export default function RecruiterProfileSetup() {
 
         <Button
           borderRadius="20px"
-          display={idArticle !== 4 && btn ? "" : "none"}
+          display={idArticle !== 3 && btn ? "" : "none"}
           position="absolute"
           className="nxt-prev-btn prev-btn"
           zIndex={3}
