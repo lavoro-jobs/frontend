@@ -157,7 +157,11 @@ export default function JobPost({
                   <Avatar
                     size="sm"
                     style={{ filter: archived ? "blur(1px) grayscale(100%)" : "none" }}
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ3ztWTGwSgvZJvsA49k950OqfYRhhssQqaw&usqp=CAU"
+                    src={
+                      assignee.profile_picture
+                        ? `data:image/jpeg;base64,${assignee.profile_picture}`
+                        : "https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+                    }
                   />
                   <Text
                     display="inline-block"

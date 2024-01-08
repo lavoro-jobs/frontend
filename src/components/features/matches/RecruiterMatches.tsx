@@ -57,6 +57,7 @@ export default function RecruiterMatches() {
   const [postId, setPostId] = useState<string>("");
   const [accId, setAccId] = useState<string>("");
   const [appl, setAppl] = useState<Form>({
+    profile_picture: "",
     first_name: "",
     last_name: "",
     education_level: {
@@ -233,7 +234,8 @@ export default function RecruiterMatches() {
                 <Flex w="100%" justify="center" wrap="wrap" p="32px" gap="16px">
                   {allApplications.map(
                     (application, ind) =>
-                      application.job_post_id == jobPost.id && !application.approved_by_company && (
+                      application.job_post_id == jobPost.id &&
+                      !application.approved_by_company && (
                         <div key={ind}>
                           <Flex direction="column" w="360px">
                             <Flex
@@ -247,7 +249,11 @@ export default function RecruiterMatches() {
                               gap="8px"
                             >
                               <Avatar
-                                src="https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+                                src={
+                                  application.applicant.profile_picture
+                                    ? `data:image/jpeg;base64,${application.applicant.profile_picture}`
+                                    : "https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+                                }
                                 size="2xl"
                               />
                               <Heading size="lg">
@@ -299,6 +305,7 @@ export default function RecruiterMatches() {
                                       ...appl,
                                       first_name: application.applicant.first_name,
                                       last_name: application.applicant.last_name,
+                                      profile_picture: application.applicant.profile_picture,
                                     });
                                     setAccId(application.applicant_account_id || "");
                                     setPostId(jobPost.id || "");
@@ -419,7 +426,14 @@ export default function RecruiterMatches() {
 
                                 <ModalBody mt="80px">
                                   <Flex align="center" gap="8px">
-                                    <Avatar size="sm" />
+                                    <Avatar
+                                      src={
+                                        appl.profile_picture
+                                          ? `data:image/jpeg;base64,${appl.profile_picture}`
+                                          : "https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+                                      }
+                                      size="sm"
+                                    />
                                     <Input
                                       size="sm"
                                       borderRadius="50px"
@@ -444,7 +458,14 @@ export default function RecruiterMatches() {
                                     >
                                       <Flex justify="space-between">
                                         <Flex gap="8px" align="center">
-                                          <Avatar size="sm" />
+                                          <Avatar
+                                            src={
+                                              comment.recruiter?.profile_picture
+                                                ? `data:image/jpeg;base64,${comment.recruiter?.profile_picture}`
+                                                : "https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+                                            }
+                                            size="sm"
+                                          />
                                           <Flex direction="column">
                                             <Text fontSize="lg">
                                               <strong>

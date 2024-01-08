@@ -2,6 +2,7 @@ import Experience from "../shared/experience.interface";
 import Skill from "../shared/skill.interface";
 
 export default interface Form {
+  profile_picture?: string;
   first_name: string;
   last_name: string;
   education_level: {

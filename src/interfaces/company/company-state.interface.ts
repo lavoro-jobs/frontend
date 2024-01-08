@@ -1,5 +1,6 @@
 
 export interface Recruiter {
+  profile_picture?: string;
   account_id: string;
   company_id: string;
   first_name: string;

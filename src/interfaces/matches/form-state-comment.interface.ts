@@ -6,6 +6,7 @@ export default interface FormStateComment {
   created_on_date?: string;
   comment_body?: string;
   recruiter?: {
+    profile_picture?: string;
     account_id?: string;
     first_name?: string;
     last_name?: string;

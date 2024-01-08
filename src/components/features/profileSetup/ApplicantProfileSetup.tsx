@@ -1,17 +1,17 @@
-import {Box, Button, Flex, Heading, IconButton, Input, Select, Text} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, IconButton, Image, Input, Select, Text } from "@chakra-ui/react";
 import MultiSelect from "multiselect-react-dropdown";
-import React, {useEffect, useState, useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import FormState from "@/interfaces/applicant/form-state.interface";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import MapClickEvent from "@/interfaces/applicant/map-click-event.interface";
 import createApplicantProfile from "@/helpers/createApplicantProfile";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
 import Experience from "@/interfaces/shared/experience.interface";
-import {useRouter} from "next/navigation";
-import {CgBoy, CgGirl} from "react-icons/cg";
-import {IoHappyOutline} from "react-icons/io5";
-import {IoArrowRedo, IoArrowUndo} from "react-icons/io5";
-import {FiXCircle} from "react-icons/fi";
+import { useRouter } from "next/navigation";
+import { CgBoy, CgGirl } from "react-icons/cg";
+import { IoHappyOutline } from "react-icons/io5";
+import { IoArrowRedo, IoArrowUndo } from "react-icons/io5";
+import { FiXCircle } from "react-icons/fi";
 import Slider from "rc-slider";
 import { useMapEvents } from "react-leaflet/hooks";
 
@@ -26,7 +26,7 @@ interface FormOptions {
 export default function ApplicantProfileSetup() {
   const router = useRouter();
   const [formOptions, setFormOptions] = useState<FormOptions>({});
-  const [marker, setMarker] = useState({lat: 0, lng: 0});
+  const [marker, setMarker] = useState({ lat: 0, lng: 0 });
   const [skills, setSkills] = useState<{ id: number; skill_name: string }[]>([]);
   const [experience, setExperience] = useState<Experience[]>([]);
   const [fileName, setFileName] = useState<string>("");
@@ -36,7 +36,7 @@ export default function ApplicantProfileSetup() {
   const [clickedLatLng, setClickedLatLng] = useState(null);
   const [idArticle, setIdArticle] = useState(1);
   const [btn, setBtn] = useState(true);
-  const [mousePosition, setMousePosition] = useState({x: 0, y: 0});
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const marks = {
     1: "Novice",
     2: "Apprentice",
@@ -45,10 +45,10 @@ export default function ApplicantProfileSetup() {
     5: "Expert",
   };
   const [articles, setArticles] = useState([
-    {id: 1, isActive: true},
-    {id: 2, isActive: false},
-    {id: 3, isActive: false},
-    {id: 4, isActive: false},
+    { id: 1, isActive: true },
+    { id: 2, isActive: false },
+    { id: 3, isActive: false },
+    { id: 4, isActive: false },
   ]);
   const [formData, setFormData] = useState<FormState>({
     first_name: "",
@@ -78,25 +78,25 @@ export default function ApplicantProfileSetup() {
   }, []);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const newFormData = {...formData, [e.target.id]: e.target.value};
+    const newFormData = { ...formData, [e.target.id]: e.target.value };
     setFormData(newFormData);
   };
 
   const handleNumberFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const newFormData = {...formData, [e.target.id]: +e.target.value};
+    const newFormData = { ...formData, [e.target.id]: +e.target.value };
     setFormData(newFormData);
   };
 
   const handleSliderChange = (value: number | number[]) => {
     if (typeof value === "number") {
-      const newFormData = {...formData, seniority_level: value};
+      const newFormData = { ...formData, seniority_level: value };
       setFormData(newFormData);
     }
   };
 
   const handleSkills = (selectedList: [{ id: number; skill_name: string }]) => {
     const skillIdArray = selectedList.map((item) => item.id);
-    const newFormData = {...formData, skill_ids: skillIdArray};
+    const newFormData = { ...formData, skill_ids: skillIdArray };
     setSkills(selectedList);
     setFormData(newFormData);
   };
@@ -110,7 +110,7 @@ export default function ApplicantProfileSetup() {
     const updatedExperience = experience.filter((item, i) => index !== i);
     setExperience(updatedExperience);
 
-    const newFormData = {...formData, experiences: updatedExperience};
+    const newFormData = { ...formData, experiences: updatedExperience };
     setFormData(newFormData);
   };
 
@@ -131,7 +131,7 @@ export default function ApplicantProfileSetup() {
 
       setExperience(updatedExperience);
 
-      const newFormData = {...formData, experiences: updatedExperience};
+      const newFormData = { ...formData, experiences: updatedExperience };
       setFormData(newFormData);
     }
   };
@@ -142,11 +142,10 @@ export default function ApplicantProfileSetup() {
     }
   };
 
-
   const LocationFinderDummy = () => {
     const map = useMapEvents({
       click(e: any) {
-        setMarker({lat: e.latlng.lat, lng: e.latlng.lng});
+        setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
         const newFormData = {
           ...formData,
           home_location: {
@@ -163,9 +162,7 @@ export default function ApplicantProfileSetup() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const allowedTypes = [
-        "application/pdf",,
-      ];
+      const allowedTypes = ["application/pdf", ,];
 
       if (allowedTypes.includes(file.type)) {
         setFileUrl(URL.createObjectURL(file));
@@ -201,18 +198,47 @@ export default function ApplicantProfileSetup() {
 
     setArticles((prevArticles) =>
       prevArticles.map((article) =>
-        article.id === id ? {...article, isActive: true} : {...article, isActive: false}
+        article.id === id ? { ...article, isActive: true } : { ...article, isActive: false }
       )
     );
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    setMousePosition({x: e.pageX, y: e.pageY});
+    setMousePosition({ x: e.pageX, y: e.pageY });
   };
 
   const mainStyle = {
     "--x": `${mousePosition.x}px`,
     "--y": `${mousePosition.y}px`,
+  };
+
+  const profileRef = useRef<HTMLInputElement>(null);
+  const handleProfileUpload = () => {
+    if (profileRef.current) {
+      profileRef.current.click();
+    }
+  };
+  const handleProfileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = async (event) => {
+        if (event.target) {
+          let base64String = event.target.result as string;
+          base64String = base64String.split(",")[1];
+
+          setFormData({
+            ...formData,
+            profile_picture: base64String,
+          });
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
+    e.target.value = "";
   };
 
   const handleSubmit = async () => {
@@ -238,7 +264,6 @@ export default function ApplicantProfileSetup() {
       </Heading>
 
       <Box position="relative" id="card" justifyContent="center">
-
         <Button
           borderRadius="20px"
           display={idArticle !== 4 && btn ? "" : "none"}
@@ -247,12 +272,12 @@ export default function ApplicantProfileSetup() {
           zIndex={3}
           color="white"
           bg="#FF8E2B"
-          _hover={{color: "#0D2137", bg: "#fdb16e"}}
+          _hover={{ color: "#0D2137", bg: "#fdb16e" }}
           onClick={() => {
             handleClick(idArticle + 1);
           }}
         >
-          <IoArrowRedo/>
+          <IoArrowRedo />
         </Button>
         <Button
           borderRadius="20px"
@@ -262,12 +287,12 @@ export default function ApplicantProfileSetup() {
           zIndex={3}
           color="white"
           bg="#FF8E2B"
-          _hover={{color: "#0D2137", bg: "#fdb16e"}}
+          _hover={{ color: "#0D2137", bg: "#fdb16e" }}
           onClick={() => {
             handleClick(idArticle - 1);
           }}
         >
-          <IoArrowUndo/>
+          <IoArrowUndo />
         </Button>
         <section className="backgrounds">
           <Box
@@ -328,12 +353,12 @@ export default function ApplicantProfileSetup() {
             <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
               First name
             </Heading>
-            <Input borderColor="#2E77AE" id="first_name" value={formData.first_name} onChange={handleFormChange}/>
+            <Input borderColor="#2E77AE" id="first_name" value={formData.first_name} onChange={handleFormChange} />
 
             <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
               Last name
             </Heading>
-            <Input borderColor="#2E77AE" id="last_name" value={formData.last_name} onChange={handleFormChange}/>
+            <Input borderColor="#2E77AE" id="last_name" value={formData.last_name} onChange={handleFormChange} />
 
             <Flex direction="column" align="center">
               <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
@@ -355,52 +380,103 @@ export default function ApplicantProfileSetup() {
             <Flex justify="center" gap="16px" className="gender-icons">
               <Flex
                 border={formData.gender == "female" ? "#2E77AE 2px solid" : "#E0EAF5 2px solid"}
-                _hover={{cursor: "pointer", border: "#2E77AE 1px solid"}}
+                _hover={{ cursor: "pointer", border: "#2E77AE 1px solid" }}
                 borderRadius="16px"
                 w="180px"
                 h="200px"
                 p="16px"
                 direction="column"
                 align="center"
-                onClick={() => setFormData({...formData, gender: "female"})}
+                onClick={() => setFormData({ ...formData, gender: "female" })}
               >
-                <CgGirl color={formData.gender == "female" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px"/>
+                <CgGirl color={formData.gender == "female" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px" />
                 <Heading size="md" color={formData.gender == "female" ? "#2E77AE" : "#E0EAF5"}>
                   Female
                 </Heading>
               </Flex>
               <Flex
                 border={formData.gender == "male" ? "#2E77AE 2px solid" : "#E0EAF5 2px solid"}
-                _hover={{cursor: "pointer", border: "#2E77AE 1px solid"}}
+                _hover={{ cursor: "pointer", border: "#2E77AE 1px solid" }}
                 borderRadius="16px"
                 w="180px"
                 h="200px"
                 p="16px"
                 direction="column"
                 align="center"
-                onClick={() => setFormData({...formData, gender: "male"})}
+                onClick={() => setFormData({ ...formData, gender: "male" })}
               >
-                <CgBoy color={formData.gender == "male" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px"/>
+                <CgBoy color={formData.gender == "male" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px" />
                 <Heading size="md" color={formData.gender == "male" ? "#2E77AE" : "#E0EAF5"}>
                   Male
                 </Heading>
               </Flex>
               <Flex
                 border={formData.gender == "other" ? "#2E77AE 2px solid" : "#E0EAF5 2px solid"}
-                _hover={{cursor: "pointer", border: "#2E77AE 1px solid"}}
+                _hover={{ cursor: "pointer", border: "#2E77AE 1px solid" }}
                 borderRadius="16px"
                 w="180px"
                 h="200px"
                 p="16px"
                 direction="column"
                 align="center"
-                onClick={() => setFormData({...formData, gender: "other"})}
+                onClick={() => setFormData({ ...formData, gender: "other" })}
               >
-                <IoHappyOutline color={formData.gender == "other" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px"/>
+                <IoHappyOutline color={formData.gender == "other" ? "#2E77AE" : "#E0EAF5"} size="140px" pb="16px" />
                 <Heading size="md" color={formData.gender == "other" ? "#2E77AE" : "#E0EAF5"}>
                   Other
                 </Heading>
               </Flex>
+            </Flex>
+
+            <Flex direction="column" align="center">
+              <Input
+                id="profile-picture"
+                type="file"
+                ref={profileRef}
+                style={{ display: "none" }}
+                onChange={handleProfileChange}
+              />
+
+              <Button
+                mt="16px"
+                color="white"
+                bg="#2E77AE"
+                _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
+                value={formData.profile_picture}
+                onClick={handleProfileUpload}
+              >
+                Upload {formData.profile_picture ? "new" : ""} profile picture
+              </Button>
+
+              {formData.profile_picture && (
+                <Box w="200px" mt="16px" border="#2E77AE solid 2px" overflow="hidden" position="relative">
+                  <Image
+                    w="100%"
+                    src={
+                      formData.profile_picture
+                        ? `data:image/jpeg;base64,${formData.profile_picture}`
+                        : "https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+                    }
+                    alt="Profile picture"
+                  />
+                  <Button
+                    position="absolute"
+                    top="0px"
+                    right="0px"
+                    color="#2E77AE"
+                    bg="transparent"
+                    _hover={{ color: "#0D2137" }}
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        profile_picture: "",
+                      });
+                    }}
+                  >
+                    ✖
+                  </Button>
+                </Box>
+              )}
             </Flex>
           </article>
           <article
@@ -458,7 +534,7 @@ export default function ApplicantProfileSetup() {
               Seniority level
             </Heading>
 
-            <Slider min={1} max={5} step={1} marks={marks} onChange={handleSliderChange}/>
+            <Slider min={1} max={5} step={1} marks={marks} onChange={handleSliderChange} />
 
             <Heading fontSize="xl" pt="48px" color="#2E77AE">
               Skills
@@ -488,12 +564,12 @@ export default function ApplicantProfileSetup() {
 
             <div className="inputs-wrapper-center">
               <Flex direction="column" w="500px" justify="center" align="center" gap="16px">
-                <Input id="logo" type="file" ref={inputRef} style={{display: "none"}} onChange={handleFileChange}/>
+                <Input id="logo" type="file" ref={inputRef} style={{ display: "none" }} onChange={handleFileChange} />
 
                 <Button
                   color="white"
                   bg="#2E77AE"
-                  _hover={{color: "#0D2137", bg: "#6ba5d1"}}
+                  _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
                   value={formData.cv}
                   onClick={handleLogoUpload}
                 >
@@ -510,7 +586,7 @@ export default function ApplicantProfileSetup() {
                       <Button
                         color="#2E77AE"
                         bg="transparent"
-                        _hover={{color: "#0D2137"}}
+                        _hover={{ color: "#0D2137" }}
                         onClick={() => {
                           setFormData({
                             ...formData,
@@ -534,7 +610,7 @@ export default function ApplicantProfileSetup() {
                     aria-label="remove"
                     className="remove-btn"
                     onClick={() => removeExperience(index)}
-                    icon={<FiXCircle color="#2E77AE"/>}
+                    icon={<FiXCircle color="#2E77AE" />}
                   />
 
                   <Heading fontSize="xl" pt="16px" pb="8px" color="#2E77AE">
@@ -705,18 +781,15 @@ export default function ApplicantProfileSetup() {
                 <Heading fontSize="xl" pt="24px" pb="8px" color="#2E77AE" textAlign="center">
                   Click location on map to get Latitude/Longitude
                 </Heading>
-                <div style={{height: "400px", width: "100%", paddingTop: "32px", marginBottom: "32px"}}>
-                  <MapContainer
-                    center={[0, 0]}
-                    zoom={2}
-                    style={{height: '400px', width: '100%'}}
-                  >
-                    <LocationFinderDummy/>
-                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+                <div style={{ height: "400px", width: "100%", paddingTop: "32px", marginBottom: "32px" }}>
+                  <MapContainer center={[0, 0]} zoom={2} style={{ height: "400px", width: "100%" }}>
+                    <LocationFinderDummy />
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     {clickedLatLng && (
                       <Marker position={clickedLatLng}>
                         <Popup>
-                          Latitude: {clickedLatLng.lat}<br/>
+                          Latitude: {clickedLatLng.lat}
+                          <br />
                           Longitude: {clickedLatLng.lng}
                         </Popup>
                       </Marker>
@@ -727,7 +800,7 @@ export default function ApplicantProfileSetup() {
                   <Button
                     color="white"
                     bg="#FF8E2B"
-                    _hover={{color: "#0D2137", bg: "#fdb16e"}}
+                    _hover={{ color: "#0D2137", bg: "#fdb16e" }}
                     onClick={handleSubmit}
                   >
                     Finish
