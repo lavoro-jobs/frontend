@@ -428,8 +428,8 @@ export default function RecruiterMatches() {
                                   <Flex align="center" gap="8px">
                                     <Avatar
                                       src={
-                                        appl.profile_picture
-                                          ? `data:image/jpeg;base64,${appl.profile_picture}`
+                                        recruiter?.profile_picture
+                                          ? `data:image/jpeg;base64,${recruiter.profile_picture}`
                                           : "https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
                                       }
                                       size="sm"
