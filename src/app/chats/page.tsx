@@ -20,7 +20,7 @@ export default function ChatPage() {
     let email = currentUser.email;
     let hashedEmail = await hashEmail(email);
     console.log(hashedEmail)
-    const client = new StreamChat(process.env.NEXT_PUBLIC_STREAM_CHAT_API_KEY);
+    const client = new StreamChat("etwdd8qaagmg");
 
     await client.connectUser(
       {

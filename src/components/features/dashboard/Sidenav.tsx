@@ -94,7 +94,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       if (response.status === 200) {
         localStorage.clear();
         updateAuth();
-        router.push("/signIn");
+        router.push("/signin");
       }
     } catch (err) {
       throw new Error(err,"There was an error logging out. Please try again.");

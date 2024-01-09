@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Sidenav from "../dashboard/Sidenav";
 import FormState from "@/interfaces/job-posts/form-state.interface";
 import getJobPostsByRecruiter from "@/helpers/getJobPosts";
@@ -23,13 +23,13 @@ import {
 } from "@chakra-ui/react";
 import getApplicationsByJobPost from "@/helpers/getApplicantionsByJobPost";
 import FormStateApplication from "@/interfaces/matches/form-state-application.interface";
-import {FaCheck, FaFileDownload, FaGenderless, FaGraduationCap, FaMoneyBillWave} from "react-icons/fa";
-import {LiaBirthdayCakeSolid, LiaCertificateSolid} from "react-icons/lia";
-import {FaLocationDot} from "react-icons/fa6";
-import {IoBriefcaseSharp, IoFemaleSharp, IoMaleSharp} from "react-icons/io5";
-import {ImCross} from "react-icons/im";
-import {TfiCommentAlt} from "react-icons/tfi";
-import {CgMoreO} from "react-icons/cg";
+import { FaCheck, FaFileDownload, FaGenderless, FaGraduationCap, FaMoneyBillWave } from "react-icons/fa";
+import { LiaBirthdayCakeSolid, LiaCertificateSolid } from "react-icons/lia";
+import { FaLocationDot } from "react-icons/fa6";
+import { IoBriefcaseSharp, IoFemaleSharp, IoMaleSharp } from "react-icons/io5";
+import { ImCross } from "react-icons/im";
+import { TfiCommentAlt } from "react-icons/tfi";
+import { CgMoreO } from "react-icons/cg";
 import FormStateComment from "@/interfaces/matches/form-state-comment.interface";
 import getComments from "@/helpers/getComments";
 import commentApplication from "@/helpers/commentApplication";
@@ -72,11 +72,10 @@ export default function RecruiterMatches() {
           applicationsByJobPost[id] = applicationsData[index];
         });
 
-        setApplications(applicationsByJobPost); 
+        setApplications(applicationsByJobPost);
 
         const recruiterProfile = await getRecruiterProfile();
         setRecruiter(recruiterProfile);
-
       } catch (error) {
         console.error("Failed to fetch data", error);
       }
@@ -96,9 +95,7 @@ export default function RecruiterMatches() {
     }
   };
 
-  const deleteComm = async (
-    commentId: string | undefined
-  ) => {
+  const deleteComm = async (commentId: string | undefined) => {
     if (postId && commentId) {
       try {
         const comments = await deleteComment(postId, commentId);
@@ -122,11 +119,17 @@ export default function RecruiterMatches() {
     }
   };
 
-  const approve = (jobPostId: string | undefined, applicantId: string | undefined, applicantChatToken: string | undefined) => {
+  const approve = (
+    jobPostId: string | undefined,
+    applicantId: string | undefined,
+    applicantChatToken: string | undefined,
+    first_name: string | undefined,
+    last_name: string | undefined
+  ) => {
     if (jobPostId && applicantId) {
       try {
         approveApplication(jobPostId, applicantId);
-        createPrivateChat(applicantChatToken);
+        createPrivateChat(applicantChatToken, first_name, last_name);
       } catch (error) {
         console.error("Failed to approve application", error);
       }
@@ -161,7 +164,7 @@ export default function RecruiterMatches() {
             allApplications.filter(
               (application) => application.job_post_id === jobPost.id && application.approved_by_company == null
             ).length > 0 && (
-              <Card w={{base: "400px", xl: "800px"}} key={index}>
+              <Card w={{ base: "400px", xl: "800px" }} key={index}>
                 <CardHeader w="100%" bg="#2E77AE">
                   <Heading textAlign="center" color="white">
                     {jobPost.position?.position_name}
@@ -271,7 +274,15 @@ export default function RecruiterMatches() {
                                   size="lg"
                                   borderRadius="50%"
                                   colorScheme="green"
-                                  onClick={() => approve(jobPost.id, application.applicant_account_id, application.applicant_stream_chat_token)}
+                                  onClick={() =>
+                                    approve(
+                                      jobPost.id,
+                                      application.applicant_account_id,
+                                      application.applicant_stream_chat_token,
+                                      application.applicant.first_name,
+                                      application.applicant.last_name
+                                    )
+                                  }
                                 >
                                   <FaCheck />
                                 </Button>
@@ -323,7 +334,11 @@ export default function RecruiterMatches() {
                                         <Flex gap="8px" align="center">
                                           <Avatar size="sm" />
                                           <Flex direction="column">
-                                            <Text fontSize="lg"><strong>{comment.recruiter?.first_name} {comment.recruiter?.last_name}</strong></Text>
+                                            <Text fontSize="lg">
+                                              <strong>
+                                                {comment.recruiter?.first_name} {comment.recruiter?.last_name}
+                                              </strong>
+                                            </Text>
                                             <Text fontSize="sm" color="gray.500">
                                               {comment.created_on_date?.split("T")[0] +
                                                 " " +
@@ -331,15 +346,15 @@ export default function RecruiterMatches() {
                                             </Text>
                                           </Flex>
                                         </Flex>
-                                        {recruiter?.account_id == comment.recruiter?.account_id && <Button
-                                          variant="ghost"
-                                          _hover={{ color: "red", bg: "#E0EAF5" }}
-                                          onClick={() =>
-                                            deleteComm(comment.id)
-                                          }
-                                        >
-                                          X
-                                        </Button>}
+                                        {recruiter?.account_id == comment.recruiter?.account_id && (
+                                          <Button
+                                            variant="ghost"
+                                            _hover={{ color: "red", bg: "#E0EAF5" }}
+                                            onClick={() => deleteComm(comment.id)}
+                                          >
+                                            X
+                                          </Button>
+                                        )}
                                       </Flex>
                                       <Text w="464px">{comment.comment_body}</Text>
                                     </Flex>
@@ -364,7 +379,13 @@ export default function RecruiterMatches() {
                                 </ModalHeader>
 
                                 <ModalBody mt="64px">
-                                  <Flex w={{base: "auto", lg:"484px"}} justify="center" mt="4px" gap="8px" align="center">
+                                  <Flex
+                                    w={{ base: "auto", lg: "484px" }}
+                                    justify="center"
+                                    mt="4px"
+                                    gap="8px"
+                                    align="center"
+                                  >
                                     <LiaBirthdayCakeSolid size="20px" />
                                     <Text>{application.applicant.age} years old, </Text>
                                     {application.applicant.gender == "male" && (
