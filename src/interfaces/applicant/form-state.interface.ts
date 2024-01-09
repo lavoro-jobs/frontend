@@ -1,6 +1,7 @@
 import Experience from "@/interfaces/shared/experience.interface";
 
 export default interface FormState {
+  profile_picture?: string;
   first_name?: string;
   last_name?: string;
   education_level_id?: number;

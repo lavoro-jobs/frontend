@@ -2,6 +2,7 @@ import Experience from "./experience.interface";
 import Skill from "./skill.interface";
 
 export default interface Applicant {
+  profile_picture?: string;
   first_name: string;
   last_name: string;
   education_level: {
