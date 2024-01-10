@@ -6,7 +6,7 @@ import getRecruiterProfile from "@/helpers/getRecruiterProfile";
 import getApplicantProfile from "@/helpers/getApplicantProfile";
 
 const createStreamChatUser = async () => {
-  const client = new StreamChat("etwdd8qaagmg");
+  const client = new StreamChat("f54jaj4hdprn");
   const res = await getCurrentUser();
   const user = res.data;
   const email = user.email;
