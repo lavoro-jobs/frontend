@@ -19,7 +19,6 @@ export default function ChatPage() {
     let currentUser = response.data;
     let email = currentUser.email;
     let hashedEmail = await hashEmail(email);
-    console.log(hashedEmail)
     const client = new StreamChat("etwdd8qaagmg");
 
     await client.connectUser(
@@ -29,7 +28,6 @@ export default function ChatPage() {
       },
       currentUser.stream_chat_token
     )
-    console.log("HERE");
     setChatClient(client);
   }
 

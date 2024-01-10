@@ -17,12 +17,9 @@ const createStreamChatUser = async () => {
     profile = await getRecruiterProfile();
   } else if (user.role === Role.APPLICANT) {
     profile = await getApplicantProfile();
-    console.log(profile);
   }
 
   const hashedEmail = await hashEmail(email);
-  console.log(profile);
-  console.log(hashedEmail);
   await client.connectUser(
     {
       id: hashedEmail,
@@ -34,7 +31,6 @@ const createStreamChatUser = async () => {
     stream_chat_token
   );
 
-  console.log("Successfully created user!");
 };
 
 export default createStreamChatUser;

@@ -63,9 +63,7 @@ const createPrivateChat = async (applicantStreamChatToken: any, first_name: stri
     name: `${profile.company_name} - ${first_name} ${last_name}`,
   });
 
-  console.log(channel);
   await channel.watch();
-  console.log("successfully created channel!");
   return channel;
 };
 
