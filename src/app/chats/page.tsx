@@ -1,4 +1,5 @@
 'use client'
+import { Channel as StreamChannel, StreamChat } from 'stream-chat';
 import { Chat, Channel, ChannelList, Window, ChannelHeader, MessageList, MessageInput } from 'stream-chat-react';
 import getCurrentUser from "@/helpers/getCurrentUser";
 import {useEffect, useState} from "react";
