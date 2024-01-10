@@ -8,4 +8,5 @@ export default interface FormStateApplication {
   comments?: []
   applicant: Applicant,
   applicant_stream_chat_token: string
+  assignees_stream_chat_tokens: string[]
 };

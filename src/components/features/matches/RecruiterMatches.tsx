@@ -124,12 +124,13 @@ export default function RecruiterMatches() {
     applicantId: string | undefined,
     applicantChatToken: string | undefined,
     first_name: string | undefined,
-    last_name: string | undefined
+    last_name: string | undefined,
+    assigneesTokens: string[]
   ) => {
     if (jobPostId && applicantId) {
       try {
         approveApplication(jobPostId, applicantId);
-        createPrivateChat(applicantChatToken, first_name, last_name);
+        createPrivateChat(applicantChatToken, first_name, last_name, assigneesTokens);
       } catch (error) {
         console.error("Failed to approve application", error);
       }
@@ -280,7 +281,8 @@ export default function RecruiterMatches() {
                                       application.applicant_account_id,
                                       application.applicant_stream_chat_token,
                                       application.applicant.first_name,
-                                      application.applicant.last_name
+                                      application.applicant.last_name,
+                                      application.assignees_stream_chat_tokens
                                     )
                                   }
                                 >

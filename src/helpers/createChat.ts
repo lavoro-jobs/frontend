@@ -24,7 +24,7 @@ const parseJwt = (token: string) => {
   }
 };
 
-const createPrivateChat = async (applicantStreamChatToken: any, first_name: string, last_name: string) => {
+const createPrivateChat = async (applicantStreamChatToken: any, first_name: string, last_name: string, assigneesTokens: string[]) => {
   const client = new StreamChat("etwdd8qaagmg");
 
   // Get the current user
@@ -52,10 +52,17 @@ const createPrivateChat = async (applicantStreamChatToken: any, first_name: stri
   const hashedEmailHalf = hashedEmail.substring(0, 20);
   const hashedApplicantEmailHalf = hashedApplicantEmail.substring(0, 20);
   const channelId = `${hashedEmailHalf}-${hashedApplicantEmailHalf}`;
-  const channel = client.channel("messaging", channelId, {
-    members: [hashedEmail, hashedApplicantEmail],
-    name: `${profile.first_name} ${profile.last_name} - ${first_name} ${last_name}`,
+  const assigneesIds = assigneesTokens.map(token => {
+    const payload = parseJwt(token);
+    return payload.user_id;
   });
+  const members = [hashedApplicantEmail, ...assigneesIds];
+
+  const channel = client.channel("messaging", channelId, {
+    members: members,
+    name: `${profile.company_name} - ${first_name} ${last_name}`,
+  });
+
   console.log(channel);
   await channel.watch();
   console.log("successfully created channel!");
