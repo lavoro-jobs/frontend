@@ -22,6 +22,7 @@ import {
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { IoArrowRedo, IoArrowUndo } from "react-icons/io5";
+import createStreamChatUser from "@/helpers/createStreamChatUser";
 
 export default function RecruiterProfileSetup() {
   const router = useRouter();
@@ -152,6 +153,7 @@ export default function RecruiterProfileSetup() {
         setError(false);
         let res = await createRecruiterProfile(formDataRecruiter);
         if (res && res.statusText === "OK") {
+          await createStreamChatUser();
           let res2 = await createCompanyProfile(formDataCompany);
           if (res2 && res2.statusText === "OK") {
             emails.map((email) => {

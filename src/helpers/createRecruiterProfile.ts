@@ -10,9 +10,6 @@ const createRecruiterProfile = async (formData: any) => {
       withCredentials: true,
     });
 
-    if (response.statusText === "OK") {
-      await createStreamChatUser();
-    }
     return response;
   } catch (error) {
     console.error("Error creating recruiter profile:", error);
