@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
-import { Providers } from "./providers";
-import "@/styles/styles.scss";
-import React from "react";
+import type { Metadata } from "next"
+import { Providers } from "./providers"
+import "@/styles/styles.scss"
+import React from "react"
 
 export const metadata: Metadata = {
   title: "Lavoro",
@@ -27,5 +27,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>{children}</Providers>
       </body>
     </html>
-  );
+  )
 }
