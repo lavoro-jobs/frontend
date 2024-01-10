@@ -18,6 +18,8 @@ const createStreamChatUser = async () => {
   const email = user.email;
   const stream_chat_token = user.stream_chat_token;
 
+  console.log(stream_chat_token);
+
   let profile;
   if (user.role === Role.RECRUITER) {
     profile = await getRecruiterProfile();
