@@ -6,7 +6,7 @@ import getRecruiterProfile from "@/helpers/getRecruiterProfile";
 import getApplicantProfile from "@/helpers/getApplicantProfile";
 
 const createStreamChatUser = async () => {
-  const client = StreamChat.getInstance(
+  const client = new StreamChat(
     "etwdd8qaagmg",
     "sn7chvub9p2pswc8g94quxbcxc57pt5uq258ykv3e8asf64dgmcz5d9g3dy22fxx",
     {
@@ -18,7 +18,7 @@ const createStreamChatUser = async () => {
   const email = user.email;
   const stream_chat_token = user.stream_chat_token;
 
-  console.log(stream_chat_token);
+  console.log(user);
 
   let profile;
   if (user.role === Role.RECRUITER) {

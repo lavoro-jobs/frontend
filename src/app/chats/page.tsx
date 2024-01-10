@@ -1,5 +1,4 @@
 'use client'
-import { Channel as StreamChannel, StreamChat } from 'stream-chat';
 import { Chat, Channel, ChannelList, Window, ChannelHeader, MessageList, MessageInput } from 'stream-chat-react';
 import getCurrentUser from "@/helpers/getCurrentUser";
 import {useEffect, useState} from "react";
@@ -19,7 +18,7 @@ export default function ChatPage() {
     let currentUser = response.data;
     let email = currentUser.email;
     let hashedEmail = await hashEmail(email);
-    const client = StreamChat.getInstance(
+    const client = new StreamChat(
       "etwdd8qaagmg",
       "sn7chvub9p2pswc8g94quxbcxc57pt5uq258ykv3e8asf64dgmcz5d9g3dy22fxx",
       {
