@@ -1,3 +1,4 @@
+"use client";
 import axiosInstance from ".";
 
 const createApplicantProfile = async (formData: any) => {

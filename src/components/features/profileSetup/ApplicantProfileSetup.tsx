@@ -2,8 +2,7 @@ import { Box, Button, Flex, Heading, IconButton, Image, Input, Select, Text } fr
 import MultiSelect from "multiselect-react-dropdown";
 import React, { useEffect, useState, useRef } from "react";
 import FormState from "@/interfaces/applicant/form-state.interface";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import MapClickEvent from "@/interfaces/applicant/map-click-event.interface";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import createApplicantProfile from "@/helpers/createApplicantProfile";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
 import Experience from "@/interfaces/shared/experience.interface";
@@ -13,7 +12,8 @@ import { IoHappyOutline } from "react-icons/io5";
 import { IoArrowRedo, IoArrowUndo } from "react-icons/io5";
 import { FiXCircle } from "react-icons/fi";
 import Slider from "rc-slider";
-import { useMapEvents } from "react-leaflet/hooks";
+import {useMapEvents} from "react-leaflet/hooks";
+import createStreamChatUser from "@/helpers/createStreamChatUser";
 
 interface FormOptions {
   positions?: [{ id: number; position_name: string }];
@@ -244,6 +244,7 @@ export default function ApplicantProfileSetup() {
   const handleSubmit = async () => {
     const response = await createApplicantProfile(formData);
     if (response == 201) {
+      await createStreamChatUser()
       router.push("/dashboard");
     }
   };

@@ -35,7 +35,7 @@ const ApplicantLinks: Array<LinkItemProps> = [
   { name: "Home", icon: FiHome, url: "/" },
   { name: "Profile", icon: FiSettings, url: "/profile" },
   { name: "Matches", icon: FiUserCheck, url: "/matches" },
-  { name: "Chats", icon: FiSend, url: "" },
+  { name: "Chats", icon: FiSend, url: "/chats" },
 ];
 
 const RecruiterLinks: Array<LinkItemProps> = [
@@ -44,7 +44,7 @@ const RecruiterLinks: Array<LinkItemProps> = [
   { name: "Company", icon: FiLayers, url: "/company" },
   { name: "Job Posts", icon: FiCrosshair, url: "/job-posts" },
   { name: "Matches", icon: FiUserCheck, url: "/matches" },
-  { name: "Chats", icon: FiSend, url: "" },
+  { name: "Chats", icon: FiSend, url: "/chats" },
 ];
 
 export default function Sidenav({ children }: any) {

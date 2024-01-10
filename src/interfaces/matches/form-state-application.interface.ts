@@ -6,5 +6,7 @@ export default interface FormStateApplication {
   created_on_date?: string,
   approved_by_company?: boolean,
   comments?: []
-  applicant: Applicant
+  applicant: Applicant,
+  applicant_stream_chat_token: string
+  assignees_stream_chat_tokens: string[]
 };
