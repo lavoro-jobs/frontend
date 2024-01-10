@@ -163,7 +163,7 @@ export default function ApplicantMatches() {
                                 : "#16a085"
                           }
                         >
-                          Match Score: {match.match_score && match.match_score * 100}%
+                          Match Score: {match.match_score && (match.match_score * 100).toFixed(2)}%
                         </Text>
                         <Flex mt="16px" gap="16px">
                           <Button size="lg" borderRadius="50%" colorScheme="red" onClick={() => handleMatchAction(match.job_post?.id, rejectMatch)}>
