@@ -45,6 +45,7 @@ import deleteComment from "@/helpers/deleteComment";
 import RecruiterState from "@/interfaces/recruiter/form-state-get-recruiter.interface";
 import getRecruiterProfile from "@/helpers/getRecruiterProfile";
 import Form from "@/interfaces/applicant/form-state-get-applicant.interface";
+import createPrivateChat from "@/helpers/createChat";
 
 export default function RecruiterMatches() {
   const [jobPosts, setJobPosts] = useState<FormState[]>([]);
@@ -162,11 +163,20 @@ export default function RecruiterMatches() {
     }
   };
 
-  const approve = async (jobPostId: string | undefined, applicantId: string | undefined) => {
+  const approve = async (
+    jobPostId: string | undefined,
+    applicantId: string | undefined,
+    applicantChatToken: string | undefined,
+    first_name: string | undefined,
+    last_name: string | undefined,
+    assigneesTokens: string[]
+  ) => {
     if (jobPostId && applicantId) {
       try {
-        const response = await approveApplication(jobPostId, applicantId);
+          const response = await approveApplication(jobPostId, applicantId);
         if (response == 200) {
+          approveApplication(jobPostId, applicantId);
+          createPrivateChat(applicantChatToken, first_name, last_name, assigneesTokens);
           window.location.reload();
         }
       } catch (error) {
@@ -400,7 +410,16 @@ export default function RecruiterMatches() {
                                   size="lg"
                                   borderRadius="50%"
                                   colorScheme="green"
-                                  onClick={() => approve(jobPost.id, application.applicant_account_id)}
+                                  onClick={() =>
+                                    approve(
+                                      jobPost.id,
+                                      application.applicant_account_id,
+                                      application.applicant_stream_chat_token,
+                                      application.applicant.first_name,
+                                      application.applicant.last_name,
+                                      application.assignees_stream_chat_tokens
+                                    )
+                                  }
                                 >
                                   <FaCheck />
                                 </Button>

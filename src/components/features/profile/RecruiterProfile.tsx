@@ -1,15 +1,10 @@
-import React, { useEffect, useState } from "react";
+"use client"
+import React, {useEffect, useState} from "react";
 import Sidenav from "../dashboard/Sidenav";
-import { Box, Button, Flex, Heading, Image, Text } from "@chakra-ui/react";
-import { LiaBirthdayCakeSolid, LiaBuildingSolid, LiaCertificateSolid } from "react-icons/lia";
-import { IoBriefcaseSharp, IoFemaleSharp, IoMaleSharp } from "react-icons/io5";
-import { FaGenderless, FaLocationDot } from "react-icons/fa6";
-import { MdAccountBox, MdOutlineMail } from "react-icons/md";
-import { GrLocation } from "react-icons/gr";
-import { FaFileDownload, FaGraduationCap } from "react-icons/fa";
+import {Box, Button, Flex, Heading, Image, Text} from "@chakra-ui/react";
+import {LiaBuildingSolid} from "react-icons/lia";
+import {MdAccountBox, MdOutlineMail} from "react-icons/md";
 import RecruiterState from "@/interfaces/recruiter/form-state-get-recruiter.interface";
-import getApplicantProfile from "@/helpers/getApplicantProfile";
-import getRecruiterProfile from "@/helpers/getRecruiterProfile";
 import getCurrentRecruiterProfile from "@/helpers/getCurrentRecruiterProfile";
 import getCurrentUser from "@/helpers/getCurrentUser";
 import RecruiterProfileUpdate from "@/components/features/updateProfile/RecruiterProfileUpdate";

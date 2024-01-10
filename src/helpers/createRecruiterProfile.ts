@@ -1,4 +1,5 @@
 import axiosInstance from ".";
+import createStreamChatUser from "@/helpers/createStreamChatUser";
 
 const createRecruiterProfile = async (formData: any) => {
   try {
@@ -9,6 +10,9 @@ const createRecruiterProfile = async (formData: any) => {
       withCredentials: true,
     });
 
+    if (response.statusText === "OK") {
+      await createStreamChatUser();
+    }
     return response;
   } catch (error) {
     console.error("Error creating recruiter profile:", error);
