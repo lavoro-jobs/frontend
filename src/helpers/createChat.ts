@@ -27,10 +27,7 @@ const parseJwt = (token: string) => {
 const createPrivateChat = async (applicantStreamChatToken: any, first_name: string, last_name: string, assigneesTokens: string[]) => {
   const client = new StreamChat(
     "f54jaj4hdprn",
-    "dhzq78rafkzadrrz64rs97jwk2s3ga4f4amkfmfd7wfszkd7q32n79qu2d3y6wnv",
-    {
-      browser: false,
-    });
+    "dhzq78rafkzadrrz64rs97jwk2s3ga4f4amkfmfd7wfszkd7q32n79qu2d3y6wnv");
 
   // Get the current user
   const response = await getCurrentUser();
