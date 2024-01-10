@@ -75,6 +75,8 @@ export default function RegisterForm() {
         setError(detail);
       }
     } catch (error) {
+      if (error.response.data.detail == "User already exists")
+      setError(error.response.data.detail);
       console.error("Error:", error);
     }
   };

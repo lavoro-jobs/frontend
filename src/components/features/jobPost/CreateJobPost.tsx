@@ -154,16 +154,35 @@ export default function CreateJobPost() {
       salary_min: formData.salary_min,
       salary_max: formData.salary_max,
       end_date: formData.end_date ? formData.end_date + ":00.000Z" : "2025-06-07T23:59:59.000Z",
-      assignees: selectedRecruiters
-        ?.map((recruiter: Recruiter) => recruiter.account_id),
+      assignees: selectedRecruiters?.map((recruiter: Recruiter) => recruiter.account_id),
     };
   };
 
+  const [errorSubmit, setErrorSubmit] = useState(false);
   const handleSubmit = async () => {
     const postData = await createPostData();
-    const res = await createJobPost(postData);
-    if (res == 200) {
-      router.push("/job-posts");
+    if (
+      postData.position_id &&
+      postData.education_level_id &&
+      postData.seniority_level &&
+      postData.skill_ids &&
+      postData.work_type_id &&
+      postData.contract_type_id &&
+      postData.work_location?.latitude &&
+      postData.end_date &&
+      postData.description &&
+      postData.salary_min &&
+      postData.salary_max &&
+      postData.assignees.length > 0
+    ) {
+      setErrorSubmit(false);
+
+      const res = await createJobPost(postData);
+      if (res == 200) {
+        router.push("/job-posts");
+      }
+    } else {
+      setErrorSubmit(true);
     }
   };
 
@@ -190,7 +209,15 @@ export default function CreateJobPost() {
 
   return (
     <Sidenav>
-      <Flex className="create-job-post" minH="100vh" align="center" padding="100px 0" justify="center" direction="column" bg="#E0EAF5">
+      <Flex
+        className="create-job-post"
+        minH="100vh"
+        align="center"
+        padding="100px 0"
+        justify="center"
+        direction="column"
+        bg="#E0EAF5"
+      >
         <Box border="solid" borderRadius="16px" borderColor="#E0EAF5" bg="white">
           <Progress value={progressPercent} w="100%" height="4px" />
           {activeStep === 0 && (
@@ -473,9 +500,18 @@ export default function CreateJobPost() {
               </Button>
             )}
             {activeStep === steps.length - 1 && (
-              <Button color="white" bg="#FF8E2B" _hover={{ color: "#0D2137", bg: "#fdb16e" }} onClick={handleSubmit}>
-                Finish
-              </Button>
+              <Flex direction="column">
+                <Button color="white" bg="#FF8E2B" _hover={{ color: "#0D2137", bg: "#fdb16e" }} onClick={handleSubmit}>
+                  Finish
+                </Button>
+                <Flex direction="column" align="center">
+                  {errorSubmit && (
+                    <Text mt="16px" fontSize="lg" color="red">
+                      Please fill out all fields.
+                    </Text>
+                  )}
+                </Flex>
+              </Flex>
             )}
           </Flex>
         </Box>

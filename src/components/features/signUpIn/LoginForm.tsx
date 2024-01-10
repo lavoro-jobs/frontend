@@ -54,7 +54,14 @@ export default function LoginForm() {
         router.push("/dashboard");
       }
     } catch (err) {
-      setError("There was an error logging in. Please try again.");
+      if (
+        err.response.data.detail ==
+        "Incorrect email or password. If you have not verified your email, please do so before logging in."
+      ) {
+        setError(err.response.data.detail);
+      } else {
+        setError("There was an error logging in. Please try again.");
+      }
     }
   };
 

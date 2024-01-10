@@ -139,17 +139,29 @@ export default function RecruiterProfileSetup() {
     "--y": `${mousePosition.y}px`,
   };
 
+  const [error, setError] = useState(false);
+
   const handleSubmit = async () => {
     try {
-      let res = await createRecruiterProfile(formDataRecruiter);
-      if (res && res.statusText === "OK") {
-        let res2 = await createCompanyProfile(formDataCompany);
-        if (res2 && res2.statusText === "OK") {
-          emails.map((email) => {
-            createInvite(email);
-          });
-          router.push("/dashboard");
+      if (
+        formDataRecruiter.first_name &&
+        formDataRecruiter.last_name &&
+        formDataCompany.name &&
+        formDataCompany.description
+      ) {
+        setError(false);
+        let res = await createRecruiterProfile(formDataRecruiter);
+        if (res && res.statusText === "OK") {
+          let res2 = await createCompanyProfile(formDataCompany);
+          if (res2 && res2.statusText === "OK") {
+            emails.map((email) => {
+              createInvite(email);
+            });
+            router.push("/dashboard");
+          }
         }
+      } else {
+        setError(true);
       }
     } catch (error) {}
   };
@@ -444,10 +456,32 @@ export default function RecruiterProfileSetup() {
               }}
               value={inputEmail}
             />
-            <Flex paddingTop="32px" justifyContent="flex-end">
-              <Button color="white" bg="#FF8E2B" _hover={{ color: "#0D2137", bg: "#fdb16e" }} onClick={handleSubmit}>
+
+            <Flex paddingTop="16px" align="flex-end" direction="column">
+              <Button
+                w="200px"
+                color="white"
+                bg="#FF8E2B"
+                _hover={{ color: "#0D2137", bg: "#fdb16e" }}
+                onClick={handleSubmit}
+              >
                 Finish
               </Button>
+              <Flex direction="column" align="center">
+                {error && (
+                  <>
+                    <Text mt="16px" fontSize="lg" color="red">
+                      Please fill out your:
+                    </Text>
+                    <Text color="red">
+                      <li style={{ listStyleType: "none" }}>First name</li>
+                      <li style={{ listStyleType: "none" }}>Last name</li>
+                      <li style={{ listStyleType: "none" }}>Company name</li>
+                      <li style={{ listStyleType: "none" }}>Description</li>
+                    </Text>
+                  </>
+                )}
+              </Flex>
             </Flex>
           </article>
         </section>
