@@ -100,7 +100,12 @@ export default function Header({ currentRoute }: { currentRoute?: string }) {
             onClick={toggleHamby}
             icon={<span className="material-symbols-outlined icon-menu">menu</span>}
           ></IconButton>
-          <Drawer isOpen={menu} placement="right" onClose={toggleHamby}>
+          <Drawer
+            isOpen={menu}
+            placement="right"
+            onClose={toggleHamby}
+            id="drawer-sidenav"
+          >
             <DrawerOverlay />
             <DrawerContent>
               <DrawerCloseButton className="drawer-close" />

@@ -59,6 +59,7 @@ export default function Sidenav({ children }: any) {
         returnFocusOnClose={false}
         onOverlayClick={onClose}
         size="full"
+        id="sidenav-drawer"
       >
         <DrawerContent>
           <SidebarContent onClose={onClose} />
