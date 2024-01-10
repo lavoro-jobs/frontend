@@ -77,6 +77,7 @@ export default function Header({ currentRoute }: { currentRoute?: string }) {
             isOpen={menu}
             placement='right'
             onClose={toggleHamby}
+            id="drawer-sidenav"
           >
             <DrawerOverlay />
             <DrawerContent>

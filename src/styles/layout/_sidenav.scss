@@ -37,16 +37,20 @@ div.sidenav-menu {
   }
 }
 
-.chakra-slide.chakra-modal__content {
+#chakra-modal-drawer-sidenav {
   max-width: 350px;
-  display: none;
+  display: flex;
+}
+
+#chakra-modal-sidenav-drawer {
+  display: none
 }
 
 @media screen and (max-width: 680px) {
   div.desktop-sidenav {
     display: none
   }
-  .chakra-slide.chakra-modal__content {
-    display: flex;
+  #chakra-modal-sidenav-drawer {
+    display: flex
   }
 }
