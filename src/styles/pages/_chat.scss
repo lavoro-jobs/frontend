@@ -1,0 +1,17 @@
+div.str-chat-channel.messaging .str-chat__main-panel {
+  padding: 0;
+}
+div.str-chat {
+    height: calc(100vh - 32px)
+}
+@media screen and (max-width: 680px) {
+  div.str-chat {
+    height: calc(100vh - 112px)
+  }
+}
+@media screen and (min-width: 768px) {
+  button.str-chat__send-button {
+    display: block;
+    margin-left: 20px;
+  }
+}
