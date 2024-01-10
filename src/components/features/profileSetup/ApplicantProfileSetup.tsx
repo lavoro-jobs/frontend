@@ -241,11 +241,31 @@ export default function ApplicantProfileSetup() {
     e.target.value = "";
   };
 
+  const [errorSubmit, setErrorSubmit] = useState(false);
   const handleSubmit = async () => {
-    const response = await createApplicantProfile(formData);
-    if (response == 201) {
-      await createStreamChatUser()
-      router.push("/dashboard");
+    if (
+      formData.first_name &&
+      formData.last_name &&
+      formData.age &&
+      formData.gender &&
+      formData.education_level_id &&
+      formData.position_id &&
+      formData.seniority_level &&
+      formData.skill_ids &&
+      formData.contract_type_id &&
+      formData.min_salary &&
+      formData.work_type_id &&
+      formData.work_location_max_distance &&
+      formData.home_location?.latitude
+    ) {
+      setErrorSubmit(false);
+      const response = await createApplicantProfile(formData);
+      if (response == 201) {
+        await createStreamChatUser()
+        router.push("/dashboard");
+      }
+    } else {
+      setErrorSubmit(true);
     }
   };
 
@@ -797,8 +817,9 @@ export default function ApplicantProfileSetup() {
                     )}
                   </MapContainer>
                 </div>
-                <Flex paddingTop="32px" justifyContent="flex-end">
+                <Flex paddingTop="16px" align="flex-end" direction="column">
                   <Button
+                  w="200px"
                     color="white"
                     bg="#FF8E2B"
                     _hover={{ color: "#0D2137", bg: "#fdb16e" }}
@@ -806,6 +827,30 @@ export default function ApplicantProfileSetup() {
                   >
                     Finish
                   </Button>
+                  <Flex direction="column" align="center">
+                {errorSubmit && (
+                  <>
+                    <Text mt="16px" fontSize="lg" color="red">
+                      Please fill out your:
+                    </Text>
+                    <Text color="red">
+                      <li style={{ listStyleType: "none" }}>First name</li>
+                      <li style={{ listStyleType: "none" }}>Last name</li>
+                      <li style={{ listStyleType: "none" }}>Age</li>
+                      <li style={{ listStyleType: "none" }}>Gender</li>
+                      <li style={{ listStyleType: "none" }}>Education level</li>
+                      <li style={{ listStyleType: "none" }}>Position</li>
+                      <li style={{ listStyleType: "none" }}>Seniority level</li>
+                      <li style={{ listStyleType: "none" }}>Skills</li>
+                      <li style={{ listStyleType: "none" }}>Contract type</li>
+                      <li style={{ listStyleType: "none" }}>Work type</li>
+                      <li style={{ listStyleType: "none" }}>Max distance</li>
+                      <li style={{ listStyleType: "none" }}>Home location</li>
+                      <li style={{ listStyleType: "none" }}>Min salary</li>
+                    </Text>
+                  </>
+                )}
+              </Flex>
                 </Flex>
               </Box>
             </Flex>
