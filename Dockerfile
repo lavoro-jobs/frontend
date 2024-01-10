@@ -1,12 +1,21 @@
-FROM node:20-alpine AS base
 
-FROM base AS deps
+FROM node:20-alpine AS builder
 WORKDIR /app
-COPY ./lavoro-frontend/package.json /app/package.json
-COPY ./lavoro-frontend/package-lock.json /app/package-lock.json
+COPY package.json package-lock.json ./
 RUN npm install
+COPY . .
+RUN npm run build
 
-FROM base AS dev
+FROM node:20-alpine
 WORKDIR /app
-COPY --from=deps /app/node_modules ./lavoro-frontend/node_modules
-COPY ./lavoro-frontend .
+COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=https://lavoro-api.azure-api.net
+
+EXPOSE 3000
+CMD ["npm", "start"]

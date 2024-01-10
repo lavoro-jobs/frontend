@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Divider, Flex, Heading, Image, Text } from "@chakra-ui/react";
+import { Avatar, Box, Button, Divider, Flex, Heading, Image, Input, Text } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import Sidenav from "../dashboard/Sidenav";
 import { LiaBirthdayCakeSolid, LiaCertificateSolid } from "react-icons/lia";
@@ -77,11 +77,18 @@ export default function ApplicantProfile() {
           <Flex className="applicant-profile" w="100%" justify="space-between" minHeight="calc(100vh - 32px)">
             <Box bg="#E0EAF5" flex="1">
               <Flex direction="column" alignItems="center" className="profile">
-                <Image
-                  src="https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
-                  w="200px"
-                  borderRadius="50%"
-                ></Image>
+                <Box border="#2E77AE solid 2px" overflow="hidden" position="relative">
+                  <Image
+                    w="200px"
+                    borderRadius="50%"
+                    src={
+                      formData.profile_picture
+                        ? `data:image/jpeg;base64,${formData.profile_picture}`
+                        : "https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+                    }
+                    alt="Profile picture"
+                  />
+                </Box>
                 <Heading mt="16px">
                   {formData.first_name} {formData.last_name}
                 </Heading>
@@ -169,7 +176,7 @@ export default function ApplicantProfile() {
               </Flex>
 
               {formData.experiences.length > 0 && <Box mt="32px" mb="32px" border="1px solid #2E77AE" width="60%" />}
-              
+
               {formData.experiences.length > 0 && (
                 <Heading fontSize="3xl" pb="16px" color="#2E77AE">
                   WORK EXPERIENCE
@@ -220,6 +227,7 @@ export default function ApplicantProfile() {
             work_location_max_distance={formData.work_location_max_distance}
             contract_type={formData.contract_type}
             min_salary={formData.min_salary}
+            profile_picture={formData.profile_picture}
           ></ApplicantProfileUpdate>
         </Box>
       )}

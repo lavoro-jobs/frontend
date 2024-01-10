@@ -12,6 +12,7 @@ import RecruiterProfileUpdate from "@/components/features/updateProfile/Recruite
 export default function RecruiterProfile() {
   const [update, setUpdate] = useState<boolean>(false);
   const [recruiterState, setRecruiterState] = useState<RecruiterState>({
+    profile_picture: "",
     first_name: "",
     last_name: "",
     company_name: "",
@@ -42,7 +43,11 @@ export default function RecruiterProfile() {
           <Box bg="white" flex="1">
             <Flex direction="column" alignItems="center" className="profile-rc">
               <Image
-                src="https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+                src={
+                  recruiterState.profile_picture
+                    ? `data:image/jpeg;base64,${recruiterState.profile_picture}`
+                    : "https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+                }
                 w="200px"
                 borderRadius="50%"
               />
@@ -83,6 +88,7 @@ export default function RecruiterProfile() {
             Cancel
           </Button>
           <RecruiterProfileUpdate
+            profile_picture={recruiterState.profile_picture}
             first_name={recruiterState.first_name}
             last_name={recruiterState.last_name}
             company_name={recruiterState.company_name}

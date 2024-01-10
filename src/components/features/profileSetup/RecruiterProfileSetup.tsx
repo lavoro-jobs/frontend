@@ -30,6 +30,7 @@ export default function RecruiterProfileSetup() {
   const [emails, setEmails] = useState<string[]>([]);
 
   const [formDataRecruiter, setFormDataRecruiter] = useState<FormStateRecruiter>({
+    profile_picture: "",
     first_name: "",
     last_name: "",
   });
@@ -153,6 +154,35 @@ export default function RecruiterProfileSetup() {
     } catch (error) {}
   };
 
+  const profileRef = useRef<HTMLInputElement>(null);
+  const handleProfileUpload = () => {
+    if (profileRef.current) {
+      profileRef.current.click();
+    }
+  };
+  const handleProfileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = async (event) => {
+        if (event.target) {
+          let base64String = event.target.result as string;
+          base64String = base64String.split(",")[1];
+
+          setFormDataRecruiter({
+            ...formDataRecruiter,
+            profile_picture: base64String,
+          });
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
+    e.target.value = "";
+  };
+
   return (
     <Flex
       className="main"
@@ -169,21 +199,20 @@ export default function RecruiterProfileSetup() {
       </Heading>
 
       <Box position="relative" id="card" justifyContent="center">
-
         <Button
           borderRadius="20px"
-          display={idArticle !== 4 && btn ? "" : "none"}
+          display={idArticle !== 3 && btn ? "" : "none"}
           position="absolute"
           className="nxt-prev-btn prev-btn"
           zIndex={3}
           color="white"
           bg="#FF8E2B"
-          _hover={{color: "#0D2137", bg: "#fdb16e"}}
+          _hover={{ color: "#0D2137", bg: "#fdb16e" }}
           onClick={() => {
             handleClick(idArticle + 1);
           }}
         >
-          <IoArrowRedo/>
+          <IoArrowRedo />
         </Button>
         <Button
           borderRadius="20px"
@@ -193,12 +222,12 @@ export default function RecruiterProfileSetup() {
           zIndex={3}
           color="white"
           bg="#FF8E2B"
-          _hover={{color: "#0D2137", bg: "#fdb16e"}}
+          _hover={{ color: "#0D2137", bg: "#fdb16e" }}
           onClick={() => {
             handleClick(idArticle - 1);
           }}
         >
-          <IoArrowUndo/>
+          <IoArrowUndo />
         </Button>
         <section className="backgrounds">
           <Box
@@ -266,6 +295,57 @@ export default function RecruiterProfileSetup() {
               value={formDataRecruiter.last_name}
               onChange={handleRecruiterFormChange}
             />
+
+            <Flex direction="column" align="center">
+              <Input
+                id="profile-picture"
+                type="file"
+                ref={profileRef}
+                style={{ display: "none" }}
+                onChange={handleProfileChange}
+              />
+
+              <Button
+                mt="16px"
+                color="white"
+                bg="#2E77AE"
+                _hover={{ color: "#0D2137", bg: "#6ba5d1" }}
+                value={formDataRecruiter.profile_picture}
+                onClick={handleProfileUpload}
+              >
+                Upload {formDataRecruiter.profile_picture ? "new" : ""} profile picture
+              </Button>
+
+              {formDataRecruiter.profile_picture && (
+                <Box w="200px" mt="16px" border="#2E77AE solid 2px" overflow="hidden" position="relative">
+                  <Image
+                    w="100%"
+                    src={
+                      formDataRecruiter.profile_picture
+                        ? `data:image/jpeg;base64,${formDataRecruiter.profile_picture}`
+                        : "https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+                    }
+                    alt="Profile picture"
+                  />
+                  <Button
+                    position="absolute"
+                    top="0px"
+                    right="0px"
+                    color="#2E77AE"
+                    bg="transparent"
+                    _hover={{ color: "#0D2137" }}
+                    onClick={() => {
+                      setFormDataRecruiter({
+                        ...formDataRecruiter,
+                        profile_picture: "",
+                      });
+                    }}
+                  >
+                    ✖
+                  </Button>
+                </Box>
+              )}
+            </Flex>
           </article>
           <article
             className="article"

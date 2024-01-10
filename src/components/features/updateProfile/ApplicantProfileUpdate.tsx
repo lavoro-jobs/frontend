@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Avatar, Box, Button, Divider, Flex, Heading, IconButton, Input, Select, Text } from "@chakra-ui/react";
+import { Avatar, Box, Button, Divider, Flex, Heading, IconButton, Image, Input, Select, Text } from "@chakra-ui/react";
 import Experience from "@/interfaces/shared/experience.interface";
 import getAllCatalogs from "@/helpers/getAllCatalogs";
 import MapClickEvent from "@/interfaces/applicant/map-click-event.interface";
@@ -34,6 +34,7 @@ export default function ApplicantProfileUpdate({
   work_location_max_distance,
   contract_type,
   min_salary,
+  profile_picture,
 }: Form) {
   const router = useRouter();
   const [formOptions, setFormOptions] = useState<FormOptions>({});
@@ -44,6 +45,7 @@ export default function ApplicantProfileUpdate({
   const [error, setError] = useState<boolean>(false);
 
   const [formData, setFormData] = useState<Form>({
+    profile_picture: profile_picture,
     first_name: first_name,
     last_name: last_name,
     education_level: {
@@ -92,7 +94,7 @@ export default function ApplicantProfileUpdate({
     getAllCatalogs().then((resp) => {
       setFormOptions(resp);
     });
-    setFileName("cv.pdf")
+    setFileName("cv.pdf");
     setInitialExperiences(experiences);
   }, []);
 
@@ -172,9 +174,7 @@ export default function ApplicantProfileUpdate({
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const allowedTypes = [
-        "application/pdf",
-      ];
+      const allowedTypes = ["application/pdf"];
 
       if (allowedTypes.includes(file.type)) {
         setFileUrl(URL.createObjectURL(file));
@@ -205,6 +205,7 @@ export default function ApplicantProfileUpdate({
 
   const getApplicantPostData = async () => {
     return {
+      profile_picture: formData.profile_picture,
       first_name: formData.first_name,
       last_name: formData.last_name,
       education_level_id: formData.education_level_id,
@@ -225,22 +226,22 @@ export default function ApplicantProfileUpdate({
     };
   };
 
-    const LocationFinderDummy = () => {
-        const map = useMapEvents({
-            click(e:any) {
-                setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
-                const newFormData = {
-                  ...formData,
-                  home_location: {
-                    longitude: e.latlng.lng,
-                    latitude: e.latlng.lat,
-                  },
-                };
-                setFormData(newFormData);
-            },
-        });
-        return null;
-    };
+  const LocationFinderDummy = () => {
+    const map = useMapEvents({
+      click(e: any) {
+        setMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
+        const newFormData = {
+          ...formData,
+          home_location: {
+            longitude: e.latlng.lng,
+            latitude: e.latlng.lat,
+          },
+        };
+        setFormData(newFormData);
+      },
+    });
+    return null;
+  };
 
   const findUpdatedExperiences = (initialExperiences: Experience[], currentExperiences: Experience[]) => {
     const updatedExperiences = currentExperiences.filter((currentExp) => {
@@ -260,31 +261,29 @@ export default function ApplicantProfileUpdate({
     const applicantPostData = await getApplicantPostData();
     const applicantResponse = await updateApplicantProfile(applicantPostData);
 
-    const currentExperienceIds = new Set(formData.experiences.map(exp => exp.id));
+    const currentExperienceIds = new Set(formData.experiences.map((exp) => exp.id));
     for (const exp of initialExperiences) {
       if (!currentExperienceIds.has(exp.id)) {
         await deleteExperience(exp.id);
       }
     }
 
-    const initialExperienceIds = new Set(initialExperiences.map(exp => exp.id));
-    const newExperiences = formData.experiences.filter(exp => !initialExperienceIds.has(exp.id));
+    const initialExperienceIds = new Set(initialExperiences.map((exp) => exp.id));
+    const newExperiences = formData.experiences.filter((exp) => !initialExperienceIds.has(exp.id));
     if (newExperiences.length > 0) {
       await createExperiences(newExperiences);
     }
 
     const updatedExperiences = findUpdatedExperiences(initialExperiences, formData.experiences);
-     for (const exp of updatedExperiences) {
-       const data = {
-         id: exp.id,
-         company_name: exp.company_name,
-         position_id: exp.position_id,
-         years: exp.years
-       }
-       await updateExperience(data);
-     }
-
-
+    for (const exp of updatedExperiences) {
+      const data = {
+        id: exp.id,
+        company_name: exp.company_name,
+        position_id: exp.position_id,
+        years: exp.years,
+      };
+      await updateExperience(data);
+    }
 
     if (applicantResponse == 200) {
       window.location.reload();
@@ -303,6 +302,35 @@ export default function ApplicantProfileUpdate({
     if (inputRef.current) {
       inputRef.current.click();
     }
+  };
+
+  const profileRef = useRef<HTMLInputElement>(null);
+  const handlePictureUpload = () => {
+    if (profileRef.current) {
+      profileRef.current.click();
+    }
+  };
+  const handleProfileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = async (event) => {
+        if (event.target) {
+          let base64String = event.target.result as string;
+          base64String = base64String.split(",")[1];
+
+          setFormData({
+            ...formData,
+            profile_picture: base64String,
+          });
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
+    e.target.value = "";
   };
   return (
     <>
@@ -421,6 +449,51 @@ export default function ApplicantProfileUpdate({
             placeholder="Select"
             onSelect={handleSkills}
             onRemove={handleSkills}
+          />
+
+          <Button
+            mt="16px"
+            w="300px"
+            colorScheme="blue"
+            value={formData.profile_picture ? formData.profile_picture : undefined}
+            onClick={handlePictureUpload}
+          >
+            Upload new profile picture
+          </Button>
+
+          <Box mb="16px" mt="16px" w="100px" border="#2E77AE solid 2px" overflow="hidden" position="relative">
+            <Image
+              src={
+                formData.profile_picture
+                  ? `data:image/jpeg;base64,${formData.profile_picture}`
+                  : "https://i.pinimg.com/1200x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"
+              }
+              alt="Profile picture"
+            />
+            <Button
+              position="absolute"
+              top="-5px"
+              right="-5px"
+              color="#2E77AE"
+              bg="transparent"
+              _hover={{ color: "#0D2137" }}
+              onClick={() => {
+                setFormData({
+                  ...formData,
+                  profile_picture: "",
+                });
+              }}
+            >
+              ✖
+            </Button>
+          </Box>
+
+          <Input
+            id="profile-picture"
+            type="file"
+            ref={profileRef}
+            style={{ display: "none" }}
+            onChange={handleProfileChange}
           />
         </Box>
 
