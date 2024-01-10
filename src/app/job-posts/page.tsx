@@ -69,13 +69,13 @@ export default function JobPosts() {
     onOpenDelete();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!error) {
       const postData = {
         id: selectedPostId,
         end_date: newEndDate + ":00.000Z",
       };
-      updateJobPost(postData);
+      await updateJobPost(postData);
       window.location.reload();
       onClose();
     }
