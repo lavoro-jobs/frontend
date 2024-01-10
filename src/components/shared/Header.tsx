@@ -1,13 +1,9 @@
+"use client"
 import {
   Button,
   ButtonGroup,
   Flex,
   IconButton,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
   Text,
   Drawer,
   DrawerOverlay,
@@ -15,19 +11,21 @@ import {
   DrawerCloseButton,
   DrawerBody,
   DrawerHeader,
-  DrawerFooter
-} from "@chakra-ui/react";
-import Link from "next/link";
-import React, { useState } from "react";
-import useAuth from "@/hooks/useAuth";
+  DrawerFooter,
+} from "@chakra-ui/react"
+import Link from "next/link"
+import React, { useState } from "react"
+import useAuth from "@/hooks/useAuth"
+import SpinnerIfLoading from "./SpinnerIfLoading"
 
 export default function Header({ currentRoute }: { currentRoute?: string }) {
-  const { auth } = useAuth();
-  const [menu, setMenu] = useState<boolean>(false);
+  const { auth, loading } = useAuth()
+  const [menu, setMenu] = useState<boolean>(false)
 
   const toggleHamby = () => {
-    setMenu(!menu);
+    setMenu(!menu)
   }
+
   return (
     <header>
       <Flex h="100%" justify="space-between" align="stretch">
@@ -55,33 +53,62 @@ export default function Header({ currentRoute }: { currentRoute?: string }) {
           </Flex>
 
           <ButtonGroup>
-            { !auth &&
-              <>
-              <Button as="a" href="/signin" bgColor="#E0EAF5" _hover={{ bgColor: "gray.300" }} color="#0D2137" h="32px">
-                Sign in
-              </Button>
-              <Button as="a" href="/signup" bgColor="#FF8E2B" _hover={{ bgColor: "#fdb16e" }} color="#0D2137" h="32px">
-                Sign up
-              </Button>
-              </>
-            }
-            { auth &&
-              <Button as="a" href="/dashboard" bgColor="#E0EAF5" _hover={{ bgColor: "gray.300" }} color="#0D2137" h="32px">
-                Dashboard
-              </Button>
-            }
+            <SpinnerIfLoading loading={loading}>
+              {!auth ? (
+                <>
+                  <Button
+                    as="a"
+                    href="/signin"
+                    bgColor="#E0EAF5"
+                    _hover={{ bgColor: "gray.300" }}
+                    color="#0D2137"
+                    h="32px"
+                  >
+                    Sign in
+                  </Button>
+                  <Button
+                    as="a"
+                    href="/signup"
+                    bgColor="#FF8E2B"
+                    _hover={{ bgColor: "#fdb16e" }}
+                    color="#0D2137"
+                    h="32px"
+                  >
+                    Sign up
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  as="a"
+                  href="/dashboard"
+                  bgColor="#E0EAF5"
+                  _hover={{ bgColor: "gray.300" }}
+                  color="#0D2137"
+                  h="32px"
+                >
+                  Dashboard
+                </Button>
+              )}
+            </SpinnerIfLoading>
           </ButtonGroup>
 
-          <IconButton className="hamby" marginTop="16px" bgColor="transparent" _hover={{ bg: "transparent" }} onClick={toggleHamby} icon={<span className="material-symbols-outlined icon-menu">menu</span>}></IconButton>
+          <IconButton
+            className="hamby"
+            marginTop="16px"
+            bgColor="transparent"
+            _hover={{ bg: "transparent" }}
+            onClick={toggleHamby}
+            icon={<span className="material-symbols-outlined icon-menu">menu</span>}
+          ></IconButton>
           <Drawer
             isOpen={menu}
-            placement='right'
+            placement="right"
             onClose={toggleHamby}
             id="drawer-sidenav"
           >
             <DrawerOverlay />
             <DrawerContent>
-              <DrawerCloseButton className="drawer-close"/>
+              <DrawerCloseButton className="drawer-close" />
               <DrawerHeader className="drawer-title">
                 <Link href="/">
                   <h1 className="header-title">Lavoro</h1>
@@ -105,29 +132,51 @@ export default function Header({ currentRoute }: { currentRoute?: string }) {
                   </Text>
                 </Link>
               </DrawerBody>
-            <DrawerFooter>
-              <ButtonGroup>
-                  { !auth &&
-                    <>
-                    <Button as="a" href="/signin" bgColor="#E0EAF5" _hover={{ bgColor: "gray.300" }} color="#0D2137" h="32px">
-                      Sign in
-                    </Button>
-                    <Button as="a" href="/signup" bgColor="#FF8E2B" _hover={{ bgColor: "#fdb16e" }} color="#0D2137" h="32px">
-                      Sign up
-                    </Button>
-                    </>
-                  }
-                  { auth &&
-                    <Button as="a" href="/dashboard" bgColor="#E0EAF5" _hover={{ bgColor: "gray.300" }} color="#0D2137" h="32px">
-                      Dashboard
-                    </Button>
-                  }
-              </ButtonGroup>
-            </DrawerFooter>
+              <DrawerFooter>
+                <ButtonGroup>
+                  <SpinnerIfLoading loading={loading}>
+                    {!auth ? (
+                      <>
+                        <Button
+                          as="a"
+                          href="/signin"
+                          bgColor="#E0EAF5"
+                          _hover={{ bgColor: "gray.300" }}
+                          color="#0D2137"
+                          h="32px"
+                        >
+                          Sign in
+                        </Button>
+                        <Button
+                          as="a"
+                          href="/signup"
+                          bgColor="#FF8E2B"
+                          _hover={{ bgColor: "#fdb16e" }}
+                          color="#0D2137"
+                          h="32px"
+                        >
+                          Sign up
+                        </Button>
+                      </>
+                    ) : (
+                      <Button
+                        as="a"
+                        href="/dashboard"
+                        bgColor="#E0EAF5"
+                        _hover={{ bgColor: "gray.300" }}
+                        color="#0D2137"
+                        h="32px"
+                      >
+                        Dashboard
+                      </Button>
+                    )}
+                  </SpinnerIfLoading>
+                </ButtonGroup>
+              </DrawerFooter>
             </DrawerContent>
           </Drawer>
         </nav>
       </Flex>
     </header>
-  );
+  )
 }
