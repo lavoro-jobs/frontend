@@ -39,9 +39,10 @@ div.sidenav-menu {
 
 .chakra-slide.chakra-modal__content {
   max-width: 350px;
+  display: none;
 }
 
-@media screen and (max-width: 1280px) {
+@media screen and (max-width: 680px) {
   div.desktop-sidenav {
     display: none
   }
