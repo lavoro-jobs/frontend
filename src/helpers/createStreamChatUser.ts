@@ -6,13 +6,16 @@ import getRecruiterProfile from "@/helpers/getRecruiterProfile";
 import getApplicantProfile from "@/helpers/getApplicantProfile";
 
 const createStreamChatUser = async () => {
-  const client = new StreamChat("f54jaj4hdprn");
+  const client = new StreamChat(
+    "f54jaj4hdprn",
+    "dhzq78rafkzadrrz64rs97jwk2s3ga4f4amkfmfd7wfszkd7q32n79qu2d3y6wnv",
+    {
+      browser: false,
+    });
   const res = await getCurrentUser();
   const user = res.data;
   const email = user.email;
   const stream_chat_token = user.stream_chat_token;
-
-  console.log(user);
 
   let profile;
   if (user.role === Role.RECRUITER) {

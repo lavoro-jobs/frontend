@@ -19,7 +19,12 @@ export default function ChatPage() {
     let currentUser = response.data;
     let email = currentUser.email;
     let hashedEmail = await hashEmail(email);
-    const client = new StreamChat("f54jaj4hdprn");
+    const client = new StreamChat(
+      "f54jaj4hdprn",
+      "dhzq78rafkzadrrz64rs97jwk2s3ga4f4amkfmfd7wfszkd7q32n79qu2d3y6wnv",
+      {
+        browser: false,
+      });
 
     await client.connectUser(
       {
