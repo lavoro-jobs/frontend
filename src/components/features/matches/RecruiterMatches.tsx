@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import Sidenav from "@/components/features/dashboard/Sidenav";
-import FormState from "@/interfaces/job-posts/form-state.interface";
-import getJobPostsByRecruiter from "@/helpers/getJobPosts";
+import React, { useEffect, useRef, useState } from "react"
+import Sidenav from "@/components/features/dashboard/Sidenav"
+import FormState from "@/interfaces/job-posts/form-state.interface"
+import getJobPostsByRecruiter from "@/helpers/getJobPosts"
 import {
   Avatar,
   Box,
@@ -20,43 +20,43 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
-} from "@chakra-ui/react";
-import getApplicationsByJobPost from "@/helpers/getApplicantionsByJobPost";
-import FormStateApplication from "@/interfaces/matches/form-state-application.interface";
-import { FaCheck, FaFileDownload, FaGenderless, FaGraduationCap, FaMoneyBillWave } from "react-icons/fa";
-import { LiaBirthdayCakeSolid, LiaCertificateSolid } from "react-icons/lia";
-import { FaLocationDot } from "react-icons/fa6";
-import { TfiPlus, TfiMinus } from "react-icons/tfi";
-import { FaPaperclip } from "react-icons/fa";
-import { IoBriefcaseSharp, IoFemaleSharp, IoMaleSharp } from "react-icons/io5";
-import { ImCross } from "react-icons/im";
-import { TfiCommentAlt } from "react-icons/tfi";
-import { CgMoreO } from "react-icons/cg";
-import FormStateComment from "@/interfaces/matches/form-state-comment.interface";
-import getComments from "@/helpers/getComments";
-import commentApplication from "@/helpers/commentApplication";
-import { MdOutlineMail } from "react-icons/md";
-import SmallAddress from "@/components/shared/Address";
-import dynamic from "next/dynamic";
-import approveApplication from "@/helpers/approveApplication";
-import rejectApplication from "@/helpers/rejectApplication";
-import { relative } from "path";
-import deleteComment from "@/helpers/deleteComment";
-import RecruiterState from "@/interfaces/recruiter/form-state-get-recruiter.interface";
-import getRecruiterProfile from "@/helpers/getRecruiterProfile";
-import Form from "@/interfaces/applicant/form-state-get-applicant.interface";
-import createPrivateChat from "@/helpers/createChat";
+} from "@chakra-ui/react"
+import getApplicationsByJobPost from "@/helpers/getApplicantionsByJobPost"
+import FormStateApplication from "@/interfaces/matches/form-state-application.interface"
+import { FaCheck, FaFileDownload, FaGenderless, FaGraduationCap, FaMoneyBillWave } from "react-icons/fa"
+import { LiaBirthdayCakeSolid, LiaCertificateSolid } from "react-icons/lia"
+import { FaLocationDot } from "react-icons/fa6"
+import { TfiPlus, TfiMinus } from "react-icons/tfi"
+import { FaPaperclip } from "react-icons/fa"
+import { IoBriefcaseSharp, IoFemaleSharp, IoMaleSharp } from "react-icons/io5"
+import { ImCross } from "react-icons/im"
+import { TfiCommentAlt } from "react-icons/tfi"
+import { CgMoreO } from "react-icons/cg"
+import FormStateComment from "@/interfaces/matches/form-state-comment.interface"
+import getComments from "@/helpers/getComments"
+import commentApplication from "@/helpers/commentApplication"
+import { MdOutlineMail } from "react-icons/md"
+import SmallAddress from "@/components/shared/Address"
+import dynamic from "next/dynamic"
+import approveApplication from "@/helpers/approveApplication"
+import rejectApplication from "@/helpers/rejectApplication"
+import { relative } from "path"
+import deleteComment from "@/helpers/deleteComment"
+import RecruiterState from "@/interfaces/recruiter/form-state-get-recruiter.interface"
+import getRecruiterProfile from "@/helpers/getRecruiterProfile"
+import Form from "@/interfaces/applicant/form-state-get-applicant.interface"
+import createPrivateChat from "@/helpers/createChat"
 
 export default function RecruiterMatches() {
-  const [jobPosts, setJobPosts] = useState<FormState[]>([]);
-  const [applications, setApplications] = useState<{ [key: string]: FormStateApplication[] }>({});
-  const [comments, setComments] = useState<FormStateComment[]>();
-  const [comment, setComment] = useState({ comment_body: "" });
-  const [recruiter, setRecruiter] = useState<RecruiterState>();
-  const [comparison, setComparison] = useState<FormStateApplication[]>([]);
+  const [jobPosts, setJobPosts] = useState<FormState[]>([])
+  const [applications, setApplications] = useState<{ [key: string]: FormStateApplication[] }>({})
+  const [comments, setComments] = useState<FormStateComment[]>()
+  const [comment, setComment] = useState({ comment_body: "" })
+  const [recruiter, setRecruiter] = useState<RecruiterState>()
+  const [comparison, setComparison] = useState<FormStateApplication[]>([])
 
-  const [postId, setPostId] = useState<string>("");
-  const [accId, setAccId] = useState<string>("");
+  const [postId, setPostId] = useState<string>("")
+  const [accId, setAccId] = useState<string>("")
   const [appl, setAppl] = useState<Form>({
     profile_picture: "",
     first_name: "",
@@ -93,75 +93,75 @@ export default function RecruiterMatches() {
     position_id: 0,
     contract_type_id: 0,
     work_type_id: 0,
-  });
+  })
 
-  const { isOpen: isCommentsModalOpen, onOpen: onCommentsModalOpen, onClose: onCommentsModalClose } = useDisclosure();
-  const { isOpen: isMoreModalOpen, onOpen: onMoreModalOpen, onClose: onMoreModalClose } = useDisclosure();
-  const { isOpen: isCompareOpen, onOpen: onCompareOpen, onClose: onCompareClose } = useDisclosure();
-  const SmallAddress = dynamic(() => import("../../shared/SmallAddress"), { ssr: false });
-  const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
+  const { isOpen: isCommentsModalOpen, onOpen: onCommentsModalOpen, onClose: onCommentsModalClose } = useDisclosure()
+  const { isOpen: isMoreModalOpen, onOpen: onMoreModalOpen, onClose: onMoreModalClose } = useDisclosure()
+  const { isOpen: isCompareOpen, onOpen: onCompareOpen, onClose: onCompareClose } = useDisclosure()
+  const SmallAddress = dynamic(() => import("../../shared/SmallAddress"), { ssr: false })
+  const downloadLinkRef = useRef<HTMLAnchorElement | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const jobPostsData = await getJobPostsByRecruiter();
-        setJobPosts(jobPostsData);
+        const jobPostsData = await getJobPostsByRecruiter()
+        setJobPosts(jobPostsData)
 
-        const jobPostIds = jobPostsData.map((jobPost: FormState) => jobPost.id);
+        const jobPostIds = jobPostsData.map((jobPost: FormState) => jobPost.id)
 
-        const applicationsData = await Promise.all(jobPostIds.map((id: string) => getApplicationsByJobPost(id)));
+        const applicationsData = await Promise.all(jobPostIds.map((id: string) => getApplicationsByJobPost(id)))
 
-        const applicationsByJobPost: { [key: string]: FormStateApplication[] } = {};
+        const applicationsByJobPost: { [key: string]: FormStateApplication[] } = {}
         jobPostIds.forEach((id: string, index: number) => {
-          applicationsByJobPost[id] = applicationsData[index];
-        });
+          applicationsByJobPost[id] = applicationsData[index]
+        })
 
-        setApplications(applicationsByJobPost);
+        setApplications(applicationsByJobPost)
 
-        const recruiterProfile = await getRecruiterProfile();
-        setRecruiter(recruiterProfile);
+        const recruiterProfile = await getRecruiterProfile()
+        setRecruiter(recruiterProfile)
       } catch (error) {
-        console.error("Failed to fetch data", error);
+        console.error("Failed to fetch data", error)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const fetchComments = async (jobPostId: string | undefined, applicantId: string | undefined) => {
     if (jobPostId && applicantId) {
       try {
-        const comments = await getComments(jobPostId, applicantId);
-        setComments(comments);
+        const comments = await getComments(jobPostId, applicantId)
+        setComments(comments)
       } catch (error) {
-        console.error("Failed to fetch comments", error);
+        console.error("Failed to fetch comments", error)
       }
     }
-  };
+  }
 
   const deleteComm = async (commentId: string | undefined) => {
     if (postId && commentId) {
       try {
-        const comments = await deleteComment(postId, commentId);
-        fetchComments(postId, accId);
+        const comments = await deleteComment(postId, commentId)
+        fetchComments(postId, accId)
       } catch (error) {
-        console.error("Failed to delete comment", error);
+        console.error("Failed to delete comment", error)
       }
     }
-  };
+  }
 
   const reject = async (jobPostId: string | undefined, applicantId: string | undefined) => {
     if (jobPostId && applicantId) {
       try {
-        const response = await rejectApplication(jobPostId, applicantId);
+        const response = await rejectApplication(jobPostId, applicantId)
         if (response == 200) {
-          window.location.reload();
+          window.location.reload()
         }
       } catch (error) {
-        console.error("Failed to reject application", error);
+        console.error("Failed to reject application", error)
       }
     }
-  };
+  }
 
   const approve = async (
     jobPostId: string | undefined,
@@ -173,48 +173,47 @@ export default function RecruiterMatches() {
   ) => {
     if (jobPostId && applicantId) {
       try {
-          const response = await approveApplication(jobPostId, applicantId);
+        const response = await approveApplication(jobPostId, applicantId)
         if (response == 200) {
-          approveApplication(jobPostId, applicantId);
-          createPrivateChat(applicantChatToken, first_name, last_name, assigneesTokens);
-          window.location.reload();
+          await createPrivateChat(applicantChatToken, first_name, last_name, assigneesTokens)
+          window.location.reload()
         }
       } catch (error) {
-        console.error("Failed to approve application", error);
+        console.error("Failed to approve application", error)
       }
     }
-  };
+  }
 
   const handleKeyDown = (e: any) => {
     if (e.key === "Enter" && postId && accId) {
-      e.preventDefault();
-      commentApplication(comment, postId, accId);
-      setComment({ ...comment, comment_body: "" });
-      fetchComments(postId, accId);
-      fetchComments(postId, accId);
+      e.preventDefault()
+      commentApplication(comment, postId, accId)
+      setComment({ ...comment, comment_body: "" })
+      fetchComments(postId, accId)
+      fetchComments(postId, accId)
     }
-  };
+  }
 
   const downloadFile = (cv: string) => {
-    const linkSource = `data:application/pdf;base64,${cv}`;
+    const linkSource = `data:application/pdf;base64,${cv}`
     if (downloadLinkRef.current) {
-      downloadLinkRef.current.href = linkSource;
-      downloadLinkRef.current.download = "cv";
+      downloadLinkRef.current.href = linkSource
+      downloadLinkRef.current.download = "cv"
     }
-  };
+  }
 
   const addToComparison = (applicant: FormStateApplication) => {
     if (comparison.length !== 2) {
-      setComparison([...comparison, applicant]);
+      setComparison([...comparison, applicant])
     }
-  };
+  }
 
   const removeFromComparison = (applicant: FormStateApplication) => {
-    const updatedComparison = comparison.filter((item) => item.applicant_account_id !== applicant.applicant_account_id);
-    setComparison(updatedComparison);
-  };
+    const updatedComparison = comparison.filter((item) => item.applicant_account_id !== applicant.applicant_account_id)
+    setComparison(updatedComparison)
+  }
 
-  const allApplications = Object.values(applications).flatMap((appArray) => appArray);
+  const allApplications = Object.values(applications).flatMap((appArray) => appArray)
 
   return (
     <Sidenav>
@@ -310,16 +309,16 @@ export default function RecruiterMatches() {
                               <Flex gap="16px">
                                 <Button
                                   onClick={() => {
-                                    onCommentsModalOpen();
+                                    onCommentsModalOpen()
                                     setAppl({
                                       ...appl,
                                       first_name: application.applicant.first_name,
                                       last_name: application.applicant.last_name,
                                       profile_picture: application.applicant.profile_picture,
-                                    });
-                                    setAccId(application.applicant_account_id || "");
-                                    setPostId(jobPost.id || "");
-                                    fetchComments(jobPost.id, application.applicant_account_id);
+                                    })
+                                    setAccId(application.applicant_account_id || "")
+                                    setPostId(jobPost.id || "")
+                                    fetchComments(jobPost.id, application.applicant_account_id)
                                   }}
                                   variant="ghost"
                                   _hover={{ bg: "white", color: "#2E77AE" }}
@@ -331,7 +330,7 @@ export default function RecruiterMatches() {
                                 </Button>
                                 <Button
                                   onClick={() => {
-                                    onMoreModalOpen();
+                                    onMoreModalOpen()
                                     setAppl({
                                       ...appl,
                                       first_name: application.applicant.first_name,
@@ -346,7 +345,7 @@ export default function RecruiterMatches() {
                                       cv: application.applicant.cv,
                                       min_salary: application.applicant.min_salary,
                                       experiences: application.applicant.experiences,
-                                    });
+                                    })
                                   }}
                                   variant="ghost"
                                   _hover={{ bg: "white", color: "#2E77AE" }}
@@ -365,7 +364,7 @@ export default function RecruiterMatches() {
                                   ) && (
                                     <Button
                                       onClick={() => {
-                                        addToComparison(application);
+                                        addToComparison(application)
                                       }}
                                       variant="ghost"
                                       _hover={{ bg: "white", color: "#2E77AE" }}
@@ -382,7 +381,7 @@ export default function RecruiterMatches() {
                                 ) && (
                                   <Button
                                     onClick={() => {
-                                      removeFromComparison(application);
+                                      removeFromComparison(application)
                                     }}
                                     variant="ghost"
                                     _hover={{ bg: "white", color: "#2E77AE" }}
@@ -459,7 +458,7 @@ export default function RecruiterMatches() {
                                       value={comment.comment_body}
                                       onChange={(e) => setComment({ ...comment, comment_body: e.target.value })}
                                       onKeyDown={(e) => {
-                                        handleKeyDown(e);
+                                        handleKeyDown(e)
                                       }}
                                       placeholder="Add a comment..."
                                     />
@@ -851,5 +850,5 @@ export default function RecruiterMatches() {
         </Modal>
       </Flex>
     </Sidenav>
-  );
+  )
 }

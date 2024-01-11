@@ -1,27 +1,27 @@
-import getCurrentUser from "@/helpers/getCurrentUser";
-import { StreamChat } from "stream-chat";
-import hashEmail from "@/helpers/hashEmail";
-import { Role } from "@/types/Auth";
-import getRecruiterProfile from "@/helpers/getRecruiterProfile";
-import getApplicantProfile from "@/helpers/getApplicantProfile";
+import getCurrentUser from "@/helpers/getCurrentUser"
+import { StreamChat } from "stream-chat"
+import hashEmail from "@/helpers/hashEmail"
+import { Role } from "@/types/Auth"
+import getRecruiterProfile from "@/helpers/getRecruiterProfile"
+import getApplicantProfile from "@/helpers/getApplicantProfile"
+
+const STREAM_CHAT_API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY || "etwdd8qaagmg"
 
 const createStreamChatUser = async () => {
-  const client = new StreamChat(
-    "f54jaj4hdprn",
-    "dhzq78rafkzadrrz64rs97jwk2s3ga4f4amkfmfd7wfszkd7q32n79qu2d3y6wnv");
-  const res = await getCurrentUser();
-  const user = res.data;
-  const email = user.email;
-  const stream_chat_token = user.stream_chat_token;
+  const client = StreamChat.getInstance(STREAM_CHAT_API_KEY)
+  const res = await getCurrentUser()
+  const user = res.data
+  const email = user.email
+  const stream_chat_token = user.stream_chat_token
 
-  let profile;
+  let profile
   if (user.role === Role.RECRUITER) {
-    profile = await getRecruiterProfile();
+    profile = await getRecruiterProfile()
   } else if (user.role === Role.APPLICANT) {
-    profile = await getApplicantProfile();
+    profile = await getApplicantProfile()
   }
 
-  const hashedEmail = await hashEmail(email);
+  const hashedEmail = await hashEmail(email)
   await client.connectUser(
     {
       id: hashedEmail,
@@ -31,8 +31,7 @@ const createStreamChatUser = async () => {
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ3ztWTGwSgvZJvsA49k950OqfYRhhssQqaw&usqp=CAU",
     },
     stream_chat_token
-  );
+  )
+}
 
-};
-
-export default createStreamChatUser;
+export default createStreamChatUser
