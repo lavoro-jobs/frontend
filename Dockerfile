@@ -17,5 +17,8 @@ COPY --from=builder /app/package.json ./package.json
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=https://lavoro-api.azure-api.net
 
+ARG NEXT_PUBLIC_STREAM_API_KEY
+ENV NEXT_PUBLIC_STREAM_API_KEY=${NEXT_PUBLIC_STREAM_API_KEY}
+
 EXPOSE 3000
 CMD ["npm", "start"]
