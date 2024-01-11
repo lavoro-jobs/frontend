@@ -1,8 +1,8 @@
-import createCompanyProfile from "@/helpers/createCompanyProfile";
-import createInvite from "@/helpers/createInvite";
-import createRecruiterProfile from "@/helpers/createRecruiterProfile";
-import FormStateCompany from "@/interfaces/recruiter/form-state-company.interface";
-import FormStateRecruiter from "@/interfaces/recruiter/form-state-recruiter.interface";
+import createCompanyProfile from "@/helpers/createCompanyProfile"
+import createInvite from "@/helpers/createInvite"
+import createRecruiterProfile from "@/helpers/createRecruiterProfile"
+import FormStateCompany from "@/interfaces/recruiter/form-state-company.interface"
+import FormStateRecruiter from "@/interfaces/recruiter/form-state-recruiter.interface"
 import {
   Box,
   Button,
@@ -18,129 +18,129 @@ import {
   Textarea,
   Wrap,
   useSteps,
-} from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import { IoArrowRedo, IoArrowUndo } from "react-icons/io5";
-import createStreamChatUser from "@/helpers/createStreamChatUser";
+} from "@chakra-ui/react"
+import { useRouter } from "next/navigation"
+import React, { useEffect, useRef, useState } from "react"
+import { IoArrowRedo, IoArrowUndo } from "react-icons/io5"
+import createStreamChatUser from "@/helpers/createStreamChatUser"
 
 export default function RecruiterProfileSetup() {
-  const router = useRouter();
+  const router = useRouter()
 
-  const [inputEmail, setInputEmail] = useState<string>("");
-  const [emails, setEmails] = useState<string[]>([]);
+  const [inputEmail, setInputEmail] = useState<string>("")
+  const [emails, setEmails] = useState<string[]>([])
 
   const [formDataRecruiter, setFormDataRecruiter] = useState<FormStateRecruiter>({
     profile_picture: "",
     first_name: "",
     last_name: "",
-  });
+  })
 
   const [formDataCompany, setFormDataCompany] = useState<FormStateCompany>({
     name: "",
     description: "",
     logo: "",
-  });
+  })
 
   const addEmails = (emailsToAdd: string[]) => {
     const validatedEmails = emailsToAdd
       .map((e) => e.trim())
-      .filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && !emails.includes(email));
+      .filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && !emails.includes(email))
 
-    setEmails((prevEmails) => [...prevEmails, ...validatedEmails]);
-    setInputEmail("");
-  };
+    setEmails((prevEmails) => [...prevEmails, ...validatedEmails])
+    setInputEmail("")
+  }
 
   const removeEmail = (index: number) => {
-    const updatedEmails = [...emails];
-    updatedEmails.splice(index, 1);
-    setEmails(updatedEmails);
-  };
+    const updatedEmails = [...emails]
+    updatedEmails.splice(index, 1)
+    setEmails(updatedEmails)
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (["Enter", "Tab", ",", " "].includes(e.key)) {
-      e.preventDefault();
+      e.preventDefault()
 
-      addEmails([inputEmail]);
+      addEmails([inputEmail])
     }
-  };
+  }
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null)
   const handleLogoUpload = () => {
     if (inputRef.current) {
-      inputRef.current.click();
+      inputRef.current.click()
     }
-  };
+  }
 
   const handleRecruiterFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const newFormData = { ...formDataRecruiter, [e.target.id]: e.target.value };
-    setFormDataRecruiter(newFormData);
-  };
+    const newFormData = { ...formDataRecruiter, [e.target.id]: e.target.value }
+    setFormDataRecruiter(newFormData)
+  }
 
   const handleCompanyFormChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newFormData = { ...formDataCompany, [e.target.id]: e.target.value };
-    setFormDataCompany(newFormData);
-  };
+    const newFormData = { ...formDataCompany, [e.target.id]: e.target.value }
+    setFormDataCompany(newFormData)
+  }
 
-  const [logoUrl, setLogoUrl] = useState<string>("");
+  const [logoUrl, setLogoUrl] = useState<string>("")
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
 
     if (file) {
-      setLogoUrl(URL.createObjectURL(file));
-      const reader = new FileReader();
+      setLogoUrl(URL.createObjectURL(file))
+      const reader = new FileReader()
 
       reader.onload = async (event) => {
         if (event.target) {
-          let base64String = event.target.result as string;
-          base64String = base64String.split(",")[1];
+          let base64String = event.target.result as string
+          base64String = base64String.split(",")[1]
 
           setFormDataCompany({
             ...formDataCompany,
             logo: base64String,
-          });
+          })
         }
-      };
+      }
 
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file)
     }
-    e.target.value = "";
-  };
+    e.target.value = ""
+  }
 
   const [articles, setArticles] = useState([
     { id: 1, isActive: true },
     { id: 2, isActive: false },
     { id: 3, isActive: false },
-  ]);
-  const [idArticle, setIdArticle] = useState(1);
-  const [btn, setBtn] = useState(true);
+  ])
+  const [idArticle, setIdArticle] = useState(1)
+  const [btn, setBtn] = useState(true)
 
   const handleClick = (id: number) => {
-    setIdArticle(id);
-    setBtn(false);
+    setIdArticle(id)
+    setBtn(false)
     setTimeout(() => {
-      setBtn(true);
-    }, 400);
+      setBtn(true)
+    }, 400)
 
     setArticles((prevArticles) =>
       prevArticles.map((article) =>
         article.id === id ? { ...article, isActive: true } : { ...article, isActive: false }
       )
-    );
-  };
+    )
+  }
 
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    setMousePosition({ x: e.pageX, y: e.pageY });
-  };
+    setMousePosition({ x: e.pageX, y: e.pageY })
+  }
 
   const mainStyle = {
     "--x": `${mousePosition.x}px`,
     "--y": `${mousePosition.y}px`,
-  };
+  }
 
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(false)
 
   const handleSubmit = async () => {
     try {
@@ -150,52 +150,52 @@ export default function RecruiterProfileSetup() {
         formDataCompany.name &&
         formDataCompany.description
       ) {
-        setError(false);
-        let res = await createRecruiterProfile(formDataRecruiter);
-        if (res && res.statusText === "OK") {
-          await createStreamChatUser();
-          let res2 = await createCompanyProfile(formDataCompany);
-          if (res2 && res2.statusText === "OK") {
+        setError(false)
+        let res = await createRecruiterProfile(formDataRecruiter)
+        if (res && res.status >= 200 && res.status < 300) {
+          await createStreamChatUser()
+          let res2 = await createCompanyProfile(formDataCompany)
+          if (res2 && res2.status >= 200 && res2.status < 300) {
             emails.map((email) => {
-              createInvite(email);
-            });
-            router.push("/dashboard");
+              createInvite(email)
+            })
+            router.push("/dashboard")
           }
         }
       } else {
-        setError(true);
+        setError(true)
       }
     } catch (error) {}
-  };
+  }
 
-  const profileRef = useRef<HTMLInputElement>(null);
+  const profileRef = useRef<HTMLInputElement>(null)
   const handleProfileUpload = () => {
     if (profileRef.current) {
-      profileRef.current.click();
+      profileRef.current.click()
     }
-  };
+  }
   const handleProfileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
 
     if (file) {
-      const reader = new FileReader();
+      const reader = new FileReader()
 
       reader.onload = async (event) => {
         if (event.target) {
-          let base64String = event.target.result as string;
-          base64String = base64String.split(",")[1];
+          let base64String = event.target.result as string
+          base64String = base64String.split(",")[1]
 
           setFormDataRecruiter({
             ...formDataRecruiter,
             profile_picture: base64String,
-          });
+          })
         }
-      };
+      }
 
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file)
     }
-    e.target.value = "";
-  };
+    e.target.value = ""
+  }
 
   return (
     <Flex
@@ -223,7 +223,7 @@ export default function RecruiterProfileSetup() {
           bg="#FF8E2B"
           _hover={{ color: "#0D2137", bg: "#fdb16e" }}
           onClick={() => {
-            handleClick(idArticle + 1);
+            handleClick(idArticle + 1)
           }}
         >
           <IoArrowRedo />
@@ -238,7 +238,7 @@ export default function RecruiterProfileSetup() {
           bg="#FF8E2B"
           _hover={{ color: "#0D2137", bg: "#fdb16e" }}
           onClick={() => {
-            handleClick(idArticle - 1);
+            handleClick(idArticle - 1)
           }}
         >
           <IoArrowUndo />
@@ -246,7 +246,7 @@ export default function RecruiterProfileSetup() {
         <section className="backgrounds">
           <Box
             onClick={() => {
-              handleClick(1);
+              handleClick(1)
             }}
             w="700px"
             className="background"
@@ -257,7 +257,7 @@ export default function RecruiterProfileSetup() {
           ></Box>
           <Box
             onClick={() => {
-              handleClick(2);
+              handleClick(2)
             }}
             className="background"
             border="solid"
@@ -267,7 +267,7 @@ export default function RecruiterProfileSetup() {
           ></Box>
           <Box
             onClick={() => {
-              handleClick(3);
+              handleClick(3)
             }}
             className="background"
             border="solid"
@@ -281,7 +281,7 @@ export default function RecruiterProfileSetup() {
           <article
             className="article"
             onClick={() => {
-              !articles[0].isActive && handleClick(1);
+              !articles[0].isActive && handleClick(1)
             }}
             data-active={articles[0].isActive}
             data-id="1"
@@ -352,7 +352,7 @@ export default function RecruiterProfileSetup() {
                       setFormDataRecruiter({
                         ...formDataRecruiter,
                         profile_picture: "",
-                      });
+                      })
                     }}
                   >
                     ✖
@@ -364,7 +364,7 @@ export default function RecruiterProfileSetup() {
           <article
             className="article"
             onClick={() => {
-              !articles[1].isActive && handleClick(2);
+              !articles[1].isActive && handleClick(2)
             }}
             data-active={articles[1].isActive}
             data-id="2"
@@ -401,7 +401,7 @@ export default function RecruiterProfileSetup() {
                         setFormDataCompany({
                           ...formDataCompany,
                           logo: "",
-                        });
+                        })
                       }}
                     >
                       ✖
@@ -430,7 +430,7 @@ export default function RecruiterProfileSetup() {
           <article
             className="article"
             onClick={() => {
-              !articles[2].isActive && handleClick(3);
+              !articles[2].isActive && handleClick(3)
             }}
             data-active={articles[2].isActive}
             data-id="3"
@@ -454,7 +454,7 @@ export default function RecruiterProfileSetup() {
               marginTop="16px"
               onKeyDown={handleKeyDown}
               onChange={(e) => {
-                setInputEmail(e.target.value);
+                setInputEmail(e.target.value)
               }}
               value={inputEmail}
             />
@@ -489,5 +489,5 @@ export default function RecruiterProfileSetup() {
         </section>
       </Box>
     </Flex>
-  );
+  )
 }
