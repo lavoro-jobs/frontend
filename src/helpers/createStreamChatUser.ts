@@ -1,3 +1,4 @@
+"use client"
 import getCurrentUser from "@/helpers/getCurrentUser"
 import { StreamChat } from "stream-chat"
 import hashEmail from "@/helpers/hashEmail"
@@ -9,6 +10,8 @@ const STREAM_CHAT_API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY || "etwdd8qaa
 
 const createStreamChatUser = async () => {
   const client = StreamChat.getInstance(STREAM_CHAT_API_KEY)
+  console.log("client", client)
+  console.log(STREAM_CHAT_API_KEY)
   const res = await getCurrentUser()
   const user = res.data
   const email = user.email
